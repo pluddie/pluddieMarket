@@ -3,203 +3,220 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>文創小攤 POS</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
+<title>PLUDDIE 文創小攤 POS</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#FAFAF8;--surface:#FFFFFF;--surface2:#F5F4F0;--surface3:#EDECE8;
+  --bg:#FAFAF8;--surface:#FFFFFF;--s2:#F5F4F0;--s3:#EDECE8;
   --border:#E0DED8;--border2:#CCCAC3;
   --text:#1A1916;--text2:#6B6960;--text3:#A8A69E;
-  --green:#0F6E56;--green-bg:#E1F5EE;--green-dark:#085041;
-  --amber:#8A5E0A;--amber-bg:#FEF3DC;
-  --red:#8C2222;--red-bg:#FCEAEA;
-  --accent:#1A1916;
-  --radius:10px;--radius-lg:14px;--radius-pill:999px;
+  --green:#0F6E56;--gbg:#E1F5EE;
+  --amber:#8A5E0A;--abg:#FEF3DC;
+  --red:#8C2222;--rbg:#FCEAEA;
+  --blue:#185FA5;--bbg:#E6F1FB;
+  --r:10px;--rl:14px;--rp:999px;
   --font:'Noto Sans TC',sans-serif;
 }
 body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14px;min-height:100vh}
-
-/* ── LAYOUT ── */
 .app{display:grid;grid-template-columns:1fr 320px;height:100vh;max-width:1100px;margin:0 auto}
 .left{display:flex;flex-direction:column;overflow:hidden;border-right:1px solid var(--border)}
 .right{display:flex;flex-direction:column;overflow:hidden;background:var(--surface)}
 
-/* ── TOP BAR ── */
-.topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--border);background:var(--surface);flex-shrink:0}
-.topbar-left{display:flex;align-items:center;gap:10px}
-.shop-name{font-size:16px;font-weight:700;color:var(--text);letter-spacing:-.01em}
-.date-chip{font-size:11px;color:var(--text2);background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-pill);padding:3px 10px}
-.topbar-right{display:flex;gap:6px}
-.icon-btn{width:34px;height:34px;border-radius:var(--radius);border:1px solid var(--border);background:var(--surface);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text2);font-size:16px;transition:all .15s}
-.icon-btn:hover{background:var(--surface2);color:var(--text)}
+/* topbar */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border);background:var(--surface);flex-shrink:0}
+.shop-name{font-size:16px;font-weight:700;letter-spacing:-.01em}
+.date-chip{font-size:11px;color:var(--text2);background:var(--s2);border:1px solid var(--border);border-radius:var(--rp);padding:3px 10px}
+.icon-btn{width:32px;height:32px;border-radius:var(--r);border:1px solid var(--border);background:var(--surface);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;transition:all .15s}
+.icon-btn:hover{background:var(--s2)}
 .icon-btn.active{background:var(--text);color:var(--surface);border-color:var(--text)}
 
-/* ── TABS ── */
+/* tabs */
 .tabs-wrap{padding:10px 14px;border-bottom:1px solid var(--border);background:var(--surface);flex-shrink:0;display:flex;gap:5px;flex-wrap:wrap}
-.tab{font-size:12px;padding:5px 12px;border-radius:var(--radius-pill);border:1px solid var(--border);background:var(--surface);color:var(--text2);cursor:pointer;transition:all .12s;white-space:nowrap}
+.tab{font-size:12px;padding:5px 12px;border-radius:var(--rp);border:1px solid var(--border);background:var(--surface);color:var(--text2);cursor:pointer;transition:all .12s;white-space:nowrap}
 .tab:hover{border-color:var(--border2);color:var(--text)}
 .tab.on{background:var(--text);color:var(--surface);border-color:var(--text)}
 
-/* ── ITEMS GRID ── */
+/* grid */
 .items-scroll{flex:1;overflow-y:auto;padding:14px;background:var(--bg)}
-.items-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px}
-.item-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:12px 10px;cursor:pointer;text-align:center;transition:all .12s;position:relative;user-select:none}
+.items-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(105px,1fr));gap:8px}
+.item-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);padding:11px 8px;cursor:pointer;text-align:center;transition:all .12s;position:relative;user-select:none}
 .item-card:hover{border-color:var(--border2);transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.06)}
 .item-card:active{transform:scale(.97)}
-.ic-emoji{font-size:22px;display:block;margin-bottom:4px}
-.ic-name{font-size:12px;font-weight:500;color:var(--text);display:block;margin-bottom:4px;line-height:1.3}
-.ic-price{font-size:14px;font-weight:700;color:var(--green)}
-.ic-edit-btn{position:absolute;top:5px;right:6px;font-size:11px;color:var(--text3);cursor:pointer;width:18px;height:18px;display:flex;align-items:center;justify-content:center;border-radius:4px;transition:all .1s}
-.ic-edit-btn:hover{color:var(--text2);background:var(--surface2)}
-.add-card{background:transparent;border:1px dashed var(--border2);border-radius:var(--radius-lg);padding:12px 10px;cursor:pointer;text-align:center;color:var(--text3);font-size:12px;transition:all .12s;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;min-height:80px}
-.add-card:hover{color:var(--text2);border-color:var(--border2);background:var(--surface)}
-.add-card svg{opacity:.5}
+.ic-emoji{font-size:20px;display:block;margin-bottom:3px}
+.ic-name{font-size:11px;font-weight:500;color:var(--text);display:block;margin-bottom:3px;line-height:1.3}
+.ic-price{font-size:13px;font-weight:700;color:var(--green)}
+.ic-edit-btn{position:absolute;top:4px;right:5px;font-size:10px;color:var(--text3);cursor:pointer;width:16px;height:16px;display:flex;align-items:center;justify-content:center;border-radius:4px}
+.ic-edit-btn:hover{color:var(--text2);background:var(--s2)}
+.add-card{background:transparent;border:1px dashed var(--border2);border-radius:var(--rl);padding:11px 8px;cursor:pointer;text-align:center;color:var(--text3);font-size:12px;transition:all .12s;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:76px}
+.add-card:hover{color:var(--text2);background:var(--surface)}
 
-/* ── RIGHT PANEL TABS ── */
+/* right panel tabs */
 .panel-tabs{display:flex;border-bottom:1px solid var(--border);flex-shrink:0}
-.ptab{flex:1;padding:10px 6px;font-size:12px;text-align:center;cursor:pointer;color:var(--text2);border-bottom:2px solid transparent;transition:all .12s;font-weight:400}
+.ptab{flex:1;padding:9px 4px;font-size:11px;text-align:center;cursor:pointer;color:var(--text2);border-bottom:2px solid transparent;transition:all .12s}
 .ptab:hover{color:var(--text)}
 .ptab.on{color:var(--text);border-bottom-color:var(--text);font-weight:500}
 
-/* ── CART ── */
+/* cart */
 .cart-scroll{flex:1;overflow-y:auto;padding:8px 14px}
-.empty-cart{text-align:center;padding:36px 0;color:var(--text3);font-size:13px}
-.empty-cart-icon{font-size:32px;display:block;margin-bottom:8px;opacity:.4}
-.cart-row{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border)}
+.empty-cart{text-align:center;padding:32px 0;color:var(--text3);font-size:13px}
+.cart-row{display:flex;align-items:center;gap:7px;padding:6px 0;border-bottom:1px solid var(--border)}
 .cart-row:last-child{border:none}
-.cart-name{flex:1;font-size:13px;color:var(--text);line-height:1.3}
-.qty-ctrl{display:flex;align-items:center;gap:5px}
-.qbtn{width:22px;height:22px;border-radius:50%;border:1px solid var(--border);background:var(--surface2);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text);transition:all .1s;line-height:1}
-.qbtn:hover{background:var(--surface3)}
-.qnum{font-size:12px;font-weight:500;min-width:16px;text-align:center;color:var(--text)}
-.cart-sub{font-size:12px;font-weight:500;color:var(--text);min-width:44px;text-align:right}
+.cart-name{flex:1;font-size:12px;color:var(--text);line-height:1.3}
+.qty-ctrl{display:flex;align-items:center;gap:4px}
+.qbtn{width:21px;height:21px;border-radius:50%;border:1px solid var(--border);background:var(--s2);font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text);transition:all .1s}
+.qbtn:hover{background:var(--s3)}
+.qnum{font-size:12px;font-weight:500;min-width:14px;text-align:center}
+.cart-sub{font-size:12px;font-weight:500;min-width:42px;text-align:right}
 
-/* ── DISCOUNT ── */
-.disc-section{padding:10px 14px;border-top:1px solid var(--border);background:var(--surface2);flex-shrink:0}
-.disc-title{font-size:11px;color:var(--text2);margin-bottom:7px;font-weight:500}
-.preset-disc{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:7px}
-.dbtn{font-size:11px;padding:4px 10px;border-radius:var(--radius-pill);border:1px solid var(--border);background:var(--surface);color:var(--text2);cursor:pointer;transition:all .12s}
+/* discount */
+.disc-section{padding:9px 14px;border-top:1px solid var(--border);background:var(--s2);flex-shrink:0}
+.disc-title{font-size:11px;color:var(--text2);margin-bottom:6px;font-weight:500}
+.preset-disc{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px}
+.dbtn{font-size:11px;padding:4px 9px;border-radius:var(--rp);border:1px solid var(--border);background:var(--surface);color:var(--text2);cursor:pointer;transition:all .12s}
 .dbtn:hover{border-color:var(--border2)}
-.dbtn.on{background:var(--amber-bg);color:var(--amber);border-color:var(--amber)}
+.dbtn.on{background:var(--abg);color:var(--amber);border-color:var(--amber)}
 .custom-row{display:flex;align-items:center;gap:6px}
 .custom-row label{font-size:11px;color:var(--text2)}
-.custom-row input{width:60px;padding:5px 8px;border:1px solid var(--border);border-radius:var(--radius);font-size:12px;color:var(--text);background:var(--surface);font-family:var(--font)}
-.custom-row input:focus{outline:none;border-color:var(--border2)}
+.custom-row input{width:58px;padding:4px 7px;border:1px solid var(--border);border-radius:var(--r);font-size:12px;color:var(--text);background:var(--surface);font-family:var(--font)}
 
-/* ── TOTAL & CHECKOUT ── */
-.total-section{padding:12px 14px;border-top:1px solid var(--border);flex-shrink:0}
+/* total */
+.total-section{padding:10px 14px;border-top:1px solid var(--border);flex-shrink:0}
 .t-line{display:flex;justify-content:space-between;font-size:12px;color:var(--text2);margin-bottom:3px}
-.t-line.disc{color:var(--amber)}
-.t-line.main{font-size:17px;font-weight:700;color:var(--text);margin-top:6px;margin-bottom:0}
-.checkout-btn{width:100%;margin-top:10px;padding:12px;background:var(--text);color:var(--surface);border:none;border-radius:var(--radius-lg);font-size:14px;font-weight:700;cursor:pointer;transition:opacity .15s;font-family:var(--font);letter-spacing:.02em}
+.t-line.disc-l{color:var(--amber)}
+.t-line.main{font-size:17px;font-weight:700;color:var(--text);margin-top:5px;margin-bottom:0}
+.checkout-btn{width:100%;margin-top:10px;padding:11px;background:var(--text);color:var(--surface);border:none;border-radius:var(--rl);font-size:14px;font-weight:700;cursor:pointer;font-family:var(--font)}
 .checkout-btn:hover{opacity:.85}
 .checkout-btn:disabled{opacity:.3;cursor:not-allowed}
-.clear-btn{width:100%;margin-top:6px;padding:8px;background:transparent;border:1px solid var(--border);border-radius:var(--radius);font-size:12px;color:var(--text2);cursor:pointer;font-family:var(--font);transition:all .12s}
-.clear-btn:hover{background:var(--surface2)}
+.clear-btn{width:100%;margin-top:5px;padding:7px;background:transparent;border:1px solid var(--border);border-radius:var(--r);font-size:12px;color:var(--text2);cursor:pointer;font-family:var(--font)}
+.clear-btn:hover{background:var(--s2)}
+.free-row{display:flex;align-items:center;gap:6px;margin-left:auto}
+.free-row span{font-size:11px;color:var(--text2)}
+.toggle{position:relative;width:36px;height:20px}
+.toggle input{opacity:0;width:0;height:0}
+.toggle-s{position:absolute;inset:0;background:var(--s3);border-radius:10px;cursor:pointer;transition:all .2s}
+.toggle-s:before{content:'';position:absolute;width:14px;height:14px;left:3px;top:3px;background:white;border-radius:50%;transition:all .2s}
+.toggle input:checked+.toggle-s{background:var(--green)}
+.toggle input:checked+.toggle-s:before{transform:translateX(16px)}
 
-/* ── STATS BAR ── */
-.stats-bar{display:grid;grid-template-columns:1fr 1fr;gap:0;border-top:1px solid var(--border);flex-shrink:0}
-.stat-box{padding:10px 14px;text-align:center}
+/* stats bar */
+.stats-bar{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--border);flex-shrink:0}
+.stat-box{padding:9px 14px;text-align:center}
 .stat-box:first-child{border-right:1px solid var(--border)}
-.stat-label{font-size:10px;color:var(--text3);display:block;margin-bottom:2px;letter-spacing:.04em}
-.stat-val{font-size:16px;font-weight:700;color:var(--text)}
+.stat-label{font-size:10px;color:var(--text3);display:block;margin-bottom:1px;letter-spacing:.04em}
+.stat-val{font-size:15px;font-weight:700}
 
-/* ── LOG ── */
+/* log */
 .log-wrap{flex:1;overflow-y:auto;padding:10px 14px}
 .log-empty{text-align:center;padding:32px 0;color:var(--text3);font-size:12px}
-.log-item{padding:9px 0;border-bottom:1px solid var(--border)}
+.log-item{padding:8px 0;border-bottom:1px solid var(--border)}
 .log-item:last-child{border:none}
 .log-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:3px}
 .log-no{font-size:10px;color:var(--text3);font-weight:500}
-.log-right{display:flex;align-items:center;gap:6px}
+.log-right{display:flex;align-items:center;gap:5px}
 .log-amt{font-size:13px;font-weight:700;color:var(--green)}
-.log-disc-badge{font-size:10px;padding:2px 6px;border-radius:var(--radius-pill);background:var(--amber-bg);color:var(--amber);font-weight:500}
+.log-disc-badge{font-size:10px;padding:2px 6px;border-radius:var(--rp);background:var(--abg);color:var(--amber);font-weight:500}
 .log-time{font-size:10px;color:var(--text3)}
 .log-items-text{font-size:11px;color:var(--text2);line-height:1.5}
+.pay-badges{display:flex;gap:4px;margin-top:3px}
+.pay-badge{font-size:10px;padding:2px 6px;border-radius:var(--rp);font-weight:500}
+.pay-badge.cash{background:var(--gbg);color:var(--green)}
+.pay-badge.lp{background:var(--bbg);color:var(--blue)}
 
-/* ── SUMMARY ── */
+/* summary */
 .summary-wrap{flex:1;overflow-y:auto;padding:14px}
-.sum-section-title{font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px;margin-top:14px}
-.sum-section-title:first-child{margin-top:0}
+.sum-sec-title{font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px;margin-top:14px}
+.sum-sec-title:first-child{margin-top:0}
 .sum-cards{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:4px}
-.sum-card{background:var(--surface2);border-radius:var(--radius);padding:10px 12px}
-.sum-card-label{font-size:10px;color:var(--text2);display:block;margin-bottom:3px}
-.sum-card-val{font-size:17px;font-weight:700;color:var(--text)}
-.sum-card-val.green{color:var(--green)}
-.sum-card-val.amber{color:var(--amber)}
-.top-item-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);font-size:12px}
+.sum-card{background:var(--s2);border-radius:var(--r);padding:9px 11px}
+.sc-label{font-size:10px;color:var(--text2);display:block;margin-bottom:2px}
+.sc-val{font-size:16px;font-weight:700}
+.top-item-row{display:flex;align-items:center;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px;gap:8px}
 .top-item-row:last-child{border:none}
-.top-rank{width:18px;height:18px;border-radius:50%;background:var(--surface3);font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;color:var(--text2);flex-shrink:0}
+.top-rank{width:18px;height:18px;border-radius:50%;background:var(--s3);font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;color:var(--text2);flex-shrink:0}
 .top-rank.r1{background:var(--text);color:var(--surface)}
-.top-item-name{flex:1;margin-left:8px;color:var(--text)}
+.top-rank.r2{background:var(--text2);color:var(--surface)}
+.top-rank.r3{background:var(--border2);color:var(--surface)}
+.top-item-name{flex:1;color:var(--text)}
 .top-item-qty{color:var(--text2);font-size:11px}
 
-/* ── SETTINGS ── */
+/* history */
+.hist-wrap{flex:1;overflow-y:auto}
+.hist-date-select{padding:10px 14px;border-bottom:1px solid var(--border);background:var(--s2);flex-shrink:0}
+.hist-select-label{font-size:11px;color:var(--text2);margin-bottom:5px}
+.date-grid{display:flex;gap:5px;flex-wrap:wrap}
+.date-pill{font-size:11px;padding:4px 10px;border-radius:var(--rp);border:1px solid var(--border);background:var(--surface);cursor:pointer;color:var(--text2);transition:all .12s;white-space:nowrap}
+.date-pill:hover{border-color:var(--border2);color:var(--text)}
+.date-pill.on{background:var(--text);color:var(--surface);border-color:var(--text)}
+.hist-content{padding:12px 14px;overflow-y:auto;flex:1}
+.hist-empty{text-align:center;padding:32px 0;color:var(--text3);font-size:12px}
+.hist-day-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;padding-bottom:7px;border-bottom:2px solid var(--border)}
+.hist-day-date{font-size:14px;font-weight:700}
+.hist-day-total{font-size:16px;font-weight:700;color:var(--green)}
+.hist-item-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px}
+.hist-item-row:last-child{border:none}
+.hist-item-name{flex:1;color:var(--text)}
+.hist-item-qty{color:var(--text2);margin:0 10px;font-size:11px}
+.hist-item-sub{font-weight:500;color:var(--text)}
+.hist-pay-row{display:flex;gap:6px;margin-top:10px;padding-top:8px;border-top:1px solid var(--border)}
+.hist-year-group{margin-bottom:6px}
+.hist-year-label{font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.06em;padding:4px 0 3px;text-transform:uppercase}
+.hist-date-pills{display:flex;gap:4px;flex-wrap:wrap}
+
+/* settings */
 .settings-wrap{flex:1;overflow-y:auto}
-.settings-section{border-bottom:1px solid var(--border);padding:16px}
-.settings-section-title{font-size:11px;font-weight:700;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:6px}
-.setting-row{display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border)}
-.setting-row:last-child{border:none}
-.setting-label{font-size:13px;color:var(--text)}
-.setting-sub{font-size:11px;color:var(--text2);margin-top:1px}
-.setting-input{padding:6px 10px;border:1px solid var(--border);border-radius:var(--radius);font-size:13px;color:var(--text);background:var(--surface);font-family:var(--font);width:160px}
-.setting-input:focus{outline:none;border-color:var(--border2)}
-.setting-input.sm{width:80px}
-.toggle{position:relative;width:40px;height:22px;flex-shrink:0}
-.toggle input{opacity:0;width:0;height:0}
-.toggle-slider{position:absolute;inset:0;background:var(--surface3);border-radius:11px;cursor:pointer;transition:all .2s}
-.toggle-slider:before{content:'';position:absolute;width:16px;height:16px;left:3px;top:3px;background:white;border-radius:50%;transition:all .2s}
-.toggle input:checked+.toggle-slider{background:var(--green)}
-.toggle input:checked+.toggle-slider:before{transform:translateX(18px)}
-.disc-preset-list{display:flex;flex-direction:column;gap:6px}
-.disc-preset-item{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border)}
+.settings-section{border-bottom:1px solid var(--border);padding:14px}
+.st-title{font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:11px;display:flex;align-items:center;gap:5px}
+.sr{display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border)}
+.sr:last-child{border:none}
+.sr-label{font-size:13px}
+.sr-sub{font-size:11px;color:var(--text2);margin-top:1px}
+.si{padding:6px 9px;border:1px solid var(--border);border-radius:var(--r);font-size:13px;color:var(--text);background:var(--surface);font-family:var(--font);width:155px}
+.si:focus{outline:none;border-color:var(--border2)}
+.si.sm{width:74px}
+.disc-preset-item{display:flex;align-items:center;gap:7px;padding:5px 0;border-bottom:1px solid var(--border)}
 .disc-preset-item:last-child{border:none}
-.dpi-input{padding:5px 8px;border:1px solid var(--border);border-radius:var(--radius);font-size:12px;color:var(--text);background:var(--surface);font-family:var(--font);width:60px}
-.dpi-label-input{padding:5px 8px;border:1px solid var(--border);border-radius:var(--radius);font-size:12px;color:var(--text);background:var(--surface);font-family:var(--font);width:80px}
-.dpi-del{width:24px;height:24px;border-radius:50%;border:1px solid var(--border);background:transparent;color:var(--text3);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .1s}
-.dpi-del:hover{background:var(--red-bg);color:var(--red);border-color:var(--red)}
-.add-preset-btn{font-size:12px;color:var(--text2);border:1px dashed var(--border2);background:transparent;border-radius:var(--radius);padding:6px 12px;cursor:pointer;width:100%;margin-top:8px;font-family:var(--font);transition:all .12s}
-.add-preset-btn:hover{background:var(--surface2)}
-.danger-btn{font-size:12px;color:var(--red);border:1px solid var(--red-bg);background:var(--red-bg);border-radius:var(--radius);padding:7px 14px;cursor:pointer;font-family:var(--font);transition:all .12s}
+.dpi-in{padding:5px 7px;border:1px solid var(--border);border-radius:var(--r);font-size:12px;color:var(--text);background:var(--surface);font-family:var(--font);width:55px}
+.dpi-lin{padding:5px 7px;border:1px solid var(--border);border-radius:var(--r);font-size:12px;color:var(--text);background:var(--surface);font-family:var(--font);width:75px}
+.dpi-del{width:22px;height:22px;border-radius:50%;border:1px solid var(--border);background:transparent;color:var(--text3);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px}
+.dpi-del:hover{background:var(--rbg);color:var(--red)}
+.add-preset-btn{font-size:12px;color:var(--text2);border:1px dashed var(--border2);background:transparent;border-radius:var(--r);padding:6px 12px;cursor:pointer;width:100%;margin-top:7px;font-family:var(--font)}
+.add-preset-btn:hover{background:var(--s2)}
+.danger-btn{font-size:12px;color:var(--red);border:1px solid var(--rbg);background:var(--rbg);border-radius:var(--r);padding:6px 12px;cursor:pointer;font-family:var(--font)}
 .danger-btn:hover{background:#f5d5d5}
-.save-settings-btn{width:100%;padding:10px;background:var(--text);color:var(--surface);border:none;border-radius:var(--radius-lg);font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font);margin-top:12px;transition:opacity .15s}
+.save-settings-btn{width:100%;padding:10px;background:var(--text);color:var(--surface);border:none;border-radius:var(--rl);font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font);margin-top:11px}
 .save-settings-btn:hover{opacity:.85}
 
-/* ── MODAL ── */
+/* modal */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center;z-index:200;backdrop-filter:blur(2px)}
-.modal{background:var(--surface);border-radius:var(--radius-lg);border:1px solid var(--border);padding:20px;width:290px;box-shadow:0 20px 60px rgba(0,0,0,.15)}
-.modal h3{font-size:15px;font-weight:700;margin-bottom:16px;color:var(--text)}
-.modal-field{margin-bottom:11px}
-.modal-field label{display:block;font-size:11px;color:var(--text2);margin-bottom:4px;font-weight:500}
-.modal-field input,.modal-field select{width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius);font-size:13px;color:var(--text);background:var(--surface);font-family:var(--font);transition:border-color .12s}
-.modal-field input:focus,.modal-field select:focus{outline:none;border-color:var(--border2)}
-.emoji-row{display:flex;flex-wrap:wrap;gap:5px;margin-top:5px}
-.emoji-opt{width:32px;height:32px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;transition:all .1s}
+.modal{background:var(--surface);border-radius:var(--rl);border:1px solid var(--border);padding:18px;width:285px;box-shadow:0 20px 60px rgba(0,0,0,.15)}
+.modal h3{font-size:14px;font-weight:700;margin-bottom:14px}
+.mf{margin-bottom:10px}
+.mf label{display:block;font-size:11px;color:var(--text2);margin-bottom:3px;font-weight:500}
+.mf input,.mf select{width:100%;padding:7px 9px;border:1px solid var(--border);border-radius:var(--r);font-size:13px;color:var(--text);background:var(--surface);font-family:var(--font)}
+.mf input:focus,.mf select:focus{outline:none;border-color:var(--border2)}
+.emoji-row{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px;max-height:80px;overflow-y:auto}
+.emoji-opt{width:30px;height:30px;border-radius:7px;border:1px solid var(--border);background:var(--s2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px}
 .emoji-opt:hover,.emoji-opt.sel{border-color:var(--text);background:var(--surface)}
-.modal-btns{display:flex;gap:7px;margin-top:16px}
-.modal-btns button{flex:1;padding:9px;border-radius:var(--radius);font-size:12px;cursor:pointer;font-family:var(--font);font-weight:500}
+.mbtns{display:flex;gap:6px;margin-top:14px}
+.mbtns button{flex:1;padding:8px;border-radius:var(--r);font-size:12px;cursor:pointer;font-family:var(--font);font-weight:500}
 .mbtn-cancel{background:transparent;border:1px solid var(--border);color:var(--text2)}
-.mbtn-cancel:hover{background:var(--surface2)}
-.mbtn-del{background:var(--red-bg);border:none;color:var(--red);flex:0 0 auto;padding:9px 12px}
-.mbtn-del:hover{background:#f5d5d5}
+.mbtn-del{background:var(--rbg);border:none;color:var(--red);flex:0 0 auto;padding:8px 11px}
 .mbtn-save{background:var(--text);border:none;color:var(--surface)}
-.mbtn-save:hover{opacity:.85}
 
-/* ── TOAST ── */
-.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--text);color:var(--surface);padding:9px 20px;border-radius:var(--radius-pill);font-size:13px;font-weight:500;opacity:0;transition:all .25s;pointer-events:none;z-index:300;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,.2)}
+/* confirm */
+.confirm-box{background:var(--surface);border-radius:var(--rl);border:1px solid var(--border);padding:18px;width:265px;box-shadow:0 20px 60px rgba(0,0,0,.15)}
+.confirm-box h3{font-size:14px;font-weight:700;margin-bottom:7px}
+.confirm-box p{font-size:12px;color:var(--text2);margin-bottom:13px;line-height:1.6}
+.confirm-btns{display:flex;gap:6px}
+.confirm-btns button{flex:1;padding:8px;border-radius:var(--r);font-size:12px;cursor:pointer;font-family:var(--font);font-weight:500}
+
+/* toast */
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(8px);background:var(--text);color:var(--surface);padding:8px 18px;border-radius:var(--rp);font-size:12px;font-weight:500;opacity:0;transition:all .22s;pointer-events:none;z-index:300;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,.2)}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
-/* ── CONFIRM ── */
-.confirm-modal{background:var(--surface);border-radius:var(--radius-lg);border:1px solid var(--border);padding:20px;width:270px;box-shadow:0 20px 60px rgba(0,0,0,.15)}
-.confirm-modal p{font-size:13px;color:var(--text2);margin-bottom:14px;line-height:1.6}
-.confirm-btns{display:flex;gap:7px}
-.confirm-btns button{flex:1;padding:9px;border-radius:var(--radius);font-size:12px;cursor:pointer;font-family:var(--font);font-weight:500}
-
-/* ── MOBILE ── */
 @media(max-width:680px){
-  .app{grid-template-columns:1fr;height:auto;min-height:100vh}
+  .app{grid-template-columns:1fr;height:auto}
   .left{height:auto}
   .right{height:600px}
 }
@@ -207,15 +224,14 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14
 </head>
 <body>
 <div class="app">
-  <!-- LEFT: PRODUCTS -->
   <div class="left">
     <div class="topbar">
-      <div class="topbar-left">
-        <span class="shop-name" id="shopNameDisplay">文創小攤</span>
+      <div style="display:flex;align-items:center;gap:9px">
+        <span class="shop-name" id="shopNameDisplay">PLUDDIE 文創小攤</span>
         <span class="date-chip" id="dateChip"></span>
       </div>
-      <div class="topbar-right">
-        <button class="icon-btn" title="設定" onclick="switchView('settings')" id="btn-settings">⚙️</button>
+      <div style="display:flex;gap:5px">
+        <button class="icon-btn" onclick="switchPanel('settings')" id="btn-settings" title="設定">⚙️</button>
       </div>
     </div>
     <div class="tabs-wrap" id="tabsEl"></div>
@@ -224,36 +240,34 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14
     </div>
   </div>
 
-  <!-- RIGHT: ORDER / LOG / SUMMARY / SETTINGS -->
   <div class="right">
     <div class="panel-tabs">
       <div class="ptab on" id="ptab-order" onclick="switchPanel('order')">🛍 點單</div>
-      <div class="ptab" id="ptab-log" onclick="switchPanel('log')">📋 明細</div>
+      <div class="ptab" id="ptab-log" onclick="switchPanel('log')">📋 今日明細</div>
+      <div class="ptab" id="ptab-hist" onclick="switchPanel('hist')">📅 歷史</div>
       <div class="ptab" id="ptab-summary" onclick="switchPanel('summary')">📊 統計</div>
       <div class="ptab" id="ptab-settings" onclick="switchPanel('settings')" style="display:none">⚙️ 設定</div>
     </div>
 
-    <!-- ORDER PANEL -->
+    <!-- ORDER -->
     <div id="panel-order" style="display:flex;flex-direction:column;flex:1;overflow:hidden;min-height:0">
-      <div class="cart-scroll" id="cartScroll">
-        <div class="empty-cart"><span class="empty-cart-icon">🛒</span>點選左方商品加入訂單</div>
-      </div>
+      <div class="cart-scroll" id="cartScroll"><div class="empty-cart">🛒<br>點選左方商品加入訂單</div></div>
       <div class="disc-section">
         <div class="disc-title">🏷 折扣優惠</div>
         <div class="preset-disc" id="presetDiscEl"></div>
         <div class="custom-row">
-          <label>自訂折數</label>
+          <label>自訂</label>
           <input type="number" id="customDiscInput" min="1" max="99" placeholder="88" oninput="applyCustomDisc(this.value)">
           <span style="font-size:11px;color:var(--text2)">折</span>
-          <span id="freeDiscToggleWrap" style="margin-left:auto;display:flex;align-items:center;gap:5px">
-            <span style="font-size:11px;color:var(--text2)">免費</span>
-            <label class="toggle"><input type="checkbox" id="freeToggle" onchange="toggleFree(this.checked)"><span class="toggle-slider"></span></label>
-          </span>
+          <div class="free-row">
+            <span>免費</span>
+            <label class="toggle"><input type="checkbox" id="freeToggle" onchange="toggleFree(this.checked)"><span class="toggle-s"></span></label>
+          </div>
         </div>
       </div>
       <div class="total-section">
         <div id="subtotalLine" class="t-line" style="display:none"><span>小計</span><span id="subtotalVal"></span></div>
-        <div id="discLine" class="t-line disc" style="display:none"><span id="discLabel"></span><span id="discVal"></span></div>
+        <div id="discLine" class="t-line disc-l" style="display:none"><span id="discLabel"></span><span id="discVal"></span></div>
         <div class="t-line main"><span>合計</span><span id="totalVal">$0</span></div>
         <button class="checkout-btn" id="checkoutBtn" onclick="checkout()" disabled>結帳</button>
         <button class="clear-btn" onclick="clearCart()">清空訂單</button>
@@ -264,58 +278,58 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14
       </div>
     </div>
 
-    <!-- LOG PANEL -->
+    <!-- TODAY LOG -->
     <div id="panel-log" style="display:none;flex-direction:column;flex:1;overflow:hidden;min-height:0">
       <div class="log-wrap" id="logWrap"></div>
     </div>
 
-    <!-- SUMMARY PANEL -->
+    <!-- HISTORY -->
+    <div id="panel-hist" style="display:none;flex-direction:column;flex:1;overflow:hidden;min-height:0">
+      <div class="hist-date-select">
+        <div class="hist-select-label">選擇日期查看明細</div>
+        <div id="histDateGrid"></div>
+      </div>
+      <div class="hist-content" id="histContent">
+        <div class="hist-empty">👆 選擇日期查看歷史記錄</div>
+      </div>
+    </div>
+
+    <!-- SUMMARY -->
     <div id="panel-summary" style="display:none;flex-direction:column;flex:1;overflow:hidden;min-height:0">
       <div class="summary-wrap" id="summaryWrap"></div>
     </div>
 
-    <!-- SETTINGS PANEL -->
+    <!-- SETTINGS -->
     <div id="panel-settings" style="display:none;flex-direction:column;flex:1;overflow:hidden;min-height:0">
       <div class="settings-wrap">
         <div class="settings-section">
-          <div class="settings-section-title">🏪 攤位資訊</div>
-          <div class="setting-row">
-            <div><div class="setting-label">攤位名稱</div></div>
-            <input class="setting-input" id="sShopName" type="text" maxlength="16">
-          </div>
-          <div class="setting-row">
-            <div><div class="setting-label">幣別符號</div></div>
-            <input class="setting-input sm" id="sCurrency" type="text" maxlength="3">
-          </div>
+          <div class="st-title">🏪 攤位資訊</div>
+          <div class="sr"><div><div class="sr-label">攤位名稱</div></div><input class="si" id="sShopName" type="text" maxlength="20"></div>
+          <div class="sr"><div><div class="sr-label">幣別符號</div></div><input class="si sm" id="sCurrency" type="text" maxlength="3"></div>
         </div>
         <div class="settings-section">
-          <div class="settings-section-title">🏷 折扣預設清單</div>
-          <div id="discPresetList" class="disc-preset-list"></div>
+          <div class="st-title">🏷 折扣預設清單</div>
+          <div id="discPresetList"></div>
           <button class="add-preset-btn" onclick="addDiscPreset()">＋ 新增折扣</button>
         </div>
         <div class="settings-section">
-          <div class="settings-section-title">📦 商品分類管理</div>
-          <div id="catManageList"></div>
-          <div style="font-size:11px;color:var(--text2);margin-top:8px">分類名稱可直接在新增/編輯商品時更改</div>
-        </div>
-        <div class="settings-section">
-          <div class="settings-section-title">💾 資料管理</div>
-          <div class="setting-row">
-            <div><div class="setting-label">匯出今日記錄</div><div class="setting-sub">下載 CSV 檔案</div></div>
+          <div class="st-title">💾 資料管理</div>
+          <div class="sr">
+            <div><div class="sr-label">匯出今日記錄</div><div class="sr-sub">下載 CSV 檔案</div></div>
             <button class="icon-btn" onclick="exportCSV()" title="匯出 CSV">📥</button>
           </div>
-          <div class="setting-row">
-            <div><div class="setting-label">清除今日記錄</div><div class="setting-sub">營業額歸零，商品設定保留</div></div>
-            <button class="danger-btn" onclick="confirmClearDaily()">清除</button>
+          <div class="sr">
+            <div><div class="sr-label">清除今日記錄</div><div class="sr-sub">營業額歸零，商品設定保留</div></div>
+            <button class="danger-btn" onclick="confirmAction('clearDaily','清除今日記錄','今日營業額與記錄將歸零，商品設定不受影響。',doClr)">清除</button>
           </div>
-          <div class="setting-row">
-            <div><div class="setting-label">重設所有資料</div><div class="setting-sub">恢復預設商品與設定</div></div>
-            <button class="danger-btn" onclick="confirmReset()">重設</button>
+          <div class="sr">
+            <div><div class="sr-label">重設所有資料</div><div class="sr-sub">恢復預設商品與設定</div></div>
+            <button class="danger-btn" onclick="confirmAction('reset','重設所有資料','所有商品、設定將恢復預設，歷史記錄保留。此動作無法復原。',doReset)">重設</button>
           </div>
         </div>
         <div style="padding:14px">
           <button class="save-settings-btn" onclick="saveSettings()">儲存設定</button>
-          <button class="clear-btn" style="margin-top:8px" onclick="switchPanel('order')">← 回到點單</button>
+          <button class="clear-btn" style="margin-top:7px" onclick="switchPanel('order')">← 回到點單</button>
         </div>
       </div>
     </div>
@@ -323,28 +337,19 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14
 </div>
 
 <!-- ITEM MODAL -->
-<div id="itemModal" class="modal-overlay" style="display:none" onclick="closeItemModalOutside(event)">
-  <div class="modal" onclick="event.stopPropagation()">
+<div id="itemModal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeItemModal()">
+  <div class="modal">
     <h3 id="itemModalTitle">新增商品</h3>
     <input type="hidden" id="eid">
-    <div class="modal-field">
-      <label>商品名稱</label>
-      <input id="iname" type="text" maxlength="14" placeholder="例：手工耳環">
-    </div>
-    <div class="modal-field">
-      <label>價格（元）</label>
-      <input id="iprice" type="number" min="1" placeholder="150">
-    </div>
-    <div class="modal-field">
-      <label>分類</label>
-      <input id="icat" type="text" maxlength="8" placeholder="例：耳環">
-    </div>
-    <div class="modal-field">
-      <label>圖示（選擇或直接輸入）</label>
-      <input id="iemoji" type="text" maxlength="2" placeholder="🌸" style="width:70px;margin-bottom:6px">
+    <div class="mf"><label>商品名稱</label><input id="iname" type="text" maxlength="16" placeholder="例：手工耳環"></div>
+    <div class="mf"><label>價格（元）</label><input id="iprice" type="number" min="1" placeholder="150"></div>
+    <div class="mf"><label>分類</label><input id="icat" type="text" maxlength="8" placeholder="例：耳環"></div>
+    <div class="mf">
+      <label>圖示</label>
+      <input id="iemoji" type="text" maxlength="2" placeholder="🌸" style="width:64px;margin-bottom:5px">
       <div class="emoji-row" id="emojiRow"></div>
     </div>
-    <div class="modal-btns">
+    <div class="mbtns">
       <button class="mbtn-cancel" onclick="closeItemModal()">取消</button>
       <button class="mbtn-del" id="mdelBtn" onclick="delItem()" style="display:none">🗑</button>
       <button class="mbtn-save" onclick="saveItem()">儲存</button>
@@ -354,12 +359,12 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14
 
 <!-- CONFIRM MODAL -->
 <div id="confirmModal" class="modal-overlay" style="display:none">
-  <div class="confirm-modal">
-    <h3 id="confirmTitle" style="font-size:15px;font-weight:700;margin-bottom:8px;color:var(--text)"></h3>
+  <div class="confirm-box">
+    <h3 id="confirmTitle"></h3>
     <p id="confirmMsg"></p>
     <div class="confirm-btns">
-      <button class="mbtn-cancel" style="flex:1;padding:9px;border-radius:10px;font-size:12px;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--text2);font-family:var(--font)" onclick="closeConfirm()">取消</button>
-      <button id="confirmOkBtn" style="flex:1;padding:9px;border-radius:10px;font-size:12px;cursor:pointer;border:none;background:var(--red-bg);color:var(--red);font-family:var(--font);font-weight:500">確認</button>
+      <button style="background:transparent;border:1px solid var(--border);color:var(--text2)" onclick="closeConfirm()">取消</button>
+      <button id="confirmOkBtn" style="background:var(--rbg);border:none;color:var(--red)">確認</button>
     </div>
   </div>
 </div>
@@ -367,441 +372,396 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14
 <div class="toast" id="toastEl"></div>
 
 <script>
-const SK = 'craft_pos_v3';
+const SK = 'pluddie_pos_v1';
 const TODAY = new Date().toLocaleDateString('zh-TW');
 document.getElementById('dateChip').textContent = TODAY;
 
-const EMOJIS = ['🌸','🌿','💎','🪡','🧵','🎨','📿','🌙','⭐','🦋','🌺','🍃','🧸','🎀','🍀','✨','🪷','🫧','🌻','💫'];
+const EMOJIS = ['🌸','🌿','💎','🪡','🧵','🎨','📿','🌙','⭐','🦋','🌺','🍃','🧸','🎀','🍀','✨','🪷','🫧','🌻','💫','🎁','🏷','📦','🎪','🧶','🖼','📮','🪭','🩷','🩵','🫶','🎐','🌈','🍬','🧁','🎠','🪄','🎋','🌷','🐝'];
+
+// ── HISTORICAL DATA from PLUDDIE_周邊.xlsx ──
+const HIST_DATA = {
+  "2023/11/25":{total:1550,cash:1250,linepay:300,items:[{name:"絨毛娃娃吊飾 (2款)",price:300,qty:2,sub:600},{name:"壓克力－吊飾 (12款)",price:50,qty:1,sub:50},{name:"壓克力－軟磁鐵 (5款)",price:50,qty:8,sub:400},{name:"A5透明貼紙 (2款)",price:80,qty:1,sub:80},{name:"明信片 (4款)",price:35,qty:3,sub:105},{name:"手工毛線杯墊",price:200,qty:1,sub:200}]},
+  "2023/11/26":{total:1100,cash:1020,linepay:80,items:[{name:"絨毛娃娃吊飾 (2款)",price:300,qty:2,sub:600},{name:"壓克力－吊飾 (12款)",price:50,qty:1,sub:50},{name:"A5透明貼紙 (2款)",price:80,qty:1,sub:80},{name:"明信片 (4款)",price:35,qty:5,sub:175},{name:"筆記本",price:200,qty:1,sub:200}]},
+  "2023/12/23":{total:4845,cash:3510,linepay:1335,items:[{name:"絨毛娃娃吊飾 (2款)",price:300,qty:2,sub:600},{name:"壓克力－軟磁鐵 (5款)",price:50,qty:1,sub:50},{name:"A5透明貼紙 (2款)",price:80,qty:1,sub:80},{name:"明信片 (4款)",price:35,qty:5,sub:175},{name:"筆記本",price:200,qty:2,sub:400},{name:"龍年紅包 3入",price:80,qty:2,sub:160},{name:"龍年春聯 4入",price:200,qty:1,sub:200},{name:"迷你春聯",price:50,qty:1,sub:50}]},
+  "2023/12/24":{total:3135,cash:2480,linepay:655,items:[{name:"龍年紅包 3入",price:80,qty:2,sub:160},{name:"迷你春聯",price:50,qty:2,sub:100}]},
+  "2024/01/20":{total:2295,cash:1315,linepay:980,items:[{name:"絨毛娃娃吊飾 (2款)",price:300,qty:2,sub:600},{name:"磁鐵勳章 (2款)",price:100,qty:1,sub:100}]},
+  "2024/01/21":{total:490,cash:0,linepay:490,items:[{name:"絨毛娃娃吊飾 (2款)",price:300,qty:2,sub:600},{name:"壓克力－軟磁鐵 (5款)",price:50,qty:4,sub:200},{name:"明信片 (4款)",price:35,qty:4,sub:140},{name:"手工毛線杯墊",price:200,qty:1,sub:200},{name:"紙膠帶",price:50,qty:1,sub:50},{name:"龍年紅包 3入",price:80,qty:2,sub:160},{name:"龍年春聯 4入",price:200,qty:1,sub:200},{name:"迷你春聯",price:50,qty:1,sub:50}]},
+  "2024/03/02":{total:1220,cash:695,linepay:525,items:[{name:"壓克力－吊飾 (12款)",price:50,qty:3,sub:150},{name:"明信片 (4款)",price:35,qty:1,sub:35},{name:"磁鐵勳章 (2款)",price:100,qty:1,sub:100},{name:"紙膠帶",price:50,qty:1,sub:50}]},
+  "2024/03/03":{total:945,cash:810,linepay:135,items:[{name:"絨毛娃娃吊飾 (2款)",price:300,qty:1,sub:300},{name:"手工毛線杯墊",price:200,qty:1,sub:200}]},
+  "2024/06/08":{total:2970,cash:2170,linepay:800,items:[{name:"絨毛娃娃吊飾 (2款)",price:300,qty:6,sub:1800},{name:"壓克力－吊飾 (12款)",price:50,qty:3,sub:150},{name:"明信片 (4款)",price:35,qty:3,sub:105},{name:"手工毛線杯墊",price:200,qty:2,sub:400},{name:"針織袋",price:300,qty:3,sub:900}]},
+  "2024/06/09":{total:2030,cash:1930,linepay:100,items:[{name:"絨毛娃娃吊飾 (2款)",price:300,qty:3,sub:900},{name:"A5透明貼紙 (2款)",price:80,qty:1,sub:80},{name:"A6透明貼紙 (3款)",price:60,qty:1,sub:60},{name:"手工毛線杯墊",price:200,qty:2,sub:400},{name:"針織袋",price:300,qty:2,sub:600},{name:"單張貼紙",price:20,qty:2,sub:40}]},
+  "2024/06/10":{total:1920,cash:1800,linepay:120,items:[{name:"絨毛娃娃吊飾 (2款)",price:300,qty:2,sub:600},{name:"壓克力－吊飾 (12款)",price:50,qty:3,sub:150},{name:"A6透明貼紙 (3款)",price:60,qty:2,sub:120},{name:"手工毛線杯墊",price:200,qty:2,sub:400},{name:"針織袋",price:300,qty:3,sub:900}]},
+  "2025/06/21":{total:1105,cash:1105,linepay:0,items:[{name:"絨毛娃娃吊飾 (2款)",price:300,qty:1,sub:300},{name:"壓克力－吊飾 (12款)",price:50,qty:3,sub:150},{name:"明信片 (4款)",price:35,qty:3,sub:105},{name:"針織袋",price:300,qty:1,sub:300},{name:"壓克力鏡子",price:200,qty:1,sub:200},{name:"扭蛋機",price:50,qty:1,sub:50}]},
+  "2025/06/22":{total:1190,cash:990,linepay:200,items:[{name:"壓克力－吊飾 (12款)",price:50,qty:4,sub:200},{name:"磁鐵勳章 (2款)",price:100,qty:1,sub:100},{name:"手工毛線杯墊",price:200,qty:2,sub:400},{name:"紙膠帶",price:50,qty:1,sub:50},{name:"壓克力鏡子",price:200,qty:1,sub:200},{name:"扭蛋機",price:50,qty:6,sub:300},{name:"焦慮小卡-抽卡機",price:35,qty:1,sub:35}]},
+  "2026/04/03":{total:1540,cash:705,linepay:835,items:[{name:"絨毛娃娃吊飾 (2款)",price:300,qty:4,sub:1200},{name:"壓克力－吊飾 (12款)",price:50,qty:1,sub:50},{name:"明信片 (4款)",price:35,qty:1,sub:35},{name:"陶瓷杯墊",price:100,qty:1,sub:100},{name:"扭蛋機",price:50,qty:3,sub:150},{name:"焦慮小卡-抽卡機",price:35,qty:3,sub:105}]},
+  "2026/04/04":{total:2655,cash:2270,linepay:385,items:[{name:"絨毛娃娃吊飾 (2款)",price:300,qty:1,sub:300},{name:"壓克力－吊飾 (12款)",price:50,qty:1,sub:50},{name:"壓克力－夾子 (4款)",price:50,qty:4,sub:200},{name:"A5透明貼紙 (2款)",price:80,qty:3,sub:240},{name:"A6透明貼紙 (3款)",price:60,qty:3,sub:180},{name:"明信片 (4款)",price:35,qty:12,sub:420},{name:"針織袋",price:300,qty:1,sub:300},{name:"壓克力鏡子",price:200,qty:1,sub:200},{name:"扭蛋機",price:50,qty:1,sub:50},{name:"焦慮小卡-抽卡機",price:35,qty:1,sub:35},{name:"餅乾別針",price:50,qty:2,sub:100},{name:"Fidget Clicker",price:100,qty:6,sub:600}]},
+  "2026/04/05":{total:1320,cash:1005,linepay:315,items:[{name:"壓克力－吊飾 (12款)",price:50,qty:3,sub:150},{name:"壓克力－夾子 (4款)",price:50,qty:1,sub:50},{name:"A6透明貼紙 (3款)",price:60,qty:2,sub:120},{name:"明信片 (4款)",price:35,qty:4,sub:140},{name:"磁鐵勳章 (2款)",price:100,qty:3,sub:300},{name:"扭蛋機",price:50,qty:1,sub:50},{name:"餅乾別針",price:50,qty:2,sub:100},{name:"Fidget Clicker",price:100,qty:2,sub:200}]},
+  "2026/04/06":{total:2410,cash:2410,linepay:0,items:[{name:"絨毛娃娃吊飾 (2款)",price:300,qty:2,sub:600},{name:"壓克力－吊飾 (12款)",price:50,qty:4,sub:200},{name:"壓克力－夾子 (4款)",price:50,qty:2,sub:100},{name:"A5透明貼紙 (2款)",price:80,qty:1,sub:80},{name:"A6透明貼紙 (3款)",price:60,qty:1,sub:60},{name:"明信片 (4款)",price:35,qty:1,sub:35},{name:"針織袋",price:300,qty:2,sub:600},{name:"扭蛋機",price:50,qty:3,sub:150},{name:"餅乾別針",price:50,qty:1,sub:50},{name:"Fidget Clicker",price:100,qty:4,sub:400}]},
+  "2026/04/30":{total:535,cash:485,linepay:50,items:[{name:"絨毛娃娃吊飾 (2款)",price:300,qty:1,sub:300},{name:"明信片 (4款)",price:35,qty:3,sub:105},{name:"扭蛋機",price:50,qty:2,sub:100},{name:"焦慮小卡-抽卡機",price:35,qty:1,sub:35}]},
+  "2026/05/01":{total:570,cash:470,linepay:100,items:[{name:"壓克力－吊飾 (12款)",price:50,qty:1,sub:50},{name:"A6透明貼紙 (3款)",price:60,qty:1,sub:60},{name:"明信片 (4款)",price:35,qty:3,sub:105},{name:"扭蛋機",price:50,qty:1,sub:50},{name:"焦慮小卡-抽卡機",price:35,qty:4,sub:140},{name:"Fidget Clicker",price:100,qty:3,sub:300}]},
+  "2026/05/02":{total:900,cash:600,linepay:300,items:[{name:"壓克力－吊飾 (12款)",price:50,qty:1,sub:50},{name:"A6透明貼紙 (3款)",price:60,qty:2,sub:120},{name:"焦慮小卡-抽卡機",price:35,qty:13,sub:455},{name:"餅乾別針",price:50,qty:1,sub:50},{name:"Fidget Clicker",price:100,qty:1,sub:100}]},
+  "2026/05/03":{total:550,cash:100,linepay:450,items:[{name:"明信片 (4款)",price:35,qty:6,sub:210},{name:"磁鐵勳章 (2款)",price:100,qty:1,sub:100},{name:"焦慮小卡-抽卡機",price:35,qty:6,sub:210}]}
+};
 
 const DEFAULT_STATE = {
-  shopName: '文創小攤',
-  currency: '$',
-  items: [
-    {id:1, name:'手工耳環', price:180, cat:'耳環', emoji:'💎'},
-    {id:2, name:'押花耳環', price:220, cat:'耳環', emoji:'🌸'},
-    {id:3, name:'陶土戒指', price:150, cat:'戒指', emoji:'🪡'},
-    {id:4, name:'編織戒指', price:120, cat:'戒指', emoji:'🧵'},
-    {id:5, name:'刺繡貼紙', price:50, cat:'文具', emoji:'🎨'},
-    {id:6, name:'手繪書籤', price:60, cat:'文具', emoji:'🌿'},
-    {id:7, name:'手提束口袋', price:280, cat:'包包', emoji:'🎀'},
-    {id:8, name:'插畫明信片', price:45, cat:'文具', emoji:'✨'},
+  shopName:'PLUDDIE 文創小攤', currency:'$',
+  items:[
+    {id:1,name:'絨毛娃娃吊飾',price:300,cat:'娃娃',emoji:'🧸'},
+    {id:2,name:'壓克力吊飾',price:50,cat:'壓克力',emoji:'💎'},
+    {id:3,name:'壓克力夾子',price:50,cat:'壓克力',emoji:'✨'},
+    {id:4,name:'壓克力軟磁鐵',price:50,cat:'壓克力',emoji:'🌸'},
+    {id:5,name:'A5透明貼紙',price:80,cat:'貼紙',emoji:'🎨'},
+    {id:6,name:'A6透明貼紙',price:60,cat:'貼紙',emoji:'🎨'},
+    {id:7,name:'明信片',price:35,cat:'紙品',emoji:'📮'},
+    {id:8,name:'磁鐵勳章',price:100,cat:'其他',emoji:'⭐'},
+    {id:9,name:'手工毛線杯墊',price:200,cat:'其他',emoji:'🧶'},
+    {id:10,name:'針織袋',price:300,cat:'其他',emoji:'🎀'},
+    {id:11,name:'扭蛋機',price:50,cat:'其他',emoji:'🪄'},
+    {id:12,name:'焦慮小卡-抽卡機',price:35,cat:'其他',emoji:'🃏'},
+    {id:13,name:'餅乾別針',price:50,cat:'其他',emoji:'🍬'},
+    {id:14,name:'Fidget Clicker',price:100,cat:'其他',emoji:'🎠'},
+    {id:15,name:'壓克力鏡子',price:200,cat:'壓克力',emoji:'🌙'},
+    {id:16,name:'陶瓷杯墊',price:100,cat:'其他',emoji:'🌿'},
   ],
-  discPresets: [
-    {label:'9折', value:90},
-    {label:'85折', value:85},
-    {label:'8折', value:80},
-    {label:'7折', value:70},
-    {label:'5折', value:50},
-  ],
-  cart: {},
-  disc: {label:null, rate:1},
-  daily: {date: TODAY, revenue:0, discSaved:0, count:0, log:[]}
+  discPresets:[{label:'9折',value:90},{label:'85折',value:85},{label:'8折',value:80},{label:'7折',value:70},{label:'5折',value:50}],
+  cart:{}, disc:{label:null,rate:1},
+  daily:{date:TODAY,revenue:0,discSaved:0,count:0,log:[]}
 };
 
 let S = JSON.parse(JSON.stringify(DEFAULT_STATE));
 let activeTab = '全部';
 let activePanel = 'order';
+let selectedHistDate = null;
 
 function load() {
   try {
-    const raw = localStorage.getItem(SK);
-    if (!raw) return;
+    const raw = localStorage.getItem(SK); if(!raw) return;
     const d = JSON.parse(raw);
-    if (d.shopName) S.shopName = d.shopName;
-    if (d.currency) S.currency = d.currency;
-    if (d.items) S.items = d.items;
-    if (d.discPresets) S.discPresets = d.discPresets;
-    if (d.daily && d.daily.date === TODAY) S.daily = d.daily;
-  } catch(e) {}
+    if(d.shopName) S.shopName=d.shopName;
+    if(d.currency) S.currency=d.currency;
+    if(d.items) S.items=d.items;
+    if(d.discPresets) S.discPresets=d.discPresets;
+    if(d.daily && d.daily.date===TODAY) S.daily=d.daily;
+  } catch(e){}
 }
+function save(){try{localStorage.setItem(SK,JSON.stringify({shopName:S.shopName,currency:S.currency,items:S.items,discPresets:S.discPresets,daily:S.daily}));}catch(e){}}
 
-function save() {
-  try {
-    localStorage.setItem(SK, JSON.stringify({
-      shopName: S.shopName, currency: S.currency,
-      items: S.items, discPresets: S.discPresets, daily: S.daily
-    }));
-  } catch(e) {}
-}
+const cur = () => S.currency||'$';
+const cats = () => ['全部',...new Set(S.items.map(i=>i.cat))];
+const filtered = () => activeTab==='全部' ? S.items : S.items.filter(i=>i.cat===activeTab);
 
-function cats() { return ['全部', ...new Set(S.items.map(i => i.cat))]; }
-function filtered() { return activeTab === '全部' ? S.items : S.items.filter(i => i.cat === activeTab); }
-const cur = () => S.currency || '$';
-
-// ── RENDER ──
 function rAll() {
-  document.getElementById('shopNameDisplay').textContent = S.shopName || '文創小攤';
+  document.getElementById('shopNameDisplay').textContent = S.shopName||'文創小攤';
   rTabs(); rGrid(); rCart(); rStats();
-  if (activePanel === 'log') rLog();
-  if (activePanel === 'summary') rSummary();
-  if (activePanel === 'settings') rSettings();
+  if(activePanel==='log') rLog();
+  if(activePanel==='hist') rHist();
+  if(activePanel==='summary') rSummary();
+  if(activePanel==='settings') rSettings();
 }
 
 function rTabs() {
   document.getElementById('tabsEl').innerHTML =
-    cats().map(c => `<div class="tab ${c===activeTab?'on':''}" onclick="setTab('${c}')">${c}</div>`).join('') +
-    `<div class="tab" style="border-style:dashed" onclick="openAddItem()">＋ 新增</div>`;
+    cats().map(c=>`<div class="tab ${c===activeTab?'on':''}" onclick="setTab('${c}')">${c}</div>`).join('') +
+    `<div class="tab" style="border-style:dashed" onclick="openAddItem()">＋</div>`;
 }
-
-function setTab(c) { activeTab = c; rTabs(); rGrid(); }
+function setTab(c){activeTab=c;rTabs();rGrid();}
 
 function rGrid() {
-  const items = filtered();
   document.getElementById('itemsGrid').innerHTML =
-    items.map(item => `
+    filtered().map(item=>`
       <div class="item-card" onclick="addCart(${item.id})">
         <span class="ic-edit-btn" onclick="event.stopPropagation();openEditItem(${item.id})">✏️</span>
         <span class="ic-emoji">${item.emoji||'🎁'}</span>
         <span class="ic-name">${item.name}</span>
         <span class="ic-price">${cur()}${item.price}</span>
       </div>`).join('') +
-    `<div class="add-card" onclick="openAddItem()">
-      <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" stroke="currentColor" stroke-width="1.2"/><path d="M10 6v8M6 10h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-      <span>新增商品</span>
-    </div>`;
+    `<div class="add-card" onclick="openAddItem()"><span style="font-size:20px">＋</span><span>新增</span></div>`;
 }
 
-function addCart(id) { S.cart[id] = (S.cart[id]||0) + 1; rCart(); }
-function changeQty(id, d) {
-  const n = (S.cart[id]||0) + d;
-  if (n <= 0) delete S.cart[id]; else S.cart[id] = n;
-  rCart();
-}
-function clearCart() { S.cart = {}; S.disc = {label:null,rate:1}; document.querySelectorAll('.dbtn').forEach(b=>b.classList.remove('on')); document.getElementById('customDiscInput').value=''; document.getElementById('freeToggle').checked=false; rCart(); }
+function addCart(id){S.cart[id]=(S.cart[id]||0)+1;rCart();}
+function changeQty(id,d){const n=(S.cart[id]||0)+d;if(n<=0)delete S.cart[id];else S.cart[id]=n;rCart();}
+function clearCart(){S.cart={};S.disc={label:null,rate:1};document.querySelectorAll('.dbtn').forEach(b=>b.classList.remove('on'));document.getElementById('customDiscInput').value='';document.getElementById('freeToggle').checked=false;rCart();}
 
 function rCart() {
   const keys = Object.keys(S.cart);
   const el = document.getElementById('cartScroll');
-  if (!keys.length) {
-    el.innerHTML = '<div class="empty-cart"><span class="empty-cart-icon">🛒</span>點選左方商品加入訂單</div>';
-    document.getElementById('checkoutBtn').disabled = true;
-    document.getElementById('totalVal').textContent = cur()+'0';
-    document.getElementById('subtotalLine').style.display = 'none';
-    document.getElementById('discLine').style.display = 'none';
-    return;
-  }
-  let sub = 0;
-  el.innerHTML = keys.map(id => {
-    const item = S.items.find(i => i.id == id); if(!item) return '';
-    const qty = S.cart[id]; const s = item.price * qty; sub += s;
-    return `<div class="cart-row">
-      <span class="cart-name">${item.emoji||''} ${item.name}</span>
-      <div class="qty-ctrl">
-        <button class="qbtn" onclick="changeQty(${id},-1)">−</button>
-        <span class="qnum">${qty}</span>
-        <button class="qbtn" onclick="changeQty(${id},1)">+</button>
-      </div>
-      <span class="cart-sub">${cur()}${s}</span>
-    </div>`;
-  }).join('');
-  const total = S.disc.rate === 0 ? 0 : Math.round(sub * S.disc.rate);
-  const saved = sub - total;
-  document.getElementById('totalVal').textContent = cur() + total;
-  document.getElementById('checkoutBtn').disabled = false;
-  if (S.disc.rate < 1) {
-    document.getElementById('subtotalLine').style.display = 'flex';
-    document.getElementById('subtotalVal').textContent = cur() + sub;
-    document.getElementById('discLine').style.display = 'flex';
-    document.getElementById('discLabel').textContent = (S.disc.label||'折扣') + ' 優惠';
-    document.getElementById('discVal').textContent = '-' + cur() + saved;
-  } else if (S.disc.rate === 0) {
-    document.getElementById('subtotalLine').style.display = 'flex';
-    document.getElementById('subtotalVal').textContent = cur() + sub;
-    document.getElementById('discLine').style.display = 'flex';
-    document.getElementById('discLabel').textContent = '免費贈送';
-    document.getElementById('discVal').textContent = '-' + cur() + sub;
-  } else {
-    document.getElementById('subtotalLine').style.display = 'none';
-    document.getElementById('discLine').style.display = 'none';
-  }
+  if(!keys.length){el.innerHTML='<div class="empty-cart">🛒<br>點選左方商品加入訂單</div>';document.getElementById('checkoutBtn').disabled=true;document.getElementById('totalVal').textContent=cur()+'0';document.getElementById('subtotalLine').style.display='none';document.getElementById('discLine').style.display='none';return;}
+  let sub=0;
+  el.innerHTML=keys.map(id=>{const item=S.items.find(i=>i.id==id);if(!item)return'';const qty=S.cart[id];const s=item.price*qty;sub+=s;
+    return`<div class="cart-row"><span class="cart-name">${item.emoji||''} ${item.name}</span><div class="qty-ctrl"><button class="qbtn" onclick="changeQty(${id},-1)">−</button><span class="qnum">${qty}</span><button class="qbtn" onclick="changeQty(${id},1)">+</button></div><span class="cart-sub">${cur()}${s}</span></div>`;}).join('');
+  const total=S.disc.rate===0?0:Math.round(sub*S.disc.rate);
+  const saved=sub-total;
+  document.getElementById('totalVal').textContent=cur()+total;
+  document.getElementById('checkoutBtn').disabled=false;
+  if(S.disc.rate<1||S.disc.rate===0){
+    document.getElementById('subtotalLine').style.display='flex';document.getElementById('subtotalVal').textContent=cur()+sub;
+    document.getElementById('discLine').style.display='flex';
+    document.getElementById('discLabel').textContent=(S.disc.rate===0?'免費贈送':(S.disc.label||'折扣')+' 優惠');
+    document.getElementById('discVal').textContent='-'+cur()+saved;
+  }else{document.getElementById('subtotalLine').style.display='none';document.getElementById('discLine').style.display='none';}
 }
 
-function rStats() {
-  document.getElementById('revVal').textContent = cur() + S.daily.revenue;
-  document.getElementById('cntVal').textContent = S.daily.count + ' 筆';
-}
+function rStats(){document.getElementById('revVal').textContent=cur()+S.daily.revenue;document.getElementById('cntVal').textContent=S.daily.count+' 筆';}
 
-function rPresetDisc() {
-  document.getElementById('presetDiscEl').innerHTML =
-    S.discPresets.map(p =>
-      `<div class="dbtn" onclick="setDisc('${p.label}',${p.value/100})">${p.label}</div>`
-    ).join('') +
+function rPresetDisc(){
+  document.getElementById('presetDiscEl').innerHTML=
+    S.discPresets.map(p=>`<div class="dbtn" onclick="setDisc('${p.label}',${p.value/100})">${p.label}</div>`).join('')+
     `<div class="dbtn" onclick="setDisc(null,1)" style="border-style:dashed">不折</div>`;
 }
 
-function setDisc(label, rate) {
-  document.querySelectorAll('.dbtn').forEach(b => b.classList.remove('on'));
-  document.getElementById('freeToggle').checked = false;
-  if (label) {
-    S.disc = {label, rate};
-    event.target.classList.add('on');
-  } else {
-    S.disc = {label:null, rate:1};
-    document.getElementById('customDiscInput').value = '';
-  }
+function setDisc(label,rate){
+  document.querySelectorAll('.dbtn').forEach(b=>b.classList.remove('on'));
+  document.getElementById('freeToggle').checked=false;
+  if(label){S.disc={label,rate};event.target.classList.add('on');}
+  else{S.disc={label:null,rate:1};document.getElementById('customDiscInput').value='';}
+  rCart();
+}
+function applyCustomDisc(v){
+  const n=parseInt(v);document.getElementById('freeToggle').checked=false;
+  if(n>=1&&n<=99){S.disc={label:n+'折',rate:n/100};document.querySelectorAll('.dbtn').forEach(b=>b.classList.remove('on'));}
+  else if(!v){S.disc={label:null,rate:1};}
+  rCart();
+}
+function toggleFree(checked){
+  if(checked){S.disc={label:'免費',rate:0};document.querySelectorAll('.dbtn').forEach(b=>b.classList.remove('on'));document.getElementById('customDiscInput').value='';}
+  else{S.disc={label:null,rate:1};}
   rCart();
 }
 
-function applyCustomDisc(v) {
-  const n = parseInt(v);
-  document.getElementById('freeToggle').checked = false;
-  if (n >= 1 && n <= 99) {
-    S.disc = {label: n+'折', rate: n/100};
-    document.querySelectorAll('.dbtn').forEach(b => b.classList.remove('on'));
-  } else if (!v) { S.disc = {label:null, rate:1}; }
-  rCart();
+function checkout(){
+  const keys=Object.keys(S.cart);if(!keys.length)return;
+  let sub=0;
+  const names=keys.map(id=>{const item=S.items.find(i=>i.id==id);const qty=S.cart[id];sub+=item.price*qty;return qty>1?`${item.name}×${qty}`:item.name;});
+  const total=S.disc.rate===0?0:Math.round(sub*S.disc.rate);
+  const saved=sub-total;
+  const now=new Date();
+  const time=now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
+  S.daily.revenue+=total;S.daily.count+=1;
+  if(saved>0)S.daily.discSaved=(S.daily.discSaved||0)+saved;
+  S.daily.log.push({items:names.join('、'),time,amt:total,sub,saved,disc:S.disc.label});
+  S.cart={};S.disc={label:null,rate:1};
+  document.querySelectorAll('.dbtn').forEach(b=>b.classList.remove('on'));
+  document.getElementById('customDiscInput').value='';document.getElementById('freeToggle').checked=false;
+  save();showToast('結帳完成 +'+cur()+total+(saved>0?' 省'+cur()+saved:''));rAll();
 }
 
-function toggleFree(checked) {
-  if (checked) {
-    S.disc = {label:'免費', rate:0};
-    document.querySelectorAll('.dbtn').forEach(b => b.classList.remove('on'));
-    document.getElementById('customDiscInput').value = '';
-  } else {
-    S.disc = {label:null, rate:1};
-  }
-  rCart();
-}
-
-function checkout() {
-  const keys = Object.keys(S.cart); if (!keys.length) return;
-  let sub = 0;
-  const names = keys.map(id => {
-    const item = S.items.find(i => i.id == id); const qty = S.cart[id];
-    sub += item.price * qty;
-    return qty > 1 ? `${item.name}×${qty}` : item.name;
-  });
-  const total = S.disc.rate === 0 ? 0 : Math.round(sub * S.disc.rate);
-  const saved = sub - total;
-  const now = new Date();
-  const time = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
-  S.daily.revenue += total;
-  S.daily.count += 1;
-  if (saved > 0) S.daily.discSaved = (S.daily.discSaved||0) + saved;
-  S.daily.log.push({items: names.join('、'), time, amt: total, sub, saved, disc: S.disc.label});
-  S.cart = {}; S.disc = {label:null, rate:1};
-  document.querySelectorAll('.dbtn').forEach(b => b.classList.remove('on'));
-  document.getElementById('customDiscInput').value = '';
-  document.getElementById('freeToggle').checked = false;
-  save();
-  showToast('結帳完成 +' + cur() + total + (saved > 0 ? '（省'+cur()+saved+'）' : ''));
-  rAll();
-}
-
-// ── LOG ──
-function rLog() {
-  const el = document.getElementById('logWrap');
-  if (!S.daily.log.length) { el.innerHTML = '<div class="log-empty">尚無交易記錄</div>'; return; }
-  el.innerHTML = [...S.daily.log].reverse().map((l, i, arr) => {
-    const no = arr.length - i;
-    return `<div class="log-item">
-      <div class="log-top">
-        <span class="log-no">#${no}</span>
-        <div class="log-right">
-          ${l.disc ? `<span class="log-disc-badge">${l.disc}</span>` : ''}
-          <span class="log-amt">${cur()}${l.amt}</span>
-          <span class="log-time">${l.time}</span>
-        </div>
-      </div>
+function rLog(){
+  const el=document.getElementById('logWrap');
+  if(!S.daily.log.length){el.innerHTML='<div class="log-empty">尚無今日交易記錄</div>';return;}
+  el.innerHTML=[...S.daily.log].reverse().map((l,i,arr)=>{
+    const no=arr.length-i;
+    return`<div class="log-item">
+      <div class="log-top"><span class="log-no">#${no}</span><div class="log-right">${l.disc?`<span class="log-disc-badge">${l.disc}</span>`:''}<span class="log-amt">${cur()}${l.amt}</span><span class="log-time">${l.time}</span></div></div>
       <div class="log-items-text">${l.items}${l.saved>0?' · 省'+cur()+l.saved:''}</div>
-    </div>`;
-  }).join('');
+    </div>`;}).join('');
 }
 
-// ── SUMMARY ──
-function rSummary() {
-  const log = S.daily.log;
-  const avg = log.length ? Math.round(S.daily.revenue / log.length) : 0;
-  const discSaved = S.daily.discSaved || 0;
-  const topMap = {};
-  log.forEach(l => l.items.split('、').forEach(s => {
-    const m = s.match(/^(.+?)(?:×(\d+))?$/); if(!m) return;
-    topMap[m[1]] = (topMap[m[1]]||0) + (m[2] ? parseInt(m[2]) : 1);
-  }));
-  const topItems = Object.entries(topMap).sort((a,b) => b[1]-a[1]).slice(0,5);
-  document.getElementById('summaryWrap').innerHTML = `
-    <div class="sum-section-title">今日概覽</div>
+// ── HISTORY ──
+function rHistDateGrid(){
+  // Group by year
+  const byYear = {};
+  Object.keys(HIST_DATA).forEach(d=>{
+    const yr = d.split('/')[0];
+    if(!byYear[yr]) byYear[yr]=[];
+    byYear[yr].push(d);
+  });
+  // Also add today's data if has records
+  if(S.daily.log.length){
+    const yr=TODAY.split('/')[0];
+    if(!byYear[yr]) byYear[yr]=[];
+    if(!byYear[yr].includes(TODAY)) byYear[yr].push(TODAY);
+  }
+  const el=document.getElementById('histDateGrid');
+  el.innerHTML=Object.keys(byYear).sort().map(yr=>`
+    <div class="hist-year-group">
+      <div class="hist-year-label">${yr}</div>
+      <div class="hist-date-pills">${byYear[yr].sort().map(d=>{
+        const md=d.split('/').slice(1).join('/');
+        return`<div class="date-pill ${d===selectedHistDate?'on':''}" onclick="selectHistDate('${d}')">${md}</div>`;
+      }).join('')}</div>
+    </div>`).join('');
+}
+
+function selectHistDate(date){
+  selectedHistDate=date;
+  rHistDateGrid();
+  const el=document.getElementById('histContent');
+  let data=null;
+  if(date===TODAY && S.daily.log.length){
+    // Show today's live data
+    data={total:S.daily.revenue,cash:null,linepay:null,items:[],isToday:true};
+  } else {
+    data=HIST_DATA[date];
+  }
+  if(!data){el.innerHTML='<div class="hist-empty">此日無記錄</div>';return;}
+  const isToday=data.isToday;
+  let html=`<div class="hist-day-header"><span class="hist-day-date">📅 ${date}</span><span class="hist-day-total">${cur()}${data.total}</span></div>`;
+  if(isToday){
+    // Show from log
+    html+=[...S.daily.log].reverse().map((l,i,arr)=>{
+      const no=arr.length-i;
+      return`<div style="padding:7px 0;border-bottom:1px solid var(--border);font-size:12px">
+        <div style="display:flex;justify-content:space-between;margin-bottom:2px"><span style="color:var(--text3)">#${no} ${l.time}</span><span style="font-weight:700;color:var(--green)">${cur()}${l.amt}</span></div>
+        <div style="color:var(--text2)">${l.items}</div>
+      </div>`;}).join('');
+  } else {
+    html+=data.items.map(it=>`
+      <div class="hist-item-row">
+        <span class="hist-item-name">${it.name}</span>
+        <span class="hist-item-qty">×${it.qty}</span>
+        <span class="hist-item-sub">${cur()}${it.sub}</span>
+      </div>`).join('');
+    if(data.cash!==null||data.linepay!==null){
+      html+=`<div class="hist-pay-row">`;
+      if(data.cash>0) html+=`<span class="pay-badge cash">現金 ${cur()}${data.cash}</span>`;
+      if(data.linepay>0) html+=`<span class="pay-badge lp">Line Pay ${cur()}${data.linepay}</span>`;
+      html+=`</div>`;
+    }
+  }
+  el.innerHTML=html;
+}
+
+function rHist(){rHistDateGrid();}
+
+// ── SUMMARY (all-time) ──
+function rSummary(){
+  // Merge hist + today
+  const allDays = {...HIST_DATA};
+  if(S.daily.log.length && S.daily.revenue>0){
+    allDays[TODAY]={total:S.daily.revenue,cash:null,linepay:null,items:[]};// simplified
+  }
+  const totalRevAll = Object.values(allDays).reduce((a,d)=>a+d.total,0);
+  const totalDays = Object.keys(allDays).length;
+  const avgDay = totalDays ? Math.round(totalRevAll/totalDays) : 0;
+  // Top items across all history
+  const topMap={};
+  Object.values(HIST_DATA).forEach(d=>d.items.forEach(it=>{topMap[it.name]=(topMap[it.name]||0)+it.qty;}));
+  if(S.daily.log.length){
+    S.daily.log.forEach(l=>l.items.split('、').forEach(s=>{
+      const m=s.match(/^(.+?)(?:×(\d+))?$/);if(!m)return;
+      topMap[m[1]]=(topMap[m[1]]||0)+(m[2]?parseInt(m[2]):1);
+    }));
+  }
+  const topItems=Object.entries(topMap).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  // Today stats
+  const todayRev=S.daily.revenue;
+  const todayAvg=S.daily.count?Math.round(todayRev/S.daily.count):0;
+
+  document.getElementById('summaryWrap').innerHTML=`
+    <div class="sum-sec-title">今日</div>
     <div class="sum-cards">
-      <div class="sum-card"><span class="sum-card-label">總營業額</span><span class="sum-card-val green">${cur()}${S.daily.revenue}</span></div>
-      <div class="sum-card"><span class="sum-card-label">交易筆數</span><span class="sum-card-val">${S.daily.count} 筆</span></div>
-      <div class="sum-card"><span class="sum-card-label">平均客單價</span><span class="sum-card-val">${cur()}${avg}</span></div>
-      <div class="sum-card"><span class="sum-card-label">折扣讓利</span><span class="sum-card-val amber">${cur()}${discSaved}</span></div>
+      <div class="sum-card"><span class="sc-label">今日營業額</span><span class="sc-val" style="color:var(--green)">${cur()}${todayRev}</span></div>
+      <div class="sum-card"><span class="sc-label">今日筆數</span><span class="sc-val">${S.daily.count} 筆</span></div>
+      <div class="sum-card"><span class="sc-label">今日客單價</span><span class="sc-val">${cur()}${todayAvg}</span></div>
+      <div class="sum-card"><span class="sc-label">今日讓利</span><span class="sc-val" style="color:var(--amber)">${cur()}${S.daily.discSaved||0}</span></div>
     </div>
-    <div class="sum-section-title">熱銷商品 TOP 5</div>
-    ${topItems.length ? topItems.map(([name,qty],i) =>
-      `<div class="top-item-row">
-        <div class="top-rank ${i===0?'r1':''}">${i+1}</div>
+    <div class="sum-sec-title">歷史總覽（全 ${totalDays} 天）</div>
+    <div class="sum-cards">
+      <div class="sum-card"><span class="sc-label">總營業額</span><span class="sc-val" style="color:var(--green)">${cur()}${totalRevAll.toLocaleString()}</span></div>
+      <div class="sum-card"><span class="sc-label">攤位天數</span><span class="sc-val">${totalDays} 天</span></div>
+      <div class="sum-card"><span class="sc-label">日均營業額</span><span class="sc-val">${cur()}${avgDay.toLocaleString()}</span></div>
+    </div>
+    <div class="sum-sec-title">全時期熱銷 TOP 8</div>
+    ${topItems.map(([name,qty],i)=>`
+      <div class="top-item-row">
+        <div class="top-rank ${i===0?'r1':i===1?'r2':i===2?'r3':''}">${i+1}</div>
         <span class="top-item-name">${name}</span>
         <span class="top-item-qty">${qty} 件</span>
-      </div>`).join('')
-    : '<div style="font-size:12px;color:var(--text3);padding:8px 0">尚無銷售記錄</div>'}`;
+      </div>`).join('')}`;
 }
 
 // ── SETTINGS ──
-function rSettings() {
-  document.getElementById('sShopName').value = S.shopName || '';
-  document.getElementById('sCurrency').value = S.currency || '$';
-  // disc presets
-  document.getElementById('discPresetList').innerHTML = S.discPresets.map((p,i) =>
-    `<div class="disc-preset-item">
-      <input class="dpi-label-input" value="${p.label}" oninput="S.discPresets[${i}].label=this.value" placeholder="9折">
-      <input class="dpi-input" type="number" value="${p.value}" min="1" max="99" oninput="S.discPresets[${i}].value=parseInt(this.value)||0" placeholder="90">
+function rSettings(){
+  document.getElementById('sShopName').value=S.shopName||'';
+  document.getElementById('sCurrency').value=S.currency||'$';
+  document.getElementById('discPresetList').innerHTML=S.discPresets.map((p,i)=>`
+    <div class="disc-preset-item">
+      <input class="dpi-lin" value="${p.label}" oninput="S.discPresets[${i}].label=this.value">
+      <input class="dpi-in" type="number" value="${p.value}" min="1" max="99" oninput="S.discPresets[${i}].value=parseInt(this.value)||0">
       <span style="font-size:11px;color:var(--text2)">折</span>
       <button class="dpi-del" onclick="removeDiscPreset(${i})">×</button>
     </div>`).join('');
-  // cats
-  const cats_list = [...new Set(S.items.map(i=>i.cat))];
-  document.getElementById('catManageList').innerHTML = cats_list.length ?
-    cats_list.map(c => `<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);font-size:13px"><span>${c}</span><span style="font-size:11px;color:var(--text3)">${S.items.filter(i=>i.cat===c).length} 件商品</span></div>`).join('') :
-    '<div style="font-size:12px;color:var(--text3)">尚無分類</div>';
 }
-
-function addDiscPreset() {
-  S.discPresets.push({label:'新折扣', value:80});
-  rSettings();
-}
-function removeDiscPreset(i) {
-  S.discPresets.splice(i,1);
-  rSettings();
-}
-
-function saveSettings() {
-  S.shopName = document.getElementById('sShopName').value.trim() || '文創小攤';
-  S.currency = document.getElementById('sCurrency').value.trim() || '$';
-  save();
-  rAll();
-  rPresetDisc();
-  showToast('設定已儲存 ✓');
+function addDiscPreset(){S.discPresets.push({label:'新折扣',value:80});rSettings();}
+function removeDiscPreset(i){S.discPresets.splice(i,1);rSettings();}
+function saveSettings(){
+  S.shopName=document.getElementById('sShopName').value.trim()||'文創小攤';
+  S.currency=document.getElementById('sCurrency').value.trim()||'$';
+  save();rAll();rPresetDisc();showToast('設定已儲存 ✓');
 }
 
 // ── ITEM MODAL ──
-function openAddItem() {
-  document.getElementById('itemModalTitle').textContent = '新增商品';
-  document.getElementById('eid').value = '';
-  document.getElementById('iname').value = '';
-  document.getElementById('iprice').value = '';
-  document.getElementById('icat').value = activeTab === '全部' ? '' : activeTab;
-  document.getElementById('iemoji').value = '';
-  document.getElementById('mdelBtn').style.display = 'none';
-  renderEmojiRow(null);
-  document.getElementById('itemModal').style.display = 'flex';
+function openAddItem(){
+  document.getElementById('itemModalTitle').textContent='新增商品';document.getElementById('eid').value='';
+  document.getElementById('iname').value='';document.getElementById('iprice').value='';
+  document.getElementById('icat').value=activeTab==='全部'?'':activeTab;document.getElementById('iemoji').value='';
+  document.getElementById('mdelBtn').style.display='none';renderEmojiRow(null);document.getElementById('itemModal').style.display='flex';
 }
-function openEditItem(id) {
-  const item = S.items.find(i => i.id === id); if(!item) return;
-  document.getElementById('itemModalTitle').textContent = '編輯商品';
-  document.getElementById('eid').value = id;
-  document.getElementById('iname').value = item.name;
-  document.getElementById('iprice').value = item.price;
-  document.getElementById('icat').value = item.cat;
-  document.getElementById('iemoji').value = item.emoji||'';
-  document.getElementById('mdelBtn').style.display = 'block';
-  renderEmojiRow(item.emoji);
-  document.getElementById('itemModal').style.display = 'flex';
+function openEditItem(id){
+  const item=S.items.find(i=>i.id===id);if(!item)return;
+  document.getElementById('itemModalTitle').textContent='編輯商品';document.getElementById('eid').value=id;
+  document.getElementById('iname').value=item.name;document.getElementById('iprice').value=item.price;
+  document.getElementById('icat').value=item.cat;document.getElementById('iemoji').value=item.emoji||'';
+  document.getElementById('mdelBtn').style.display='block';renderEmojiRow(item.emoji);document.getElementById('itemModal').style.display='flex';
 }
-function renderEmojiRow(sel) {
-  document.getElementById('emojiRow').innerHTML = EMOJIS.map(e =>
-    `<div class="emoji-opt ${e===sel?'sel':''}" onclick="selectEmoji('${e}')">${e}</div>`).join('');
+function renderEmojiRow(sel){
+  document.getElementById('emojiRow').innerHTML=EMOJIS.map(e=>`<div class="emoji-opt ${e===sel?'sel':''}" onclick="selectEmoji('${e}')">${e}</div>`).join('');
 }
-function selectEmoji(e) {
-  document.getElementById('iemoji').value = e;
-  document.querySelectorAll('.emoji-opt').forEach(el => el.classList.toggle('sel', el.textContent===e));
+function selectEmoji(e){document.getElementById('iemoji').value=e;document.querySelectorAll('.emoji-opt').forEach(el=>el.classList.toggle('sel',el.textContent===e));}
+function closeItemModal(){document.getElementById('itemModal').style.display='none';}
+function saveItem(){
+  const name=document.getElementById('iname').value.trim();
+  const price=parseInt(document.getElementById('iprice').value);
+  const cat=document.getElementById('icat').value.trim()||'其他';
+  const emoji=document.getElementById('iemoji').value.trim()||'🎁';
+  if(!name||!price||price<1){showToast('請填寫名稱與有效價格');return;}
+  const eid=document.getElementById('eid').value;
+  if(eid){const item=S.items.find(i=>i.id==eid);if(item){item.name=name;item.price=price;item.cat=cat;item.emoji=emoji;}}
+  else S.items.push({id:Date.now(),name,price,cat,emoji});
+  save();closeItemModal();rAll();
 }
-function closeItemModal() { document.getElementById('itemModal').style.display = 'none'; }
-function closeItemModalOutside(e) { if(e.target===document.getElementById('itemModal')) closeItemModal(); }
-function saveItem() {
-  const name = document.getElementById('iname').value.trim();
-  const price = parseInt(document.getElementById('iprice').value);
-  const cat = document.getElementById('icat').value.trim() || '其他';
-  const emoji = document.getElementById('iemoji').value.trim() || '🎁';
-  if (!name || !price || price < 1) { showToast('請填寫名稱與有效價格'); return; }
-  const eid = document.getElementById('eid').value;
-  if (eid) {
-    const item = S.items.find(i => i.id == eid);
-    if (item) { item.name=name; item.price=price; item.cat=cat; item.emoji=emoji; }
-  } else {
-    S.items.push({id: Date.now(), name, price, cat, emoji});
-  }
-  save(); closeItemModal(); rAll();
-}
-function delItem() {
-  const eid = document.getElementById('eid').value; if(!eid) return;
-  S.items = S.items.filter(i => i.id != eid);
-  delete S.cart[eid];
-  save(); closeItemModal(); rAll();
-}
+function delItem(){const eid=document.getElementById('eid').value;if(!eid)return;S.items=S.items.filter(i=>i.id!=eid);delete S.cart[eid];save();closeItemModal();rAll();}
 
 // ── PANEL SWITCHING ──
-function switchPanel(p) {
-  ['order','log','summary','settings'].forEach(x => {
-    document.getElementById('panel-'+x).style.display = 'none';
-    const t = document.getElementById('ptab-'+x); if(t) t.classList.remove('on');
+function switchPanel(p){
+  ['order','log','hist','summary','settings'].forEach(x=>{
+    document.getElementById('panel-'+x).style.display='none';
+    const t=document.getElementById('ptab-'+x);if(t)t.classList.remove('on');
   });
-  document.getElementById('panel-'+p).style.display = 'flex';
-  const pt = document.getElementById('ptab-'+p); if(pt) pt.classList.add('on');
-  activePanel = p;
-  if (p==='log') rLog();
-  if (p==='summary') rSummary();
-  if (p==='settings') rSettings();
-}
-function switchView(v) {
-  if (v === 'settings') {
-    switchPanel('settings');
-    document.getElementById('ptab-settings').style.display = 'flex';
-    document.getElementById('btn-settings').classList.add('active');
-  }
+  document.getElementById('panel-'+p).style.display='flex';
+  const pt=document.getElementById('ptab-'+p);if(pt){pt.classList.add('on');pt.style.display='';}
+  document.getElementById('btn-settings').classList.toggle('active',p==='settings');
+  activePanel=p;
+  if(p==='log')rLog();
+  if(p==='hist')rHist();
+  if(p==='summary')rSummary();
+  if(p==='settings')rSettings();
 }
 
 // ── DATA MANAGEMENT ──
-function exportCSV() {
-  if (!S.daily.log.length) { showToast('尚無記錄可匯出'); return; }
-  const rows = [['筆號','時間','商品','小計','折扣','實收']];
-  S.daily.log.forEach((l,i) => rows.push([i+1, l.time, l.items, l.sub||l.amt, l.disc||'無', l.amt]));
-  const csv = rows.map(r => r.map(c => `"${c}"`).join(',')).join('\n');
-  const blob = new Blob(['\uFEFF'+csv], {type:'text/csv;charset=utf-8'});
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = `營業記錄_${TODAY.replace(/\//g,'-')}.csv`;
-  a.click();
-  showToast('已匯出 CSV 📥');
+function exportCSV(){
+  if(!S.daily.log.length){showToast('尚無記錄可匯出');return;}
+  const rows=[['筆號','時間','商品','小計','折扣','實收']];
+  S.daily.log.forEach((l,i)=>rows.push([i+1,l.time,l.items,l.sub||l.amt,l.disc||'無',l.amt]));
+  const csv=rows.map(r=>r.map(c=>`"${c}"`).join(',')).join('\n');
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'}));
+  a.download=`營業記錄_${TODAY.replace(/\//g,'-')}.csv`;a.click();showToast('已匯出 CSV 📥');
 }
+function doClr(){S.daily={date:TODAY,revenue:0,discSaved:0,count:0,log:[]};save();rAll();showToast('今日記錄已清除');}
+function doReset(){localStorage.removeItem(SK);S=JSON.parse(JSON.stringify(DEFAULT_STATE));activeTab='全部';save();rPresetDisc();rAll();switchPanel('order');showToast('已重設為預設值');}
 
-function confirmClearDaily() {
-  showConfirm('清除今日記錄', '今日營業額與交易記錄將歸零，商品設定不受影響。', () => {
-    S.daily = {date:TODAY, revenue:0, discSaved:0, count:0, log:[]};
-    save(); rAll(); showToast('今日記錄已清除');
-  });
+function confirmAction(id,title,msg,cb){
+  document.getElementById('confirmTitle').textContent=title;
+  document.getElementById('confirmMsg').textContent=msg;
+  document.getElementById('confirmOkBtn').onclick=()=>{closeConfirm();cb();};
+  document.getElementById('confirmModal').style.display='flex';
 }
-function confirmReset() {
-  showConfirm('重設所有資料', '所有商品、設定與今日記錄將恢復為預設值，此動作無法復原。', () => {
-    localStorage.removeItem(SK);
-    S = JSON.parse(JSON.stringify(DEFAULT_STATE));
-    activeTab = '全部';
-    save(); rPresetDisc(); rAll(); switchPanel('order');
-    showToast('已重設為預設值');
-  });
-}
+function closeConfirm(){document.getElementById('confirmModal').style.display='none';}
 
-let confirmCallback = null;
-function showConfirm(title, msg, cb) {
-  document.getElementById('confirmTitle').textContent = title;
-  document.getElementById('confirmMsg').textContent = msg;
-  confirmCallback = cb;
-  document.getElementById('confirmModal').style.display = 'flex';
-  document.getElementById('confirmOkBtn').onclick = () => { closeConfirm(); cb(); };
-}
-function closeConfirm() { document.getElementById('confirmModal').style.display = 'none'; }
-
-// ── TOAST ──
-function showToast(msg) {
-  const t = document.getElementById('toastEl');
-  t.textContent = msg; t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2500);
-}
+function showToast(msg){const t=document.getElementById('toastEl');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
 
 // ── INIT ──
-load();
-rPresetDisc();
-rAll();
+load();rPresetDisc();rAll();
 </script>
 </body>
 </html>
