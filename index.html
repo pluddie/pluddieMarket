@@ -1,4 +1,4 @@
-<html lang="zh-TW" style="--text: #2C1D0E; --accent: #8B5E3C; --accent2: #C08B5C; --bg: #FAF5EF; --surface: #FFFFFF; --border: #DDD0C0; --border2: #bcb1a3; --s2: #fdfbf9; --s3: #fcf8f4;"><head>
+<html lang="zh-TW" style="--text: #2C1D0E; --accent: #8B5E3C; --accent2: #C08B5C; --bg: #FAF5EF; --surface: #FFFFFF; --border: #DDD0C0; --border2: #bcb1a3; --text2: #7A6553; --text3: #B3A090; --accent-bg: #f1ece8; --accent2-bg: #f7f1eb; --s2: #fdfbf9; --s3: #fcf8f4;"><head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>小女孩和花花獅工作室</title>
@@ -205,43 +205,8 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:16
 .qnum{font-size:14px;font-weight:600;min-width:18px;text-align:center}
 .cart-sub{font-size:14px;font-weight:600;min-width:50px;text-align:right}
 
-/* ===== DISCOUNT SECTION ===== */
-.disc-section{
-  padding:12px 16px;border-top:1px solid var(--border);
-  background:var(--s2);flex-shrink:0;
-}
-.disc-title{font-size:13px;color:var(--text2);margin-bottom:8px;font-weight:500}
-.preset-disc{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px}
-.dbtn{
-  font-size:13px;padding:6px 12px;border-radius:var(--rp);
-  border:1px solid var(--border);background:var(--surface);
-  color:var(--text2);cursor:pointer;transition:all .12s;font-family:var(--font);
-}
-.dbtn:hover{border-color:var(--border2)}
-.dbtn.on{background:var(--warn-bg);color:var(--warn);border-color:var(--warn)}
-.custom-row{display:flex;align-items:center;gap:8px}
-.custom-row label{font-size:13px;color:var(--text2)}
-.custom-row input{
-  width:66px;padding:6px 9px;
-  border:1px solid var(--border);border-radius:var(--r);
-  font-size:14px;color:var(--text);background:var(--surface);
-  font-family:var(--font);
-}
-.toggle{position:relative;width:42px;height:24px}
-.toggle input{opacity:0;width:0;height:0}
-.toggle-s{
-  position:absolute;inset:0;background:var(--s3);
-  border-radius:12px;cursor:pointer;transition:all .2s;
-}
-.toggle-s:before{
-  content:'';position:absolute;
-  width:18px;height:18px;left:3px;top:3px;
-  background:white;border-radius:50%;transition:all .2s;
-}
-.toggle input:checked+.toggle-s{background:var(--accent)}
-.toggle input:checked+.toggle-s:before{transform:translateX(18px)}
-.free-row{display:flex;align-items:center;gap:7px;margin-left:auto}
-.free-row span{font-size:13px;color:var(--text2)}
+/* ===== BUNDLE BADGE on item card ===== */
+.ic-bundle{font-size:10px;color:var(--accent);font-weight:600;display:block;margin-top:2px;line-height:1.2}
 
 /* ===== TOTAL + CHECKOUT (fixed on mobile) ===== */
 .checkout-area{
@@ -249,7 +214,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:16
   flex-shrink:0;background:var(--surface);
 }
 .t-line{display:flex;justify-content:space-between;font-size:14px;color:var(--text2);margin-bottom:4px}
-.t-line.disc-l{color:var(--warn)}
+.t-line.bundle-l{color:var(--accent);font-size:13px}
 .t-line.main{font-size:20px;font-weight:700;color:var(--text);margin-top:6px;margin-bottom:0}
 .pay-method-row{display:flex;gap:8px;margin-top:10px}
 .pay-method-btn{
@@ -382,8 +347,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:16
 }
 .si:focus{outline:none;border-color:var(--border2)}
 .si.sm{width:80px}
-.disc-preset-item{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border)}
-.disc-preset-item:last-child{border:none}
+
 .dpi-in{padding:7px 9px;border:1px solid var(--border);border-radius:var(--r);font-size:14px;color:var(--text);background:var(--surface);font-family:var(--font);width:60px}
 .dpi-lin{padding:7px 9px;border:1px solid var(--border);border-radius:var(--r);font-size:14px;color:var(--text);background:var(--surface);font-family:var(--font);width:90px}
 .dpi-del{width:26px;height:26px;border-radius:50%;border:1px solid var(--border);background:transparent;color:var(--text3);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px}
@@ -427,12 +391,28 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:16
   font-family:monospace;
 }
 .color-hex:focus{outline:none;border-color:var(--border2)}
-.theme-preset-row{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:10px}
+.theme-preset-row{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
 .theme-preset{
-  width:28px;height:28px;border-radius:50%;
+  width:32px;height:32px;border-radius:50%;
   border:2px solid transparent;cursor:pointer;transition:all .15s;
+  position:relative;flex-shrink:0;
 }
-.theme-preset:hover,.theme-preset.active{border-color:var(--text);transform:scale(1.15)}
+.theme-preset:hover{transform:scale(1.18);box-shadow:0 2px 8px rgba(0,0,0,.18)}
+.custom-preset{border-style:dashed !important}
+.custom-preset-del{
+  display:none;position:absolute;inset:0;border-radius:50%;
+  background:rgba(0,0,0,.55);color:#fff;font-size:14px;
+  align-items:center;justify-content:center;cursor:pointer;
+}
+.custom-preset:hover .custom-preset-del{display:flex}
+.theme-preset-add{
+  width:32px;height:32px;border-radius:50%;
+  border:1.5px dashed var(--border2);background:transparent;
+  color:var(--text3);font-size:18px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .15s;flex-shrink:0;line-height:1;
+}
+.theme-preset-add:hover{border-color:var(--text2);color:var(--text2);background:var(--s2)}
 
 /* ===== LOG / EDIT STYLES ===== */
 .log-item{padding:9px 0;border-bottom:1px solid var(--border)}
@@ -441,7 +421,6 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:16
 .log-no{font-size:12px;color:var(--text3);font-weight:500}
 .log-right{display:flex;align-items:center;gap:6px}
 .log-amt{font-size:15px;font-weight:700;color:var(--accent)}
-.log-disc-badge{font-size:11px;padding:3px 7px;border-radius:var(--rp);background:var(--warn-bg);color:var(--warn);font-weight:500}
 .log-time{font-size:12px;color:var(--text3)}
 .log-items-text{font-size:13px;color:var(--text2);line-height:1.6}
 .pay-badges{display:flex;gap:5px;margin-top:4px}
@@ -492,6 +471,22 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:16
 .mbtn-cancel{background:transparent;border:1px solid var(--border);color:var(--text2)}
 .mbtn-del{background:var(--danger-bg);border:none;color:var(--danger);flex:0 0 auto;padding:10px 13px}
 .mbtn-save{background:var(--text);border:none;color:var(--surface)}
+
+/* bundle editor in modal */
+.bundle-section{margin-top:8px}
+.bundle-section-title{font-size:11px;color:var(--text2);font-weight:600;margin-bottom:6px;display:flex;align-items:center;justify-content:space-between}
+.bundle-row{display:flex;align-items:center;gap:7px;padding:5px 0;border-bottom:1px solid var(--border)}
+.bundle-row:last-child{border:none}
+.bundle-qty-label{font-size:13px;color:var(--text2);white-space:nowrap}
+.bundle-in{padding:5px 8px;border:1px solid var(--border);border-radius:var(--r);font-size:13px;color:var(--text);background:var(--surface);font-family:var(--font)}
+.bundle-in.qty{width:52px}
+.bundle-in.price{width:72px}
+.bundle-del{width:22px;height:22px;border-radius:50%;border:1px solid var(--border);background:transparent;color:var(--text3);cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.bundle-del:hover{background:var(--danger-bg);color:var(--danger)}
+.add-bundle-btn{font-size:12px;color:var(--accent);border:1px dashed var(--accent);background:transparent;border-radius:var(--r);padding:4px 10px;cursor:pointer;font-family:var(--font);margin-top:5px}
+.add-bundle-btn:hover{background:var(--accent-bg)}
+/* cart bundle savings badge */
+.cart-bundle-badge{font-size:11px;color:var(--accent);font-weight:600;background:var(--accent-bg);padding:1px 7px;border-radius:var(--rp);margin-left:4px}
 
 /* confirm */
 .confirm-box{background:var(--surface);border-radius:var(--rl);border:1px solid var(--border);padding:20px;width:280px;box-shadow:0 20px 60px rgba(0,0,0,.15)}
@@ -648,103 +643,103 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:16
 
     <!-- Products Grid -->
     <div class="items-scroll">
-      <div class="items-grid" id="itemsGrid"><div class="cat-subtitle">娃娃</div>
-        <div class="item-card" onclick="addCart(1)">
-          <span class="ic-edit-btn" onclick="event.stopPropagation();openEditItem(1)">✏️</span>
-          <span class="ic-emoji">🐻</span>
-          <span class="ic-name">絨毛娃娃吊飾</span>
-          <span class="ic-price">$300</span>
-        </div><div class="cat-subtitle">壓克力</div>
-        <div class="item-card" onclick="addCart(2)">
-          <span class="ic-edit-btn" onclick="event.stopPropagation();openEditItem(2)">✏️</span>
-          <span class="ic-emoji">💝</span>
-          <span class="ic-name">壓克力吊飾</span>
-          <span class="ic-price">$50</span>
-        </div>
-        <div class="item-card" onclick="addCart(3)">
-          <span class="ic-edit-btn" onclick="event.stopPropagation();openEditItem(3)">✏️</span>
-          <span class="ic-emoji">💝</span>
-          <span class="ic-name">壓克力夾子</span>
-          <span class="ic-price">$50</span>
-        </div>
-        <div class="item-card" onclick="addCart(4)">
-          <span class="ic-edit-btn" onclick="event.stopPropagation();openEditItem(4)">✏️</span>
-          <span class="ic-emoji">💝</span>
-          <span class="ic-name">壓克力軟磁鐵</span>
-          <span class="ic-price">$50</span>
-        </div>
-        <div class="item-card" onclick="addCart(15)">
-          <span class="ic-edit-btn" onclick="event.stopPropagation();openEditItem(15)">✏️</span>
-          <span class="ic-emoji">💎</span>
-          <span class="ic-name">壓克力鏡子</span>
-          <span class="ic-price">$200</span>
-        </div><div class="cat-subtitle">貼紙</div>
-        <div class="item-card" onclick="addCart(5)">
-          <span class="ic-edit-btn" onclick="event.stopPropagation();openEditItem(5)">✏️</span>
-          <span class="ic-emoji">🎨</span>
-          <span class="ic-name">A5透明貼紙</span>
-          <span class="ic-price">$80</span>
-        </div>
-        <div class="item-card" onclick="addCart(6)">
-          <span class="ic-edit-btn" onclick="event.stopPropagation();openEditItem(6)">✏️</span>
-          <span class="ic-emoji">🎨</span>
-          <span class="ic-name">A6透明貼紙</span>
-          <span class="ic-price">$60</span>
-        </div><div class="cat-subtitle">紙品</div>
-        <div class="item-card" onclick="addCart(7)">
-          <span class="ic-edit-btn" onclick="event.stopPropagation();openEditItem(7)">✏️</span>
-          <span class="ic-emoji">📮</span>
-          <span class="ic-name">明信片</span>
-          <span class="ic-price">$35</span>
-        </div>
-        <div class="item-card" onclick="addCart(12)">
-          <span class="ic-edit-btn" onclick="event.stopPropagation();openEditItem(12)">✏️</span>
-          <span class="ic-emoji">📮</span>
-          <span class="ic-name">焦慮小卡</span>
-          <span class="ic-price">$35</span>
-        </div><div class="cat-subtitle">其他</div>
-        <div class="item-card" onclick="addCart(8)">
-          <span class="ic-edit-btn" onclick="event.stopPropagation();openEditItem(8)">✏️</span>
-          <span class="ic-emoji">⭐</span>
-          <span class="ic-name">磁鐵徽章</span>
-          <span class="ic-price">$100</span>
-        </div>
-        <div class="item-card" onclick="addCart(9)">
-          <span class="ic-edit-btn" onclick="event.stopPropagation();openEditItem(9)">✏️</span>
-          <span class="ic-emoji">🦁</span>
-          <span class="ic-name">手工毛線杯墊</span>
-          <span class="ic-price">$200</span>
-        </div>
-        <div class="item-card" onclick="addCart(10)">
-          <span class="ic-edit-btn" onclick="event.stopPropagation();openEditItem(10)">✏️</span>
-          <span class="ic-emoji">👜</span>
-          <span class="ic-name">針織袋</span>
-          <span class="ic-price">$300</span>
-        </div>
-        <div class="item-card" onclick="addCart(11)">
-          <span class="ic-edit-btn" onclick="event.stopPropagation();openEditItem(11)">✏️</span>
-          <span class="ic-emoji">⭐</span>
-          <span class="ic-name">扭蛋機</span>
-          <span class="ic-price">$50</span>
-        </div>
-        <div class="item-card" onclick="addCart(13)">
-          <span class="ic-edit-btn" onclick="event.stopPropagation();openEditItem(13)">✏️</span>
-          <span class="ic-emoji">🍪</span>
-          <span class="ic-name">餅乾別針</span>
-          <span class="ic-price">$50</span>
-        </div>
-        <div class="item-card" onclick="addCart(14)">
-          <span class="ic-edit-btn" onclick="event.stopPropagation();openEditItem(14)">✏️</span>
-          <span class="ic-emoji">🍪</span>
-          <span class="ic-name">Fidget Clicker</span>
-          <span class="ic-price">$100</span>
-        </div>
-        <div class="item-card" onclick="addCart(16)">
-          <span class="ic-edit-btn" onclick="event.stopPropagation();openEditItem(16)">✏️</span>
-          <span class="ic-emoji">🦁</span>
-          <span class="ic-name">陶瓷杯墊</span>
-          <span class="ic-price">$100</span>
-        </div><div class="add-card" onclick="openAddItem()"><span style="font-size:24px">＋</span><span>新增</span></div></div>
+      <div class="items-grid" id="itemsGrid"><div class="cat-subtitle">娃娃</div><div class="item-card" onclick="addCart(1)">
+      <span class="ic-edit-btn" onclick="event.stopPropagation();openEditItem(1)">✏️</span>
+      <span class="ic-emoji">🐻</span>
+      <span class="ic-name">絨毛娃娃吊飾</span>
+      <span class="ic-price">$300</span>
+      <span class="ic-bundle">🎁 2個$500</span>
+    </div><div class="cat-subtitle">壓克力</div><div class="item-card" onclick="addCart(2)">
+      <span class="ic-edit-btn" onclick="event.stopPropagation();openEditItem(2)">✏️</span>
+      <span class="ic-emoji">💝</span>
+      <span class="ic-name">壓克力吊飾</span>
+      <span class="ic-price">$50</span>
+      <span class="ic-bundle">🎁 3個$100</span>
+    </div><div class="item-card" onclick="addCart(3)">
+      <span class="ic-edit-btn" onclick="event.stopPropagation();openEditItem(3)">✏️</span>
+      <span class="ic-emoji">💝</span>
+      <span class="ic-name">壓克力夾子</span>
+      <span class="ic-price">$50</span>
+      
+    </div><div class="item-card" onclick="addCart(4)">
+      <span class="ic-edit-btn" onclick="event.stopPropagation();openEditItem(4)">✏️</span>
+      <span class="ic-emoji">💝</span>
+      <span class="ic-name">壓克力軟磁鐵</span>
+      <span class="ic-price">$50</span>
+      
+    </div><div class="item-card" onclick="addCart(15)">
+      <span class="ic-edit-btn" onclick="event.stopPropagation();openEditItem(15)">✏️</span>
+      <span class="ic-emoji">💎</span>
+      <span class="ic-name">壓克力鏡子</span>
+      <span class="ic-price">$200</span>
+      
+    </div><div class="cat-subtitle">貼紙</div><div class="item-card" onclick="addCart(5)">
+      <span class="ic-edit-btn" onclick="event.stopPropagation();openEditItem(5)">✏️</span>
+      <span class="ic-emoji">🎨</span>
+      <span class="ic-name">A5透明貼紙</span>
+      <span class="ic-price">$80</span>
+      <span class="ic-bundle">🎁 2個$150</span>
+    </div><div class="item-card" onclick="addCart(6)">
+      <span class="ic-edit-btn" onclick="event.stopPropagation();openEditItem(6)">✏️</span>
+      <span class="ic-emoji">🎨</span>
+      <span class="ic-name">A6透明貼紙</span>
+      <span class="ic-price">$60</span>
+      <span class="ic-bundle">🎁 2個$100</span>
+    </div><div class="cat-subtitle">紙品</div><div class="item-card" onclick="addCart(7)">
+      <span class="ic-edit-btn" onclick="event.stopPropagation();openEditItem(7)">✏️</span>
+      <span class="ic-emoji">📮</span>
+      <span class="ic-name">明信片</span>
+      <span class="ic-price">$50</span>
+      <span class="ic-bundle">🎁 3個$100</span>
+    </div><div class="item-card" onclick="addCart(12)">
+      <span class="ic-edit-btn" onclick="event.stopPropagation();openEditItem(12)">✏️</span>
+      <span class="ic-emoji">📮</span>
+      <span class="ic-name">焦慮小卡</span>
+      <span class="ic-price">$50</span>
+      <span class="ic-bundle">🎁 3個$100</span>
+    </div><div class="cat-subtitle">其他</div><div class="item-card" onclick="addCart(8)">
+      <span class="ic-edit-btn" onclick="event.stopPropagation();openEditItem(8)">✏️</span>
+      <span class="ic-emoji">⭐</span>
+      <span class="ic-name">磁鐵徽章</span>
+      <span class="ic-price">$150</span>
+      
+    </div><div class="item-card" onclick="addCart(9)">
+      <span class="ic-edit-btn" onclick="event.stopPropagation();openEditItem(9)">✏️</span>
+      <span class="ic-emoji">🦁</span>
+      <span class="ic-name">手工毛線杯墊</span>
+      <span class="ic-price">$250</span>
+      
+    </div><div class="item-card" onclick="addCart(10)">
+      <span class="ic-edit-btn" onclick="event.stopPropagation();openEditItem(10)">✏️</span>
+      <span class="ic-emoji">👜</span>
+      <span class="ic-name">針織袋</span>
+      <span class="ic-price">$300</span>
+      <span class="ic-bundle">🎁 2個$500</span>
+    </div><div class="item-card" onclick="addCart(11)">
+      <span class="ic-edit-btn" onclick="event.stopPropagation();openEditItem(11)">✏️</span>
+      <span class="ic-emoji">⭐</span>
+      <span class="ic-name">扭蛋機</span>
+      <span class="ic-price">$50</span>
+      
+    </div><div class="item-card" onclick="addCart(13)">
+      <span class="ic-edit-btn" onclick="event.stopPropagation();openEditItem(13)">✏️</span>
+      <span class="ic-emoji">🍪</span>
+      <span class="ic-name">餅乾別針</span>
+      <span class="ic-price">$50</span>
+      
+    </div><div class="item-card" onclick="addCart(14)">
+      <span class="ic-edit-btn" onclick="event.stopPropagation();openEditItem(14)">✏️</span>
+      <span class="ic-emoji">🍪</span>
+      <span class="ic-name">Fidget Clicker</span>
+      <span class="ic-price">$100</span>
+      
+    </div><div class="item-card" onclick="addCart(16)">
+      <span class="ic-edit-btn" onclick="event.stopPropagation();openEditItem(16)">✏️</span>
+      <span class="ic-emoji">🦁</span>
+      <span class="ic-name">陶瓷杯墊</span>
+      <span class="ic-price">$100</span>
+      
+    </div><div class="add-card" onclick="openAddItem()"><span style="font-size:24px">＋</span><span>新增</span></div></div>
     </div>
 
     <!-- Mobile FAB -->
@@ -772,22 +767,8 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:16
     <!-- ===== ORDER PANEL ===== -->
     <div id="panel-order" style="display: none; flex-direction: column; flex: 1 1 0%; overflow: hidden; min-height: 0px;">
       <div class="cart-scroll" id="cartScroll"><div class="empty-cart">🛒<br>點選左方商品<br>加入訂單</div></div>
-      <div class="disc-section">
-        <div class="disc-title">🏷 折扣優惠</div>
-        <div class="preset-disc" id="presetDiscEl"><div class="dbtn" onclick="setDisc(null,1)" style="border-style:dashed">不折</div></div>
-        <div class="custom-row">
-          <label>自訂</label>
-          <input type="number" id="customDiscInput" min="1" max="99" placeholder="88" oninput="applyCustomDisc(this.value)">
-          <span style="font-size:13px;color:var(--text2)">折</span>
-          <div class="free-row">
-            <span>免費</span>
-            <label class="toggle"><input type="checkbox" id="freeToggle" onchange="toggleFree(this.checked)"><span class="toggle-s"></span></label>
-          </div>
-        </div>
-      </div>
       <div class="checkout-area" id="checkoutArea">
-        <div id="subtotalLine" class="t-line" style="display:none"><span>小計</span><span id="subtotalVal"></span></div>
-        <div id="discLine" class="t-line disc-l" style="display:none"><span id="discLabel"></span><span id="discVal"></span></div>
+        <div id="bundleSaveLine" class="t-line bundle-l" style="display: none;"><span id="bundleSaveLabel">組合優惠</span><span id="bundleSaveVal">-$100</span></div>
         <div class="t-line main"><span>合計</span><span id="totalVal">$0</span></div>
         <div class="pay-method-row">
           <button class="pay-method-btn on cash-on" id="pmCash" onclick="setPayMethod('cash')">現金</button>
@@ -803,55 +784,13 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:16
     </div>
 
     <!-- ===== HISTORY PANEL ===== -->
-    <div id="panel-hist" style="display: none; flex-direction: column; flex: 1 1 0%; overflow: hidden; min-height: 0px;">
+    <div id="panel-hist" style="display:none;flex-direction:column;flex:1 1 0%;overflow:hidden;min-height:0">
       <div class="hist-wrap">
         <div class="hist-date-select">
           <div class="hist-select-label">選擇日期查看明細</div>
-          <div id="histDateGrid"><div class="hist-year-group">
-      <div class="hist-year-toggle" onclick="toggleYearGroup(this)">
-        <div class="hist-year-toggle-left">
-          <span class="hist-year-arrow open">▶</span>
-          <span class="hist-year-label">2026</span>
-          <span class="hist-year-count">8 天</span>
+          <div id="histDateGrid"></div>
         </div>
-      </div>
-      <div class="hist-date-pills "><div class="date-pill on" onclick="selectHistDate('2026/05/03')">05/03</div><div class="date-pill " onclick="selectHistDate('2026/05/02')">05/02</div><div class="date-pill " onclick="selectHistDate('2026/05/01')">05/01</div><div class="date-pill " onclick="selectHistDate('2026/04/30')">04/30</div><div class="date-pill " onclick="selectHistDate('2026/04/06')">04/06</div><div class="date-pill " onclick="selectHistDate('2026/04/05')">04/05</div><div class="date-pill " onclick="selectHistDate('2026/04/04')">04/04</div><div class="date-pill " onclick="selectHistDate('2026/04/03')">04/03</div></div>
-    </div><div class="hist-year-group">
-      <div class="hist-year-toggle" onclick="toggleYearGroup(this)">
-        <div class="hist-year-toggle-left">
-          <span class="hist-year-arrow ">▶</span>
-          <span class="hist-year-label">2025</span>
-          <span class="hist-year-count">2 天</span>
-        </div>
-      </div>
-      <div class="hist-date-pills collapsed"><div class="date-pill " onclick="selectHistDate('2025/06/22')">06/22</div><div class="date-pill " onclick="selectHistDate('2025/06/21')">06/21</div></div>
-    </div><div class="hist-year-group">
-      <div class="hist-year-toggle" onclick="toggleYearGroup(this)">
-        <div class="hist-year-toggle-left">
-          <span class="hist-year-arrow ">▶</span>
-          <span class="hist-year-label">2024</span>
-          <span class="hist-year-count">7 天</span>
-        </div>
-      </div>
-      <div class="hist-date-pills collapsed"><div class="date-pill " onclick="selectHistDate('2024/06/10')">06/10</div><div class="date-pill " onclick="selectHistDate('2024/06/09')">06/09</div><div class="date-pill " onclick="selectHistDate('2024/06/08')">06/08</div><div class="date-pill " onclick="selectHistDate('2024/03/03')">03/03</div><div class="date-pill " onclick="selectHistDate('2024/03/02')">03/02</div><div class="date-pill " onclick="selectHistDate('2024/01/21')">01/21</div><div class="date-pill " onclick="selectHistDate('2024/01/20')">01/20</div></div>
-    </div><div class="hist-year-group">
-      <div class="hist-year-toggle" onclick="toggleYearGroup(this)">
-        <div class="hist-year-toggle-left">
-          <span class="hist-year-arrow ">▶</span>
-          <span class="hist-year-label">2023</span>
-          <span class="hist-year-count">4 天</span>
-        </div>
-      </div>
-      <div class="hist-date-pills collapsed"><div class="date-pill " onclick="selectHistDate('2023/12/24')">12/24</div><div class="date-pill " onclick="selectHistDate('2023/12/23')">12/23</div><div class="date-pill " onclick="selectHistDate('2023/11/26')">11/26</div><div class="date-pill " onclick="selectHistDate('2023/11/25')">11/25</div></div>
-    </div></div>
-        </div>
-        <div class="hist-content" id="histContent" style="flex:1;overflow-y:auto;padding:14px 16px"><div class="hist-day-header">
-    <span class="hist-day-date">📅 2026/05/03</span>
-    <div style="display:flex;align-items:center;gap:6px">
-      <span class="hist-day-total">$550</span>
-      <button class="log-edit-btn" onclick="openHistNewEntry('2026/05/03')" style="background:var(--text);color:var(--surface);border-color:var(--text)">＋ 新增</button>
-    </div>
-  </div><div class="hist-pay-row" style="margin-bottom:10px"><span class="pay-badge cash">現金 $100</span><span class="pay-badge lp">Line Pay $450</span></div><div class="hist-item-row"><span class="hist-item-name">明信片 (4款)</span><span class="hist-item-qty">×6</span><span class="hist-item-sub">$210</span></div><div class="hist-item-row"><span class="hist-item-name">磁鐵勳章 (2款)</span><span class="hist-item-qty">×1</span><span class="hist-item-sub">$100</span></div><div class="hist-item-row"><span class="hist-item-name">焦慮小卡-抽卡機</span><span class="hist-item-qty">×6</span><span class="hist-item-sub">$210</span></div></div>
+        <div class="hist-content" id="histContent" style="flex:1;overflow-y:auto;padding:14px 16px"></div>
         <!-- Summary section at bottom of history -->
         <div style="padding:14px 16px" id="histSummarySection">
           <div class="hist-summary-section">
@@ -859,51 +798,11 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:16
             <div class="sum-cards" id="sumCardsEl">
               <div class="sum-card"><span class="sc-label">今日營業額</span><span class="sc-val" style="color:var(--accent)" id="sumTodayRev">$0</span></div>
               <div class="sum-card"><span class="sc-label">今日筆數</span><span class="sc-val" id="sumTodayCnt">0 筆</span></div>
-              <div class="sum-card"><span class="sc-label">全期總營業額</span><span class="sc-val" id="sumTotalRev">$35275</span></div>
-              <div class="sum-card"><span class="sc-label">歷史攤日數</span><span class="sc-val" id="sumTotalDays">21 天</span></div>
+              <div class="sum-card"><span class="sc-label">全期總營業額</span><span class="sc-val" id="sumTotalRev">$0</span></div>
+              <div class="sum-card"><span class="sc-label">歷史攤日數</span><span class="sc-val" id="sumTotalDays">0 天</span></div>
             </div>
             <div class="sum-sec-title">🏆 全期熱銷 TOP 8</div>
-            <div id="sumTopItems">
-    <div class="top-item-row">
-      <div class="top-rank r1">1</div>
-      <span class="top-item-name">明信片 (4款)</span>
-      <span class="top-item-qty">54 件</span>
-    </div>
-    <div class="top-item-row">
-      <div class="top-rank r2">2</div>
-      <span class="top-item-name">絨毛娃娃吊飾 (2款)</span>
-      <span class="top-item-qty">31 件</span>
-    </div>
-    <div class="top-item-row">
-      <div class="top-rank r3">3</div>
-      <span class="top-item-name">壓克力－吊飾 (12款)</span>
-      <span class="top-item-qty">29 件</span>
-    </div>
-    <div class="top-item-row">
-      <div class="top-rank ">4</div>
-      <span class="top-item-name">焦慮小卡-抽卡機</span>
-      <span class="top-item-qty">29 件</span>
-    </div>
-    <div class="top-item-row">
-      <div class="top-rank ">5</div>
-      <span class="top-item-name">扭蛋機</span>
-      <span class="top-item-qty">18 件</span>
-    </div>
-    <div class="top-item-row">
-      <div class="top-rank ">6</div>
-      <span class="top-item-name">Fidget Clicker</span>
-      <span class="top-item-qty">16 件</span>
-    </div>
-    <div class="top-item-row">
-      <div class="top-rank ">7</div>
-      <span class="top-item-name">壓克力－軟磁鐵 (5款)</span>
-      <span class="top-item-qty">13 件</span>
-    </div>
-    <div class="top-item-row">
-      <div class="top-rank ">8</div>
-      <span class="top-item-name">針織袋</span>
-      <span class="top-item-qty">12 件</span>
-    </div></div>
+            <div id="sumTopItems"></div>
           </div>
         </div>
       </div>
@@ -929,32 +828,42 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:16
         <div class="settings-section">
           <div class="st-title">🎨 主題顏色</div>
           <div class="theme-preset-row" id="themePresetRow">
-    <div class="theme-preset" style="background:#8B5E3C" title="奶茶" onclick="applyPreset(0)"></div>
-  
-    <div class="theme-preset" style="background:#0F6E56" title="原味" onclick="applyPreset(1)"></div>
-  
-    <div class="theme-preset" style="background:#7CCFB0" title="暗夜" onclick="applyPreset(2)"></div>
-  </div>
+    <div class="theme-preset" style="background:#FAF5EF;border:2px solid #DDD0C0" title="奶茶" onclick="applyBuiltInPreset(0)">
+      <div style="position:absolute;inset:3px;border-radius:50%;background:#8B5E3C"></div>
+    </div>
+    <div class="theme-preset" style="background:#FAFAF8;border:2px solid #E0DED8" title="原味" onclick="applyBuiltInPreset(1)">
+      <div style="position:absolute;inset:3px;border-radius:50%;background:#0F6E56"></div>
+    </div>
+    <div class="theme-preset" style="background:#0F1117;border:2px solid #2E3140" title="暗夜" onclick="applyBuiltInPreset(2)">
+      <div style="position:absolute;inset:3px;border-radius:50%;background:#7CCFB0"></div>
+    </div><div class="theme-preset-add" onclick="saveCurrentAsPreset()" title="儲存目前配色">＋</div></div>
           <div id="colorRows">
             <div class="color-row">
-              <div><div class="color-label">主色（按鈕/強調）</div><div class="color-sub">影響結帳按鈕、重要文字</div></div>
+              <div><div class="color-label">主文字色</div><div class="color-sub">標題、商品名稱、主要文字</div></div>
               <div class="color-input-wrap">
                 <div class="color-swatch"><input type="color" id="c-text" onchange="applyThemeColor('text',this.value)" oninput="syncHex('text',this.value)"></div>
                 <input class="color-hex" id="h-text" maxlength="7" onchange="applyThemeHex('text',this.value)">
               </div>
             </div>
             <div class="color-row">
-              <div><div class="color-label">綠色（成功/金額）</div><div class="color-sub">影響營業額、結帳確認</div></div>
+              <div><div class="color-label">次要文字色</div><div class="color-sub">說明文字、標籤、副標題</div></div>
               <div class="color-input-wrap">
-                <div class="color-swatch"><input type="color" id="c-accent" onchange="applyThemeColor('accent',this.value)" oninput="syncHex('accent',this.value)"></div>
-                <input class="color-hex" id="h-accent" maxlength="7" onchange="applyThemeHex('accent',this.value)">
+                <div class="color-swatch"><input type="color" id="c-text2" onchange="applyThemeColor('text2',this.value)" oninput="syncHex('text2',this.value)"></div>
+                <input class="color-hex" id="h-text2" maxlength="7" onchange="applyThemeHex('text2',this.value)">
               </div>
             </div>
             <div class="color-row">
-              <div><div class="color-label">藍色（Line Pay）</div><div class="color-sub">影響 Line Pay 付款顏色</div></div>
+              <div><div class="color-label">淡化文字色</div><div class="color-sub">佔位符、時間戳、次次要資訊</div></div>
               <div class="color-input-wrap">
-                <div class="color-swatch"><input type="color" id="c-accent2" onchange="applyThemeColor('accent2',this.value)" oninput="syncHex('accent2',this.value)"></div>
-                <input class="color-hex" id="h-accent2" maxlength="7" onchange="applyThemeHex('accent2',this.value)">
+                <div class="color-swatch"><input type="color" id="c-text3" onchange="applyThemeColor('text3',this.value)" oninput="syncHex('text3',this.value)"></div>
+                <input class="color-hex" id="h-text3" maxlength="7" onchange="applyThemeHex('text3',this.value)">
+              </div>
+            </div>
+            <div class="color-row">
+              <div><div class="color-label">強調色</div><div class="color-sub">金額、組合優惠、Tab 底線</div></div>
+              <div class="color-input-wrap">
+                <div class="color-swatch"><input type="color" id="c-accent" onchange="applyThemeColor('accent',this.value)" oninput="syncHex('accent',this.value)"></div>
+                <input class="color-hex" id="h-accent" maxlength="7" onchange="applyThemeHex('accent',this.value)">
               </div>
             </div>
             <div class="color-row">
@@ -981,13 +890,6 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:16
           </div>
         </div>
 
-        <!-- Discounts -->
-        <div class="settings-section">
-          <div class="st-title">🏷 折扣清單</div>
-          <div id="discPresetList"></div>
-          <button class="add-preset-btn" onclick="addDiscPreset()">＋ 新增折扣</button>
-        </div>
-
         <!-- Data management -->
         <div class="settings-section">
           <div class="st-title">💾 資料管理</div>
@@ -1007,21 +909,39 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:16
 </div>
 
 <!-- ITEM MODAL -->
-<div id="itemModal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeItemModal()">
+<div id="itemModal" class="modal-overlay" style="display: none;" onclick="if(event.target===this)closeItemModal()">
   <div class="modal">
-    <h3 id="itemModalTitle">新增商品</h3>
-    <input type="hidden" id="eid">
+    <h3 id="itemModalTitle">編輯商品</h3>
+    <input type="hidden" id="eid" value="6">
     <div class="mf"><label>商品名稱</label><input id="iname" type="text" maxlength="16" placeholder="例：手工耳環"></div>
     <div class="mf"><label>價格（元）</label><input id="iprice" type="number" min="1" placeholder="150"></div>
     <div class="mf"><label>分類</label><input id="icat" type="text" maxlength="8" placeholder="例：耳環"></div>
     <div class="mf">
       <label>圖示</label>
       <input id="iemoji" type="text" maxlength="2" placeholder="🌸" style="width:64px;margin-bottom:6px">
-      <div class="emoji-row" id="emojiRow"></div>
+      <div class="emoji-row" id="emojiRow"><div class="emoji-opt " onclick="selectEmoji('🐻')">🐻</div><div class="emoji-opt " onclick="selectEmoji('🦁')">🦁</div><div class="emoji-opt " onclick="selectEmoji('📮')">📮</div><div class="emoji-opt " onclick="selectEmoji('👜')">👜</div><div class="emoji-opt " onclick="selectEmoji('💝')">💝</div><div class="emoji-opt " onclick="selectEmoji('👧')">👧</div><div class="emoji-opt sel" onclick="selectEmoji('🎨')">🎨</div><div class="emoji-opt " onclick="selectEmoji('🍪')">🍪</div><div class="emoji-opt " onclick="selectEmoji('⭐')">⭐</div><div class="emoji-opt " onclick="selectEmoji('☕️')">☕️</div><div class="emoji-opt " onclick="selectEmoji('👛')">👛</div><div class="emoji-opt " onclick="selectEmoji('🌸')">🌸</div><div class="emoji-opt " onclick="selectEmoji('🎀')">🎀</div><div class="emoji-opt " onclick="selectEmoji('💎')">💎</div><div class="emoji-opt " onclick="selectEmoji('✨')">✨</div><div class="emoji-opt " onclick="selectEmoji('🌟')">🌟</div><div class="emoji-opt " onclick="selectEmoji('🎁')">🎁</div><div class="emoji-opt " onclick="selectEmoji('🎪')">🎪</div></div>
+    </div>
+    <div class="mf">
+      <div class="bundle-section">
+        <div class="bundle-section-title">
+          <span>🎁 組合優惠價</span>
+          <button class="add-bundle-btn" onclick="addBundleRow()">＋ 新增</button>
+        </div>
+        <div id="bundleRows">
+    <div class="bundle-row">
+      <span class="bundle-qty-label">買</span>
+      <input class="bundle-in qty" type="number" min="2" value="2" placeholder="2" oninput="_modalBundles[0].qty=parseInt(this.value)||0">
+      <span class="bundle-qty-label">個</span>
+      <input class="bundle-in price" type="number" min="1" value="0" placeholder="500" oninput="_modalBundles[0].price=parseInt(this.value)||0">
+      <span class="bundle-qty-label">元</span>
+      <button class="bundle-del" onclick="removeBundleRow(0)">×</button>
+    </div></div>
+        <div style="font-size:11px;color:var(--text3);margin-top:4px">例：買 2 個 $500，買 3 個 $700</div>
+      </div>
     </div>
     <div class="mbtns">
       <button class="mbtn-cancel" onclick="closeItemModal()">取消</button>
-      <button class="mbtn-del" id="mdelBtn" onclick="delItem()" style="display:none">🗑</button>
+      <button class="mbtn-del" id="mdelBtn" onclick="delItem()" style="display: block;">🗑</button>
       <button class="mbtn-save" onclick="saveItem()">儲存</button>
     </div>
   </div>
@@ -1039,7 +959,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:16
   </div>
 </div>
 
-<div class="toast" id="toastEl">設定已儲存 ✓</div>
+<div class="toast" id="toastEl">已套用「奶茶」</div>
 
 <script>
 // ── CONSTANTS ──
@@ -1089,7 +1009,7 @@ const HIST_DATA = {
 const DEFAULT_STATE = {
   shopName:'小女孩和花花獅工作室',currency:'$',
   items:[
-    {id:1,name:'絨毛娃娃吊飾',price:300,cat:'娃娃',emoji:'🐻'},
+    {id:1,name:'絨毛娃娃吊飾',price:300,cat:'娃娃',emoji:'🐻',bundles:[{qty:2,price:500}]},
     {id:2,name:'壓克力吊飾',price:50,cat:'壓克力',emoji:'💝'},
     {id:3,name:'壓克力夾子',price:50,cat:'壓克力',emoji:'💝'},
     {id:4,name:'壓克力軟磁鐵',price:50,cat:'壓克力',emoji:'💝'},
@@ -1106,10 +1026,10 @@ const DEFAULT_STATE = {
     {id:15,name:'壓克力鏡子',price:200,cat:'壓克力',emoji:'💝'},
     {id:16,name:'陶瓷杯墊',price:100,cat:'其他',emoji:'☕️'},
   ],
-  discPresets:[{label:'9折',value:90},{label:'85折',value:85},{label:'8折',value:80},{label:'7折',value:70},{label:'5折',value:50}],
-  cart:{},disc:{label:null,rate:1},
-  daily:{date:TODAY,revenue:0,discSaved:0,count:0,log:[]},
-  theme:{text:'#2C1D0E',accent:'#8B5E3C',accent2:'#C08B5C',bg:'#FAF5EF',surface:'#FFFFFF',border:'#DDD0C0'}
+  cart:{},
+  daily:{date:TODAY,revenue:0,count:0,log:[]},
+  theme:{text:'#2C1D0E',text2:'#7A6553',text3:'#B3A090',accent:'#8B5E3C',accent2:'#C08B5C',bg:'#FAF5EF',surface:'#FFFFFF',border:'#DDD0C0'},
+  customPresets:[]
 };
 
 let S = JSON.parse(JSON.stringify(DEFAULT_STATE));
@@ -1119,36 +1039,48 @@ let selectedHistDate = null;
 let activePayMethod = 'cash';
 
 // ── THEME PRESETS ──
-const THEME_PRESETS = [
-  {name:'奶茶',text:'#2C1D0E',accent:'#8B5E3C',accent2:'#C08B5C',bg:'#FAF5EF',surface:'#FFFFFF',border:'#DDD0C0'},
-  {name:'原味',text:'#1A1916',accent:'#0F6E56',accent2:'#185FA5',bg:'#FAFAF8',surface:'#FFFFFF',border:'#E0DED8'},
-  {name:'暗夜',text:'#FFFFFF',accent:'#7CCFB0',accent2:'#78B4F5',bg:'#0F1117',surface:'#1A1D27',border:'#2E3140'},
+const BUILT_IN_PRESETS = [
+  {name:'奶茶',text:'#2C1D0E',text2:'#7A6553',text3:'#B3A090',accent:'#8B5E3C',accent2:'#C08B5C',bg:'#FAF5EF',surface:'#FFFFFF',border:'#DDD0C0'},
+  {name:'原味',text:'#1A1916',text2:'#6B6960',text3:'#A8A69E',accent:'#0F6E56',accent2:'#185FA5',bg:'#FAFAF8',surface:'#FFFFFF',border:'#E0DED8'},
+  {name:'暗夜',text:'#F0EEE8',text2:'#9B9890',text3:'#5C5A54',accent:'#7CCFB0',accent2:'#78B4F5',bg:'#0F1117',surface:'#1A1D27',border:'#2E3140'},
 ];
+// Custom presets are stored in S.customPresets []
+// __SNAPSHOT__: {"items":[{"id":1,"name":"絨毛娃娃吊飾","price":300,"cat":"娃娃","emoji":"🐻","bundles":[{"qty":2,"price":500}]},{"id":2,"name":"壓克力吊飾","price":50,"cat":"壓克力","emoji":"💝","bundles":[{"qty":3,"price":100}]},{"id":3,"name":"壓克力夾子","price":50,"cat":"壓克力","emoji":"💝"},{"id":4,"name":"壓克力軟磁鐵","price":50,"cat":"壓克力","emoji":"💝"},{"id":5,"name":"A5透明貼紙","price":80,"cat":"貼紙","emoji":"🎨","bundles":[{"qty":2,"price":150}]},{"id":6,"name":"A6透明貼紙","price":60,"cat":"貼紙","emoji":"🎨","bundles":[{"qty":2,"price":100}]},{"id":7,"name":"明信片","price":50,"cat":"紙品","emoji":"📮","bundles":[{"qty":3,"price":100}]},{"id":8,"name":"磁鐵徽章","price":150,"cat":"其他","emoji":"⭐"},{"id":9,"name":"手工毛線杯墊","price":250,"cat":"其他","emoji":"🦁"},{"id":10,"name":"針織袋","price":300,"cat":"其他","emoji":"👜","bundles":[{"qty":2,"price":500}]},{"id":11,"name":"扭蛋機","price":50,"cat":"其他","emoji":"⭐"},{"id":12,"name":"焦慮小卡","price":50,"cat":"紙品","emoji":"📮","bundles":[{"qty":3,"price":100}]},{"id":13,"name":"餅乾別針","price":50,"cat":"其他","emoji":"🍪"},{"id":14,"name":"Fidget Clicker","price":100,"cat":"其他","emoji":"🍪"},{"id":15,"name":"壓克力鏡子","price":200,"cat":"壓克力","emoji":"💎"},{"id":16,"name":"陶瓷杯墊","price":100,"cat":"其他","emoji":"🦁"}],"theme":{"name":"奶茶","text":"#2C1D0E","text2":"#7A6553","text3":"#B3A090","accent":"#8B5E3C","accent2":"#C08B5C","bg":"#FAF5EF","surface":"#FFFFFF","border":"#DDD0C0"},"customPresets":[]}
 
 function applyTheme(t){
   const r=document.documentElement.style;
   r.setProperty('--text',t.text);
   r.setProperty('--accent',t.accent);
-  r.setProperty('--accent2',t.accent2);
+  r.setProperty('--accent2',t.accent2||t.accent);
   r.setProperty('--bg',t.bg);
   r.setProperty('--surface',t.surface);
   if(t.border){
     r.setProperty('--border',t.border);
     r.setProperty('--border2',darkenColor(t.border,0.15));
   }
+  // text2/text3: use stored values or derive from text+surface blend
+  if(t.text2) r.setProperty('--text2',t.text2);
+  else r.setProperty('--text2',blendColor(t.text,t.surface,0.45));
+  if(t.text3) r.setProperty('--text3',t.text3);
+  else r.setProperty('--text3',blendColor(t.text,t.surface,0.72));
+  // accent-bg: very light tint of accent blended into surface
+  r.setProperty('--accent-bg',blendColor(t.accent,t.surface,0.88));
+  r.setProperty('--accent2-bg',blendColor(t.accent2||t.accent,t.surface,0.88));
   // derived
   r.setProperty('--s2', lightenColor(t.surface,t.bg,0.4));
   r.setProperty('--s3', lightenColor(t.surface,t.bg,0.7));
 }
 
 function lightenColor(surface,bg,factor){
-  // simple blend between surface and bg for s2/s3
   function hex2rgb(h){h=h.replace('#','');return[parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16)];}
   function rgb2hex(r,g,b){return'#'+[r,g,b].map(x=>Math.round(Math.max(0,Math.min(255,x))).toString(16).padStart(2,'0')).join('');}
-  try{
-    const sr=hex2rgb(surface),br=hex2rgb(bg);
-    return rgb2hex(sr[0]+(br[0]-sr[0])*factor,sr[1]+(br[1]-sr[1])*factor,sr[2]+(br[2]-sr[2])*factor);
-  }catch(e){return surface;}
+  try{const sr=hex2rgb(surface),br=hex2rgb(bg);return rgb2hex(sr[0]+(br[0]-sr[0])*factor,sr[1]+(br[1]-sr[1])*factor,sr[2]+(br[2]-sr[2])*factor);}catch(e){return surface;}
+}
+// blend colorA toward colorB by factor (0=A, 1=B)
+function blendColor(a,b,factor){
+  function hex2rgb(h){h=h.replace('#','');return[parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16)];}
+  function rgb2hex(r,g,b){return'#'+[r,g,b].map(x=>Math.round(Math.max(0,Math.min(255,x))).toString(16).padStart(2,'0')).join('');}
+  try{const ar=hex2rgb(a),br=hex2rgb(b);return rgb2hex(ar[0]+(br[0]-ar[0])*factor,ar[1]+(br[1]-ar[1])*factor,ar[2]+(br[2]-ar[2])*factor);}catch(e){return a;}
 }
 function darkenColor(hex,amount){
   function hex2rgb(h){h=h.replace('#','');return[parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16)];}
@@ -1160,11 +1092,6 @@ function applyThemeColor(key,val){
   if(!S.theme) S.theme={...DEFAULT_STATE.theme};
   S.theme[key]=val;
   applyTheme(S.theme);
-  // if border changed, update border2 hex display
-  if(key==='border'){
-    const h2=document.getElementById('h-border');
-    if(h2)h2.value=val;
-  }
 }
 function applyThemeHex(key,val){
   if(!/^#[0-9A-Fa-f]{6}$/.test(val))return;
@@ -1179,42 +1106,95 @@ function syncHex(key,val){
 
 function rThemeControls(){
   const t=S.theme||DEFAULT_STATE.theme;
-  ['text','accent','accent2','bg','surface','border'].forEach(k=>{
+  ['text','text2','text3','accent','bg','surface','border'].forEach(k=>{
     const c=document.getElementById('c-'+k),h=document.getElementById('h-'+k);
     if(c)c.value=t[k]||'#000000';
     if(h)h.value=t[k]||'#000000';
   });
-  // Preset buttons
+  // Built-in preset chips
   const row=document.getElementById('themePresetRow');
-  if(row) row.innerHTML=THEME_PRESETS.map((p,i)=>`
-    <div class="theme-preset" style="background:${p.accent}" title="${p.name}" onclick="applyPreset(${i})"></div>
-  `).join('');
+  if(!row)return;
+  const builtIn=BUILT_IN_PRESETS.map((p,i)=>`
+    <div class="theme-preset" style="background:${p.bg};border:2px solid ${p.border}" title="${p.name}" onclick="applyBuiltInPreset(${i})">
+      <div style="position:absolute;inset:3px;border-radius:50%;background:${p.accent}"></div>
+    </div>`).join('');
+  const custom=(S.customPresets||[]).map((p,i)=>`
+    <div class="theme-preset custom-preset" style="background:${p.bg};border:2px solid ${p.border}" title="${p.name}" onclick="applyCustomPreset(${i})">
+      <div style="position:absolute;inset:3px;border-radius:50%;background:${p.accent}"></div>
+      <div class="custom-preset-del" onclick="event.stopPropagation();deleteCustomPreset(${i})">×</div>
+    </div>`).join('');
+  const addBtn=`<div class="theme-preset-add" onclick="saveCurrentAsPreset()" title="儲存目前配色">＋</div>`;
+  row.innerHTML=builtIn+custom+addBtn;
 }
-function applyPreset(i){
-  S.theme=Object.assign({},THEME_PRESETS[i]);
-  applyTheme(S.theme);
-  rThemeControls();
-  showToast('已套用「'+THEME_PRESETS[i].name+'」主題');
+function applyBuiltInPreset(i){
+  S.theme=Object.assign({},BUILT_IN_PRESETS[i]);
+  applyTheme(S.theme);rThemeControls();showToast('已套用「'+BUILT_IN_PRESETS[i].name+'」');
+}
+function applyCustomPreset(i){
+  const p=S.customPresets[i];if(!p)return;
+  S.theme=Object.assign({},p);
+  applyTheme(S.theme);rThemeControls();showToast('已套用「'+p.name+'」');
+}
+function deleteCustomPreset(i){
+  if(!confirm('刪除自訂主題「'+S.customPresets[i].name+'」？'))return;
+  S.customPresets.splice(i,1);save();rThemeControls();showToast('已刪除');
+}
+function saveCurrentAsPreset(){
+  const name=prompt('為這個配色命名：');
+  if(!name||!name.trim())return;
+  if(!S.customPresets)S.customPresets=[];
+  S.customPresets.push(Object.assign({},S.theme,{name:name.trim()}));
+  save();rThemeControls();showToast('已儲存「'+name.trim()+'」✓');
 }
 
 // ── LOAD / SAVE ──
 function load(){
+  // First try to read snapshot baked into the exported HTML (for GitHub uploads)
+  try{
+    const m=document.documentElement.innerHTML.match(/\/\/ __SNAPSHOT__: ({.+})/);
+    if(m){const snap=JSON.parse(m[1]);if(snap.items)S.items=snap.items;if(snap.theme)S.theme=snap.theme;if(snap.customPresets)S.customPresets=snap.customPresets;}
+  }catch(e){}
+  // Then layer on top any localStorage (current session edits take priority)
   try{
     const raw=localStorage.getItem(SK);if(!raw)return;
     const d=JSON.parse(raw);
     if(d.shopName)S.shopName=d.shopName;
     if(d.currency)S.currency=d.currency;
     if(d.items)S.items=d.items;
-    if(d.discPresets)S.discPresets=d.discPresets;
     if(d.daily&&d.daily.date===TODAY)S.daily=d.daily;
     if(d.theme)S.theme=d.theme;
+    if(d.customPresets)S.customPresets=d.customPresets;
   }catch(e){}
 }
-function save(){try{localStorage.setItem(SK,JSON.stringify({shopName:S.shopName,currency:S.currency,items:S.items,discPresets:S.discPresets,daily:S.daily,theme:S.theme}));}catch(e){}}
+function save(){try{localStorage.setItem(SK,JSON.stringify({shopName:S.shopName,currency:S.currency,items:S.items,daily:S.daily,theme:S.theme,customPresets:S.customPresets}));}catch(e){}}
 
 const cur=()=>S.currency||'$';
 const cats=()=>['全部',...new Set(S.items.map(i=>i.cat))];
 const filtered=()=>activeTab==='全部'?S.items:S.items.filter(i=>i.cat===activeTab);
+
+// ── BUNDLE PRICE CALC ──
+// Returns {total, saved, detail} for a single item with given qty
+function calcItemPrice(item, qty){
+  if(!item.bundles||!item.bundles.length) return {total:item.price*qty,saved:0,detail:null};
+  // Sort bundles descending by qty threshold
+  const sorted=[...item.bundles].filter(b=>b.qty>=2&&b.price>0).sort((a,b)=>b.qty-a.qty);
+  let remaining=qty, total=0, detail=[];
+  for(const b of sorted){
+    const sets=Math.floor(remaining/b.qty);
+    if(sets>0){total+=sets*b.price;remaining-=sets*b.qty;detail.push(`${sets}組×${b.qty}件=$${sets*b.price}`);}
+  }
+  total+=remaining*item.price;
+  const base=item.price*qty;
+  const saved=base-total;
+  return{total,saved,detail:detail.length?detail.join('、'):null};
+}
+
+// Build a short bundle hint string for item card (e.g. "2個$500")
+function bundleHint(item){
+  if(!item.bundles||!item.bundles.length)return'';
+  return item.bundles.filter(b=>b.qty>=2&&b.price>0).sort((a,b)=>a.qty-b.qty)
+    .map(b=>`${b.qty}個$${b.price}`).join('・');
+}
 
 function rAll(){
   const name=S.shopName||'文創小攤';
@@ -1233,31 +1213,29 @@ function rTabs(){
 function setTab(c){activeTab=c;rTabs();rGrid();}
 
 function rGrid(){
+  const cardHTML = item => {
+    const hint = bundleHint(item);
+    return `<div class="item-card" onclick="addCart(${item.id})">
+      <span class="ic-edit-btn" onclick="event.stopPropagation();openEditItem(${item.id})">✏️</span>
+      <span class="ic-emoji">${item.emoji||'🎁'}</span>
+      <span class="ic-name">${item.name}</span>
+      <span class="ic-price">${cur()}${item.price}</span>
+      ${hint?`<span class="ic-bundle">🎁 ${hint}</span>`:''}
+    </div>`;
+  };
   if(activeTab==='全部'){
     const catOrder=[...new Set(S.items.map(i=>i.cat))];
     let html='';
     catOrder.forEach(cat=>{
       const catItems=S.items.filter(i=>i.cat===cat);if(!catItems.length)return;
       html+=`<div class="cat-subtitle">${cat}</div>`;
-      html+=catItems.map(item=>`
-        <div class="item-card" onclick="addCart(${item.id})">
-          <span class="ic-edit-btn" onclick="event.stopPropagation();openEditItem(${item.id})">✏️</span>
-          <span class="ic-emoji">${item.emoji||'🎁'}</span>
-          <span class="ic-name">${item.name}</span>
-          <span class="ic-price">${cur()}${item.price}</span>
-        </div>`).join('');
+      html+=catItems.map(cardHTML).join('');
     });
     html+=`<div class="add-card" onclick="openAddItem()"><span style="font-size:24px">＋</span><span>新增</span></div>`;
     document.getElementById('itemsGrid').innerHTML=html;
   }else{
     document.getElementById('itemsGrid').innerHTML=
-      filtered().map(item=>`
-        <div class="item-card" onclick="addCart(${item.id})">
-          <span class="ic-edit-btn" onclick="event.stopPropagation();openEditItem(${item.id})">✏️</span>
-          <span class="ic-emoji">${item.emoji||'🎁'}</span>
-          <span class="ic-name">${item.name}</span>
-          <span class="ic-price">${cur()}${item.price}</span>
-        </div>`).join('')+
+      filtered().map(cardHTML).join('')+
       `<div class="add-card" onclick="openAddItem()"><span style="font-size:24px">＋</span><span>新增</span></div>`;
   }
 }
@@ -1265,7 +1243,7 @@ function rGrid(){
 // ── CART ──
 function addCart(id){S.cart[id]=(S.cart[id]||0)+1;rCart();updateCartBadge();}
 function changeQty(id,d){const n=(S.cart[id]||0)+d;if(n<=0)delete S.cart[id];else S.cart[id]=n;rCart();updateCartBadge();}
-function clearCart(){S.cart={};S.disc={label:null,rate:1};document.querySelectorAll('.dbtn').forEach(b=>b.classList.remove('on'));document.getElementById('customDiscInput').value='';document.getElementById('freeToggle').checked=false;rCart();updateCartBadge();}
+function clearCart(){S.cart={};rCart();updateCartBadge();}
 
 function updateCartBadge(){
   const total=Object.values(S.cart).reduce((a,b)=>a+b,0);
@@ -1276,41 +1254,34 @@ function updateCartBadge(){
 function rCart(){
   const keys=Object.keys(S.cart);
   const el=document.getElementById('cartScroll');
+  const bundleLine=document.getElementById('bundleSaveLine');
   if(!keys.length){
     el.innerHTML='<div class="empty-cart">🛒<br>點選左方商品<br>加入訂單</div>';
     document.getElementById('checkoutBtn').disabled=true;
     document.getElementById('totalVal').textContent=cur()+'0';
-    document.getElementById('subtotalLine').style.display='none';
-    document.getElementById('discLine').style.display='none';
+    if(bundleLine)bundleLine.style.display='none';
     return;
   }
-  let sub=0;
+  let total=0, totalSaved=0;
   el.innerHTML=keys.map(id=>{
     const item=S.items.find(i=>i.id==id);if(!item)return'';
-    const qty=S.cart[id];const s=item.price*qty;sub+=s;
-    return`<div class="cart-row"><span class="cart-name">${item.emoji||''} ${item.name}</span><div class="qty-ctrl"><button class="qbtn" onclick="changeQty(${id},-1)">−</button><span class="qnum">${qty}</span><button class="qbtn" onclick="changeQty(${id},1)">+</button></div><span class="cart-sub">${cur()}${s}</span></div>`;
+    const qty=S.cart[id];
+    const {total:itemTotal,saved}=calcItemPrice(item,qty);
+    total+=itemTotal; totalSaved+=saved;
+    const badge=saved>0?`<span class="cart-bundle-badge">省${cur()}${saved}</span>`:'';
+    return`<div class="cart-row"><span class="cart-name">${item.emoji||''} ${item.name}${badge}</span><div class="qty-ctrl"><button class="qbtn" onclick="changeQty(${id},-1)">−</button><span class="qnum">${qty}</span><button class="qbtn" onclick="changeQty(${id},1)">+</button></div><span class="cart-sub">${cur()}${itemTotal}</span></div>`;
   }).join('');
-  const total=S.disc.rate===0?0:Math.round(sub*S.disc.rate);
-  const saved=sub-total;
   document.getElementById('totalVal').textContent=cur()+total;
   document.getElementById('checkoutBtn').disabled=false;
-  if(S.disc.rate<1||S.disc.rate===0){
-    document.getElementById('subtotalLine').style.display='flex';document.getElementById('subtotalVal').textContent=cur()+sub;
-    document.getElementById('discLine').style.display='flex';
-    document.getElementById('discLabel').textContent=(S.disc.rate===0?'免費贈送':(S.disc.label||'折扣')+' 優惠');
-    document.getElementById('discVal').textContent='-'+cur()+saved;
-  }else{document.getElementById('subtotalLine').style.display='none';document.getElementById('discLine').style.display='none';}
+  if(bundleLine){
+    if(totalSaved>0){bundleLine.style.display='flex';document.getElementById('bundleSaveVal').textContent='-'+cur()+totalSaved;}
+    else bundleLine.style.display='none';
+  }
 }
 
 function rStats(){
   document.getElementById('revVal').textContent=cur()+S.daily.revenue;
   document.getElementById('cntVal').textContent=S.daily.count+' 筆';
-}
-
-function rPresetDisc(){
-  document.getElementById('presetDiscEl').innerHTML=
-    S.discPresets.map(p=>`<div class="dbtn" onclick="setDisc('${p.label}',${p.value/100})">${p.label}</div>`).join('')+
-    `<div class="dbtn" onclick="setDisc(null,1)" style="border-style:dashed">不折</div>`;
 }
 
 function setPayMethod(m){
@@ -1319,42 +1290,24 @@ function setPayMethod(m){
   cash.classList.remove('on','cash-on','lp-on');lp.classList.remove('on','cash-on','lp-on');
   if(m==='cash')cash.classList.add('on','cash-on');else lp.classList.add('on','lp-on');
 }
-function setDisc(label,rate){
-  document.querySelectorAll('.dbtn').forEach(b=>b.classList.remove('on'));
-  document.getElementById('freeToggle').checked=false;
-  if(label){S.disc={label,rate};event.target.classList.add('on');}
-  else{S.disc={label:null,rate:1};document.getElementById('customDiscInput').value='';}
-  rCart();
-}
-function applyCustomDisc(v){
-  const n=parseInt(v);document.getElementById('freeToggle').checked=false;
-  if(n>=1&&n<=99){S.disc={label:n+'折',rate:n/100};document.querySelectorAll('.dbtn').forEach(b=>b.classList.remove('on'));}
-  else if(!v){S.disc={label:null,rate:1};}
-  rCart();
-}
-function toggleFree(checked){
-  if(checked){S.disc={label:'免費',rate:0};document.querySelectorAll('.dbtn').forEach(b=>b.classList.remove('on'));document.getElementById('customDiscInput').value='';}
-  else{S.disc={label:null,rate:1};}
-  rCart();
-}
 
 // ── CHECKOUT ──
 function checkout(){
   const keys=Object.keys(S.cart);if(!keys.length)return;
-  let sub=0;
-  const names=keys.map(id=>{const item=S.items.find(i=>i.id==id);const qty=S.cart[id];sub+=item.price*qty;return qty>1?`${item.name}×${qty}`:item.name;});
-  const total=S.disc.rate===0?0:Math.round(sub*S.disc.rate);
-  const saved=sub-total;
+  let total=0, totalSaved=0;
+  const names=keys.map(id=>{
+    const item=S.items.find(i=>i.id==id);const qty=S.cart[id];
+    const {total:it,saved}=calcItemPrice(item,qty);
+    total+=it;totalSaved+=saved;
+    return qty>1?`${item.name}×${qty}`:item.name;
+  });
   const now=new Date();
   const time=now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
   S.daily.revenue+=total;S.daily.count+=1;
-  if(saved>0)S.daily.discSaved=(S.daily.discSaved||0)+saved;
-  S.daily.log.push({items:names.join('、'),time,amt:total,sub,saved,disc:S.disc.label,pay:activePayMethod});
-  S.cart={};S.disc={label:null,rate:1};
-  document.querySelectorAll('.dbtn').forEach(b=>b.classList.remove('on'));
-  document.getElementById('customDiscInput').value='';document.getElementById('freeToggle').checked=false;
+  S.daily.log.push({items:names.join('、'),time,amt:total,saved:totalSaved,pay:activePayMethod});
+  S.cart={};
   selectedHistDate=TODAY;
-  save();showToast('結帳完成 +'+cur()+total+(saved>0?' 省'+cur()+saved:''));rAll();updateCartBadge();
+  save();showToast('結帳完成 +'+cur()+total+(totalSaved>0?' 省'+cur()+totalSaved:''));rAll();updateCartBadge();
   if(activePanel==='hist'){rHistDateGrid();renderTodayHist(document.getElementById('histContent'));}
 }
 
@@ -1423,7 +1376,6 @@ function renderHistDateFull(el,date,data){
         <div class="log-top">
           <span class="log-no">#${idx+1}</span>
           <div class="log-right">
-            ${l.disc?`<span class="log-disc-badge">${l.disc}</span>`:''}
             <span class="pay-badge ${l.pay==='linepay'?'lp':'cash'}">${l.pay==='linepay'?'Line Pay':'現金'}</span>
             <span class="log-amt">${cur()}${l.amt}</span>
             <span class="log-time">${l.time||''}</span>
@@ -1526,7 +1478,7 @@ function saveHistNewEntry(date){
   const pay=document.getElementById('hist-new-entry-pay').value;const timeInput=document.getElementById('hist-new-entry-time').value;
   const now=new Date();const time=timeInput||now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
   const itemsStr=_histNewEntryItems.map(i=>i.qty>1?`${i.name}×${i.qty}`:i.name).join('、');
-  const entry={items:itemsStr,time,amt,sub:amt,saved:0,disc:null,pay};
+  const entry={items:itemsStr,time,amt,sub:amt,saved:0,pay};
   if(!HIST_DATA[date]){HIST_DATA[date]={total:amt,cash:pay==='cash'?amt:0,linepay:pay==='linepay'?amt:0,items:[],log:[entry]};}
   else{const data=HIST_DATA[date];if(!data.log)data.log=[];data.log.push(entry);data.total=(data.total||0)+amt;if(pay==='cash')data.cash=(data.cash||0)+amt;else data.linepay=(data.linepay||0)+amt;}
   _histNewEntryItems=[];
@@ -1565,7 +1517,6 @@ function renderTodayHist(el){
       <div class="log-top">
         <span class="log-no">#${no}</span>
         <div class="log-right">
-          ${l.disc?`<span class="log-disc-badge">${l.disc}</span>`:''}
           <span class="pay-badge ${l.pay==='linepay'?'lp':'cash'}">${l.pay==='linepay'?'Line Pay':'現金'}</span>
           <span class="log-amt">${cur()}${l.amt}</span>
           <span class="log-time">${l.time}</span>
@@ -1605,7 +1556,7 @@ function saveNewEntry(){
   const pay=document.getElementById('new-entry-pay').value;const timeInput=document.getElementById('new-entry-time').value;
   const now=new Date();const time=timeInput||now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
   const itemsStr=_newEntryItems.map(i=>i.qty>1?`${i.name}×${i.qty}`:i.name).join('、');
-  S.daily.log.push({items:itemsStr,time,amt,sub:amt,saved:0,disc:null,pay});
+  S.daily.log.push({items:itemsStr,time,amt,sub:amt,saved:0,pay});
   S.daily.revenue+=amt;S.daily.count+=1;_newEntryItems=[];
   document.getElementById('new-entry-form')&&document.getElementById('new-entry-form').remove();
   save();rStats();renderTodayHist(document.getElementById('histContent'));showToast('已新增 ✓');
@@ -1623,7 +1574,7 @@ function saveDayDate(){
   const existing=HIST_DATA[newDate];
   if(existing){HIST_DATA[newDate]={total:(existing.total||0)+S.daily.revenue,cash:(existing.cash||0)+cashTotal,linepay:(existing.linepay||0)+lpTotal,items:[...existing.items,...items],log:[...(existing.log||[]),...S.daily.log]};}
   else{HIST_DATA[newDate]={total:S.daily.revenue,cash:cashTotal,linepay:lpTotal,items,log:S.daily.log.slice()};}
-  S.daily={date:TODAY,revenue:0,discSaved:0,count:0,log:[]};
+  S.daily={date:TODAY,revenue:0,count:0,log:[]};
   save();rAll();selectedHistDate=newDate;rHist();selectHistDate(newDate);showToast(`已移動到 ${newDate} ✓`);
 }
 
@@ -1663,7 +1614,7 @@ function saveLogEdit(idx){
   const newDate=dateVal?formatInputToTW(dateVal):TODAY;const old=S.daily.log[idx];
   if(newDate!==TODAY){
     S.daily.revenue=Math.max(0,S.daily.revenue-old.amt);S.daily.count=Math.max(0,S.daily.count-1);S.daily.log.splice(idx,1);
-    const entry={items:itemsStr,time:old.time,amt,pay,disc:old.disc,saved:old.saved||0};
+    const entry={items:itemsStr,time:old.time,amt,pay,saved:old.saved||0};
     if(!HIST_DATA[newDate]){HIST_DATA[newDate]={total:amt,cash:pay==='cash'?amt:0,linepay:pay==='linepay'?amt:0,items:[],log:[entry]};}
     else{HIST_DATA[newDate].total=(HIST_DATA[newDate].total||0)+amt;if(pay==='cash')HIST_DATA[newDate].cash=(HIST_DATA[newDate].cash||0)+amt;else HIST_DATA[newDate].linepay=(HIST_DATA[newDate].linepay||0)+amt;if(!HIST_DATA[newDate].log)HIST_DATA[newDate].log=[];HIST_DATA[newDate].log.push(entry);}
     save();rStats();renderTodayHist(document.getElementById('histContent'));rHistDateGrid();showToast(`已移到 ${newDate} ✓`);
@@ -1707,22 +1658,13 @@ function rSummary(){
 function rSettings(){
   document.getElementById('sShopName').value=S.shopName||'';
   document.getElementById('sCurrency').value=S.currency||'$';
-  document.getElementById('discPresetList').innerHTML=S.discPresets.map((p,i)=>`
-    <div class="disc-preset-item">
-      <input class="dpi-lin" value="${p.label}" oninput="S.discPresets[${i}].label=this.value">
-      <input class="dpi-in" type="number" value="${p.value}" min="1" max="99" oninput="S.discPresets[${i}].value=parseInt(this.value)||0">
-      <span style="font-size:13px;color:var(--text2)">折</span>
-      <button class="dpi-del" onclick="removeDiscPreset(${i})">×</button>
-    </div>`).join('');
   rThemeControls();
 }
-function addDiscPreset(){S.discPresets.push({label:'新折扣',value:80});rSettings();}
-function removeDiscPreset(i){S.discPresets.splice(i,1);rSettings();}
 function saveSettings(){
   S.shopName=document.getElementById('sShopName').value.trim()||'文創小攤';
   S.currency=document.getElementById('sCurrency').value.trim()||'$';
   if(!S.theme)S.theme={...DEFAULT_STATE.theme};
-  save();rAll();rPresetDisc();showToast('設定已儲存 ✓');
+  save();rAll();showToast('設定已儲存 ✓');
 }
 function openSettingsPanel(){switchPanel('settings');}
 
@@ -1793,10 +1735,28 @@ function onDateChange(val){ACTIVE_DATE=formatInputToTW(val);load();rAll();}
 function resetToToday(){ACTIVE_DATE=REAL_TODAY;document.getElementById('datePickerInput').value=formatDateForInput(REAL_TODAY);load();rAll();}
 
 // ── ITEM MODAL ──
+let _modalBundles = [];
+
+function renderBundleRows(){
+  const el=document.getElementById('bundleRows');if(!el)return;
+  el.innerHTML=_modalBundles.map((b,i)=>`
+    <div class="bundle-row">
+      <span class="bundle-qty-label">買</span>
+      <input class="bundle-in qty" type="number" min="2" value="${b.qty}" placeholder="2" oninput="_modalBundles[${i}].qty=parseInt(this.value)||0">
+      <span class="bundle-qty-label">個</span>
+      <input class="bundle-in price" type="number" min="1" value="${b.price}" placeholder="500" oninput="_modalBundles[${i}].price=parseInt(this.value)||0">
+      <span class="bundle-qty-label">元</span>
+      <button class="bundle-del" onclick="removeBundleRow(${i})">×</button>
+    </div>`).join('');
+}
+function addBundleRow(){_modalBundles.push({qty:2,price:0});renderBundleRows();}
+function removeBundleRow(i){_modalBundles.splice(i,1);renderBundleRows();}
+
 function openAddItem(){
   document.getElementById('itemModalTitle').textContent='新增商品';document.getElementById('eid').value='';
   document.getElementById('iname').value='';document.getElementById('iprice').value='';
   document.getElementById('icat').value=activeTab==='全部'?'':activeTab;document.getElementById('iemoji').value='';
+  _modalBundles=[];renderBundleRows();
   document.getElementById('mdelBtn').style.display='none';renderEmojiRow(null);document.getElementById('itemModal').style.display='flex';
 }
 function openEditItem(id){
@@ -1804,6 +1764,7 @@ function openEditItem(id){
   document.getElementById('itemModalTitle').textContent='編輯商品';document.getElementById('eid').value=id;
   document.getElementById('iname').value=item.name;document.getElementById('iprice').value=item.price;
   document.getElementById('icat').value=item.cat;document.getElementById('iemoji').value=item.emoji||'';
+  _modalBundles=item.bundles?JSON.parse(JSON.stringify(item.bundles)):[];renderBundleRows();
   document.getElementById('mdelBtn').style.display='block';renderEmojiRow(item.emoji);document.getElementById('itemModal').style.display='flex';
 }
 function renderEmojiRow(sel){
@@ -1815,9 +1776,10 @@ function saveItem(){
   const name=document.getElementById('iname').value.trim();const price=parseInt(document.getElementById('iprice').value);
   const cat=document.getElementById('icat').value.trim()||'其他';const emoji=document.getElementById('iemoji').value.trim()||'💝';
   if(!name||!price||price<1){showToast('請填寫名稱與有效價格');return;}
+  const bundles=_modalBundles.filter(b=>b.qty>=2&&b.price>0);
   const eid=document.getElementById('eid').value;
-  if(eid){const item=S.items.find(i=>i.id==eid);if(item){item.name=name;item.price=price;item.cat=cat;item.emoji=emoji;}}
-  else S.items.push({id:Date.now(),name,price,cat,emoji});
+  if(eid){const item=S.items.find(i=>i.id==eid);if(item){item.name=name;item.price=price;item.cat=cat;item.emoji=emoji;item.bundles=bundles.length?bundles:undefined;}}
+  else S.items.push({id:Date.now(),name,price,cat,emoji,bundles:bundles.length?bundles:undefined});
   save();closeItemModal();rAll();
 }
 function delItem(){const eid=document.getElementById('eid').value;if(!eid)return;S.items=S.items.filter(i=>i.id!=eid);delete S.cart[eid];save();closeItemModal();rAll();}
@@ -1853,18 +1815,23 @@ function exportHTML(){
     }
   }
 
-  // Serialise HIST_DATA entries compactly (no pretty-print bloat)
   const histStr = 'const HIST_DATA = {\n' +
     Object.keys(allHist).sort().map(d=>{
       const v = allHist[d];
-      const items  = JSON.stringify(v.items||[]);
-      const log    = JSON.stringify(v.log||[]);
-      return `  ${JSON.stringify(d)}:{total:${v.total},cash:${v.cash||0},linepay:${v.linepay||0},items:${items},log:${log}}`;
+      return `  ${JSON.stringify(d)}:{total:${v.total},cash:${v.cash||0},linepay:${v.linepay||0},items:${JSON.stringify(v.items||[])},log:${JSON.stringify(v.log||[])}}`;
     }).join(',\n') + '\n};';
 
-  // Replace the HIST_DATA block in the raw source
   let src = document.documentElement.outerHTML;
   src = src.replace(/const HIST_DATA = \{[\s\S]*?\n\};/, histStr);
+
+  // Embed current items, theme, customPresets into DEFAULT_STATE snapshot
+  const snap = {
+    items: S.items,
+    theme: S.theme,
+    customPresets: S.customPresets||[]
+  };
+  src = src.replace(/\/\/ Custom presets are stored in S\.customPresets \[\]/,
+    `// Custom presets are stored in S.customPresets []\n// __SNAPSHOT__: ${JSON.stringify(snap)}`);
 
   const blob = new Blob([src],{type:'text/html;charset=utf-8'});
   const a = document.createElement('a');
@@ -1881,7 +1848,7 @@ load();
 loadBanner();
 // Always apply theme (default is 奶茶)
 applyTheme(S.theme || DEFAULT_STATE.theme);
-rPresetDisc();rAll();setPayMethod('cash');
+rAll();setPayMethod('cash');
 switchPanel('order');
 </script>
 
