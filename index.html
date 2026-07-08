@@ -996,8 +996,7 @@ const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const PRODUCT_BUCKET = 'product-images';
 const _now = new Date();
 const REAL_TODAY = _now.getFullYear()+'/'+String(_now.getMonth()+1).padStart(2,'0')+'/'+String(_now.getDate()).padStart(2,'0');
-let ACTIVE_DATE = REAL_TODAY;
-const TODAY = REAL_TODAY;
+let TODAY = REAL_TODAY;
 
 function formatDateForInput(twDate){
   const p=twDate.split('/');
@@ -1363,7 +1362,7 @@ function rCart(){
     const {total:itemTotal,saved}=calcItemPrice(item,qty);
     total+=itemTotal; totalSaved+=saved;
     const badge=saved>0?`<span class="cart-bundle-badge">省${cur()}${saved}</span>`:'';
-    return`<div class="cart-row"><span class="cart-name">${item.emoji||''} ${item.name}${badge}</span><div class="qty-ctrl"><button class="qbtn" onclick="changeQty(${id},-1)">−</button><span class="qnum">${qty}</span><button class="qbtn" onclick="changeQty(${id},1)">+</button></div><span class="cart-sub">${cur()}${itemTotal}</span></div>`;
+    return`<div class="cart-row"><span class="cart-name">${item.emoji||''} ${item.name}${badge}</span><div class="qty-ctrl"><button class="qbtn" onclick="changeQty('${id}',-1)">−</button><span class="qnum">${qty}</span><button class="qbtn" onclick="changeQty('${id}',1)">+</button></div><span class="cart-sub">${cur()}${itemTotal}</span></div>`;
   }).join('');
   document.getElementById('totalVal').textContent=cur()+total;
   document.getElementById('checkoutBtn').disabled=false;
@@ -1828,8 +1827,30 @@ function removeBanner(){localStorage.removeItem('pluddie_banner');applyBanner(nu
 function loadBanner(){const data=localStorage.getItem('pluddie_banner');if(data)applyBanner(data);}
 
 // ── DATE ──
-function onDateChange(val){ACTIVE_DATE=formatInputToTW(val);load();rAll();}
-function resetToToday(){ACTIVE_DATE=REAL_TODAY;document.getElementById('datePickerInput').value=formatDateForInput(REAL_TODAY);load();rAll();}
+async function onDateChange(val){await switchOperatingDate(formatInputToTW(val));}
+async function resetToToday(){
+  document.getElementById('datePickerInput').value=formatDateForInput(REAL_TODAY);
+  await switchOperatingDate(REAL_TODAY);
+}
+async function switchOperatingDate(newDate){
+  TODAY=newDate;
+  // 先用本地已有的資料頂著（若之前登入時已抓過這天的雲端紀錄）
+  if(HIST_DATA[TODAY]){
+    S.daily={date:TODAY,revenue:HIST_DATA[TODAY].total||0,count:(HIST_DATA[TODAY].log||[]).length,log:HIST_DATA[TODAY].log||[]};
+  }else{
+    S.daily={date:TODAY,revenue:0,count:0,log:[]};
+  }
+  // 再向雲端確認一次，避免別的裝置已經幫這天記過帳
+  try{
+    const {data,error}=await sb.from('daily_records').select('*').eq('date',TODAY).maybeSingle();
+    if(!error&&data){
+      const log=(data.data&&data.data.log)||[];
+      S.daily={date:TODAY,revenue:(data.data&&data.data.total)||0,count:log.length,log};
+    }
+  }catch(e){}
+  save();rAll();
+  if(activePanel==='hist'){selectedHistDate=TODAY;rHistDateGrid();selectHistDate(TODAY);}
+}
 
 // ── ITEM MODAL ──
 let _modalBundles = [];
