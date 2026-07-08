@@ -490,11 +490,6 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:16
 .cart-bundle-badge{font-size:11px;color:var(--accent);font-weight:600;background:var(--accent-bg);padding:1px 7px;border-radius:var(--rp);margin-left:4px}
 
 /* confirm */
-.confirm-box{background:var(--surface);border-radius:var(--rl);border:1px solid var(--border);padding:20px;width:280px;box-shadow:0 20px 60px rgba(0,0,0,.15)}
-.confirm-box h3{font-size:15px;font-weight:700;margin-bottom:8px}
-.confirm-box p{font-size:14px;color:var(--text2);margin-bottom:15px;line-height:1.6}
-.confirm-btns{display:flex;gap:7px}
-.confirm-btns button{flex:1;padding:10px;border-radius:var(--r);font-size:14px;cursor:pointer;font-family:var(--font);font-weight:500}
 
 /* toast */
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(8px);background:var(--text);color:var(--surface);padding:10px 20px;border-radius:var(--rp);font-size:14px;font-weight:500;opacity:0;transition:all .22s;pointer-events:none;z-index:300;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,.2)}
@@ -972,18 +967,6 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:16
   </div>
 </div>
 
-<!-- CONFIRM MODAL -->
-<div id="confirmModal" class="modal-overlay" style="display:none">
-  <div class="confirm-box">
-    <h3 id="confirmTitle"></h3>
-    <p id="confirmMsg"></p>
-    <div class="confirm-btns">
-      <button style="background:transparent;border:1px solid var(--border);color:var(--text2)" onclick="closeConfirm()">取消</button>
-      <button id="confirmOkBtn" style="background:var(--danger-bg);border:none;color:var(--danger)">確認</button>
-    </div>
-  </div>
-</div>
-
 <div class="toast" id="toastEl">已套用「奶茶」</div>
 
 <script>
@@ -1006,6 +989,10 @@ function formatDateForInput(twDate){
 function formatInputToTW(val){
   const p=val.split('-');
   return p[0]+'/'+String(parseInt(p[1])).padStart(2,'0')+'/'+String(parseInt(p[2])).padStart(2,'0');
+}
+function nowHM(){
+  const n=new Date();
+  return n.getHours().toString().padStart(2,'0')+':'+n.getMinutes().toString().padStart(2,'0');
 }
 document.getElementById('datePickerInput').value=formatDateForInput(REAL_TODAY);
 
@@ -1074,8 +1061,6 @@ const BUILT_IN_PRESETS = [
   {name:'原味',text:'#1A1916',text2:'#6B6960',text3:'#A8A69E',accent:'#0F6E56',accent2:'#185FA5',bg:'#FAFAF8',surface:'#FFFFFF',border:'#E0DED8'},
   {name:'暗夜',text:'#F0EEE8',text2:'#9B9890',text3:'#5C5A54',accent:'#7CCFB0',accent2:'#78B4F5',bg:'#0F1117',surface:'#1A1D27',border:'#2E3140'},
 ];
-// Custom presets are stored in S.customPresets []
-// __SNAPSHOT__: {"items":[{"id":1,"name":"絨毛娃娃吊飾","price":300,"cat":"娃娃","emoji":"🐻","bundles":[{"qty":2,"price":500}]},{"id":2,"name":"壓克力吊飾","price":50,"cat":"壓克力","emoji":"💝","bundles":[{"qty":3,"price":100}]},{"id":3,"name":"壓克力夾子","price":50,"cat":"壓克力","emoji":"💝"},{"id":4,"name":"壓克力軟磁鐵","price":50,"cat":"壓克力","emoji":"💝"},{"id":5,"name":"A5透明貼紙","price":80,"cat":"貼紙","emoji":"🎨","bundles":[{"qty":2,"price":150}]},{"id":6,"name":"A6透明貼紙","price":60,"cat":"貼紙","emoji":"🎨","bundles":[{"qty":2,"price":100}]},{"id":7,"name":"明信片","price":50,"cat":"紙品","emoji":"📮","bundles":[{"qty":3,"price":100}]},{"id":8,"name":"磁鐵徽章","price":150,"cat":"其他","emoji":"⭐"},{"id":9,"name":"手工毛線杯墊","price":250,"cat":"其他","emoji":"🦁"},{"id":10,"name":"針織袋","price":300,"cat":"其他","emoji":"👜","bundles":[{"qty":2,"price":500}]},{"id":11,"name":"扭蛋機","price":50,"cat":"其他","emoji":"⭐"},{"id":12,"name":"焦慮小卡","price":50,"cat":"紙品","emoji":"📮","bundles":[{"qty":3,"price":100}]},{"id":13,"name":"餅乾別針","price":50,"cat":"其他","emoji":"🍪"},{"id":14,"name":"Fidget Clicker","price":100,"cat":"其他","emoji":"🍪"},{"id":15,"name":"壓克力鏡子","price":200,"cat":"壓克力","emoji":"💎"},{"id":16,"name":"陶瓷杯墊","price":100,"cat":"其他","emoji":"🦁"}],"theme":{"name":"奶茶","text":"#2C1D0E","text2":"#7A6553","text3":"#B3A090","accent":"#8B5E3C","accent2":"#C08B5C","bg":"#FAF5EF","surface":"#FFFFFF","border":"#DDD0C0"},"customPresets":[]}
 
 function applyTheme(t){
   const r=document.documentElement.style;
@@ -1284,6 +1269,28 @@ const cur=()=>S.currency||'$';
 const cats=()=>['全部',...new Set(S.items.map(i=>i.cat))];
 const filtered=()=>activeTab==='全部'?S.items:S.items.filter(i=>i.cat===activeTab);
 
+// 把交易紀錄裡的商品字串（例如「壓克力吊飾×3、明信片」）解析成 [{name,qty}]
+// 供編輯彈窗回填、移動日期時重新統計品項數量共用
+function parseItemsString(str){
+  return (str||'').split('、').filter(Boolean).map(s=>{
+    const m=s.match(/^(.+?)×(\d+)$/)||[null,s.trim(),'1'];
+    return{name:m[1].trim(),qty:parseInt(m[2])||1};
+  });
+}
+// 把 [{name,qty}] 組回交易紀錄用的商品字串
+function itemsToString(items){
+  return items.map(i=>i.qty>1?`${i.name}×${i.qty}`:i.name).join('、');
+}
+// 商品下拉選單選項（新增/編輯交易紀錄的品項選擇器共用）
+function itemOptionsHTML(){
+  return S.items.map(i=>`<option value="${i.name}">${i.emoji||''} ${i.name} (${cur()}${i.price})</option>`).join('');
+}
+// 已加入品項的標籤列表（可移除），onRemove(ti) 回傳該標籤的移除按鈕 onclick 內容
+function tagPillsHTML(items,onRemove){
+  if(!items.length)return'<span style="font-size:12px;color:var(--text3)">尚未加入商品</span>';
+  return items.map((it,ti)=>`<span class="item-tag">${it.name}${it.qty>1?'×'+it.qty:''}<span class="item-tag-del" onclick="${onRemove(ti)}">×</span></span>`).join('');
+}
+
 // ── BUNDLE PRICE CALC ──
 // Returns {total, saved, detail} for a single item with given qty
 function calcItemPrice(item, qty){
@@ -1416,10 +1423,8 @@ function checkout(){
     total+=it;totalSaved+=saved;
     return qty>1?`${item.name}×${qty}`:item.name;
   });
-  const now=new Date();
-  const time=now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
   S.daily.revenue+=total;S.daily.count+=1;
-  S.daily.log.push({items:names.join('、'),time,amt:total,saved:totalSaved,pay:activePayMethod});
+  S.daily.log.push({items:names.join('、'),time:nowHM(),amt:total,saved:totalSaved,pay:activePayMethod});
   S.cart={};
   selectedHistDate=TODAY;
   save();pushDateToCloud(TODAY);showToast('結帳完成 +'+cur()+total+(totalSaved>0?' 省'+cur()+totalSaved:''));rAll();updateCartBadge();
@@ -1514,16 +1519,14 @@ function openHistLogEdit(date,idx){
   const data=HIST_DATA[date];if(!data||!data.log)return;
   const l=data.log[idx];const rowEl=document.getElementById('histlogrow-'+date+'-'+idx);
   document.querySelectorAll('.log-edit-row').forEach(e=>e.remove());
-  const key=date+'-'+idx;_histEditItems[key]=[];
-  l.items.split('、').forEach(s=>{const m=s.match(/^(.+?)×(\d+)$/)||[null,s.trim(),'1'];_histEditItems[key].push({name:m[1].trim(),qty:parseInt(m[2])||1});});
+  const key=date+'-'+idx;_histEditItems[key]=parseItemsString(l.items);
   const editDiv=document.createElement('div');editDiv.className='log-edit-row';editDiv.id='hist-edit-wrap-'+key;
   editDiv.innerHTML=buildHistLogEditHTML(date,idx,l);rowEl.appendChild(editDiv);
 }
 function buildHistLogEditHTML(date,idx,l){
   const key=date+'-'+idx;
-  const tags=(_histEditItems[key]||[]).map((it,ti)=>`<span class="item-tag">${it.name}${it.qty>1?'×'+it.qty:''}<span class="item-tag-del" onclick="removeHistEditItem('${key}',${ti})">×</span></span>`).join('');
-  const itemOptions=S.items.map(i=>`<option value="${i.name}">${i.emoji||''} ${i.name} (${cur()}${i.price})</option>`).join('');
-  return`<div class="item-picker-wrap"><div class="ip-label">商品項目</div><div id="hist-edit-tags-${key}">${tags||'<span style="font-size:12px;color:var(--text3)">尚未加入商品</span>'}</div><div class="item-add-row"><select id="hist-edit-isel-${key}" onchange="onHistEditSelChange('${key}')"><option value="">＋ 選擇商品…</option>${itemOptions}<option value="__custom__">✏️ 手動輸入…</option></select><input id="hist-edit-iname-${key}" type="text" placeholder="商品名稱" style="display:none;flex:1;min-width:0"><input id="hist-edit-iqty-${key}" type="number" value="1" min="1" class="item-qty-input"><button class="item-add-btn" onclick="addHistEditItem('${key}')">加入</button></div></div><div style="display:flex;gap:6px;flex-wrap:wrap;align-items:flex-end;margin-bottom:5px"><div><div style="font-size:11px;color:var(--text2);margin-bottom:2px">實收金額</div><input id="hist-edit-amt-${key}" type="number" value="${l.amt}" style="width:78px"></div><div><div style="font-size:11px;color:var(--text2);margin-bottom:2px">付款方式</div><select id="hist-edit-pay-${key}"><option value="cash" ${(l.pay||'cash')==='cash'?'selected':''}>現金</option><option value="linepay" ${l.pay==='linepay'?'selected':''}>Line Pay</option></select></div></div><div class="log-edit-actions"><button class="log-edit-save" onclick="saveHistLogEdit('${date}',${idx})">儲存</button><button class="log-edit-del" onclick="deleteHistLogEntry('${date}',${idx})">刪除</button><button class="log-edit-cancel" onclick="cancelHistLogEdit('${key}')">取消</button></div>`;
+  const tags=tagPillsHTML(_histEditItems[key]||[],ti=>`removeHistEditItem('${key}',${ti})`);
+  return`<div class="item-picker-wrap"><div class="ip-label">商品項目</div><div id="hist-edit-tags-${key}">${tags}</div><div class="item-add-row"><select id="hist-edit-isel-${key}" onchange="onHistEditSelChange('${key}')"><option value="">＋ 選擇商品…</option>${itemOptionsHTML()}<option value="__custom__">✏️ 手動輸入…</option></select><input id="hist-edit-iname-${key}" type="text" placeholder="商品名稱" style="display:none;flex:1;min-width:0"><input id="hist-edit-iqty-${key}" type="number" value="1" min="1" class="item-qty-input"><button class="item-add-btn" onclick="addHistEditItem('${key}')">加入</button></div></div><div style="display:flex;gap:6px;flex-wrap:wrap;align-items:flex-end;margin-bottom:5px"><div><div style="font-size:11px;color:var(--text2);margin-bottom:2px">實收金額</div><input id="hist-edit-amt-${key}" type="number" value="${l.amt}" style="width:78px"></div><div><div style="font-size:11px;color:var(--text2);margin-bottom:2px">付款方式</div><select id="hist-edit-pay-${key}"><option value="cash" ${(l.pay||'cash')==='cash'?'selected':''}>現金</option><option value="linepay" ${l.pay==='linepay'?'selected':''}>Line Pay</option></select></div></div><div class="log-edit-actions"><button class="log-edit-save" onclick="saveHistLogEdit('${date}',${idx})">儲存</button><button class="log-edit-del" onclick="deleteHistLogEntry('${date}',${idx})">刪除</button><button class="log-edit-cancel" onclick="cancelHistLogEdit('${key}')">取消</button></div>`;
 }
 function onHistEditSelChange(key){const sel=document.getElementById('hist-edit-isel-'+key);const ni=document.getElementById('hist-edit-iname-'+key);ni.style.display=sel.value==='__custom__'?'':'none';if(sel.value==='__custom__')ni.focus();}
 function addHistEditItem(key){
@@ -1533,17 +1536,15 @@ function addHistEditItem(key){
   if(!_histEditItems[key])_histEditItems[key]=[];const ex=_histEditItems[key].find(i=>i.name===name);
   if(ex)ex.qty+=qty;else _histEditItems[key].push({name,qty});
   sel.value='';ni.value='';ni.style.display='none';document.getElementById('hist-edit-iqty-'+key).value=1;
-  const tags=_histEditItems[key].map((it,ti)=>`<span class="item-tag">${it.name}${it.qty>1?'×'+it.qty:''}<span class="item-tag-del" onclick="removeHistEditItem('${key}',${ti})">×</span></span>`).join('');
-  document.getElementById('hist-edit-tags-'+key).innerHTML=tags||'<span style="font-size:12px;color:var(--text3)">尚未加入商品</span>';
+  document.getElementById('hist-edit-tags-'+key).innerHTML=tagPillsHTML(_histEditItems[key],ti=>`removeHistEditItem('${key}',${ti})`);
 }
 function removeHistEditItem(key,ti){
   _histEditItems[key].splice(ti,1);
-  const tags=_histEditItems[key].map((it,ti2)=>`<span class="item-tag">${it.name}${it.qty>1?'×'+it.qty:''}<span class="item-tag-del" onclick="removeHistEditItem('${key}',${ti2})">×</span></span>`).join('');
-  document.getElementById('hist-edit-tags-'+key).innerHTML=tags||'<span style="font-size:12px;color:var(--text3)">尚未加入商品</span>';
+  document.getElementById('hist-edit-tags-'+key).innerHTML=tagPillsHTML(_histEditItems[key],ti2=>`removeHistEditItem('${key}',${ti2})`);
 }
 function saveHistLogEdit(date,idx){
   const key=date+'-'+idx;const editedItems=_histEditItems[key]||[];if(!editedItems.length){showToast('請至少加入一項商品');return;}
-  const itemsStr=editedItems.map(i=>i.qty>1?`${i.name}×${i.qty}`:i.name).join('、');
+  const itemsStr=itemsToString(editedItems);
   const amt=parseInt(document.getElementById('hist-edit-amt-'+key).value)||0;
   const pay=document.getElementById('hist-edit-pay-'+key).value;
   const data=HIST_DATA[date];const old=data.log[idx];
@@ -1571,9 +1572,8 @@ function openHistNewEntry(date){
   const el=document.getElementById('histContent');const existing=document.getElementById('hist-new-entry-form');
   if(existing){existing.remove();return;}
   _histNewEntryItems=[];
-  const itemOptions=S.items.map(i=>`<option value="${i.name}">${i.emoji||''} ${i.name} (${cur()}${i.price})</option>`).join('');
   const formDiv=document.createElement('div');formDiv.id='hist-new-entry-form';formDiv.className='log-edit-row';formDiv.style.marginBottom='12px';formDiv.dataset.date=date;
-  formDiv.innerHTML=`<div style="font-size:13px;font-weight:600;color:var(--text2);margin-bottom:8px">新增筆記</div><div class="item-picker-wrap"><div class="ip-label">商品項目</div><div id="hist-new-entry-tags"></div><div class="item-add-row"><select id="hist-new-entry-isel" onchange="onHistNewEntrySelChange()"><option value="">＋ 選擇商品…</option>${itemOptions}<option value="__custom__">✏️ 手動輸入…</option></select><input id="hist-new-entry-iname" type="text" placeholder="商品名稱" style="display:none;flex:1;min-width:0"><input id="hist-new-entry-iqty" type="number" value="1" min="1" class="item-qty-input"><button class="item-add-btn" onclick="addHistNewEntryItem()">加入</button></div></div><div style="display:flex;gap:6px;flex-wrap:wrap;align-items:flex-end;margin-bottom:5px"><div><div style="font-size:11px;color:var(--text2);margin-bottom:2px">實收金額</div><input id="hist-new-entry-amt" type="number" placeholder="0" style="width:78px"></div><div><div style="font-size:11px;color:var(--text2);margin-bottom:2px">付款方式</div><select id="hist-new-entry-pay"><option value="cash">現金</option><option value="linepay">Line Pay</option></select></div><div><div style="font-size:11px;color:var(--text2);margin-bottom:2px">時間（選填）</div><input id="hist-new-entry-time" type="time" style="font-size:13px;padding:5px 7px"></div></div><div class="log-edit-actions"><button class="log-edit-save" onclick="saveHistNewEntry('${date}')">新增</button><button class="log-edit-cancel" onclick="document.getElementById('hist-new-entry-form').remove()">取消</button></div>`;
+  formDiv.innerHTML=`<div style="font-size:13px;font-weight:600;color:var(--text2);margin-bottom:8px">新增筆記</div><div class="item-picker-wrap"><div class="ip-label">商品項目</div><div id="hist-new-entry-tags"></div><div class="item-add-row"><select id="hist-new-entry-isel" onchange="onHistNewEntrySelChange()"><option value="">＋ 選擇商品…</option>${itemOptionsHTML()}<option value="__custom__">✏️ 手動輸入…</option></select><input id="hist-new-entry-iname" type="text" placeholder="商品名稱" style="display:none;flex:1;min-width:0"><input id="hist-new-entry-iqty" type="number" value="1" min="1" class="item-qty-input"><button class="item-add-btn" onclick="addHistNewEntryItem()">加入</button></div></div><div style="display:flex;gap:6px;flex-wrap:wrap;align-items:flex-end;margin-bottom:5px"><div><div style="font-size:11px;color:var(--text2);margin-bottom:2px">實收金額</div><input id="hist-new-entry-amt" type="number" placeholder="0" style="width:78px"></div><div><div style="font-size:11px;color:var(--text2);margin-bottom:2px">付款方式</div><select id="hist-new-entry-pay"><option value="cash">現金</option><option value="linepay">Line Pay</option></select></div><div><div style="font-size:11px;color:var(--text2);margin-bottom:2px">時間（選填）</div><input id="hist-new-entry-time" type="time" style="font-size:13px;padding:5px 7px"></div></div><div class="log-edit-actions"><button class="log-edit-save" onclick="saveHistNewEntry('${date}')">新增</button><button class="log-edit-cancel" onclick="document.getElementById('hist-new-entry-form').remove()">取消</button></div>`;
   el.insertBefore(formDiv,el.children[2]||null);
 }
 function onHistNewEntrySelChange(){const sel=document.getElementById('hist-new-entry-isel');const ni=document.getElementById('hist-new-entry-iname');ni.style.display=sel.value==='__custom__'?'':'none';if(sel.value==='__custom__')ni.focus();}
@@ -1587,16 +1587,15 @@ function addHistNewEntryItem(){
 }
 function refreshHistNewEntryTags(){
   const tags=document.getElementById('hist-new-entry-tags');if(!tags)return;
-  tags.innerHTML=_histNewEntryItems.map((it,ti)=>`<span class="item-tag">${it.name}${it.qty>1?'×'+it.qty:''}<span class="item-tag-del" onclick="removeHistNewEntryItem(${ti})">×</span></span>`).join('')||'<span style="font-size:12px;color:var(--text3)">尚未加入商品</span>';
+  tags.innerHTML=tagPillsHTML(_histNewEntryItems,ti=>`removeHistNewEntryItem(${ti})`);
 }
 function removeHistNewEntryItem(ti){_histNewEntryItems.splice(ti,1);refreshHistNewEntryTags();}
 function saveHistNewEntry(date){
   if(!_histNewEntryItems.length){showToast('請至少加入一項商品');return;}
   const amt=parseInt(document.getElementById('hist-new-entry-amt').value)||0;if(amt<1){showToast('請輸入實收金額');return;}
   const pay=document.getElementById('hist-new-entry-pay').value;const timeInput=document.getElementById('hist-new-entry-time').value;
-  const now=new Date();const time=timeInput||now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
-  const itemsStr=_histNewEntryItems.map(i=>i.qty>1?`${i.name}×${i.qty}`:i.name).join('、');
-  const entry={items:itemsStr,time,amt,sub:amt,saved:0,pay};
+  const time=timeInput||nowHM();
+  const entry={items:itemsToString(_histNewEntryItems),time,amt,saved:0,pay};
   if(!HIST_DATA[date]){HIST_DATA[date]={total:amt,cash:pay==='cash'?amt:0,linepay:pay==='linepay'?amt:0,items:[],log:[entry]};}
   else{const data=HIST_DATA[date];if(!data.log)data.log=[];data.log.push(entry);data.total=(data.total||0)+amt;if(pay==='cash')data.cash=(data.cash||0)+amt;else data.linepay=(data.linepay||0)+amt;}
   _histNewEntryItems=[];
@@ -1659,9 +1658,8 @@ let _newEntryItems=[];
 function openNewEntry(){
   document.querySelectorAll('.log-edit-row').forEach(e=>e.remove());
   const el=document.getElementById('histContent');const existing=document.getElementById('new-entry-form');if(existing){existing.remove();return;}
-  const itemOptions=S.items.map(i=>`<option value="${i.name}">${i.emoji||''} ${i.name} (${cur()}${i.price})</option>`).join('');
   const formDiv=document.createElement('div');formDiv.id='new-entry-form';formDiv.className='log-edit-row';formDiv.style.marginBottom='12px';
-  formDiv.innerHTML=`<div style="font-size:13px;font-weight:600;color:var(--text2);margin-bottom:8px">新增筆記</div><div class="item-picker-wrap"><div class="ip-label">商品項目</div><div id="new-entry-tags"></div><div class="item-add-row"><select id="new-entry-isel" onchange="onNewEntrySelChange()"><option value="">＋ 選擇商品…</option>${itemOptions}<option value="__custom__">✏️ 手動輸入…</option></select><input id="new-entry-iname" type="text" placeholder="商品名稱" style="display:none;flex:1;min-width:0"><input id="new-entry-iqty" type="number" value="1" min="1" class="item-qty-input"><button class="item-add-btn" onclick="addNewEntryItem()">加入</button></div></div><div style="display:flex;gap:6px;flex-wrap:wrap;align-items:flex-end;margin-bottom:5px"><div><div style="font-size:11px;color:var(--text2);margin-bottom:2px">實收金額</div><input id="new-entry-amt" type="number" placeholder="0" style="width:78px"></div><div><div style="font-size:11px;color:var(--text2);margin-bottom:2px">付款方式</div><select id="new-entry-pay"><option value="cash">現金</option><option value="linepay">Line Pay</option></select></div><div><div style="font-size:11px;color:var(--text2);margin-bottom:2px">時間（選填）</div><input id="new-entry-time" type="time" style="font-size:13px;padding:5px 7px"></div></div><div class="log-edit-actions"><button class="log-edit-save" onclick="saveNewEntry()">新增</button><button class="log-edit-cancel" onclick="document.getElementById('new-entry-form').remove()">取消</button></div>`;
+  formDiv.innerHTML=`<div style="font-size:13px;font-weight:600;color:var(--text2);margin-bottom:8px">新增筆記</div><div class="item-picker-wrap"><div class="ip-label">商品項目</div><div id="new-entry-tags"></div><div class="item-add-row"><select id="new-entry-isel" onchange="onNewEntrySelChange()"><option value="">＋ 選擇商品…</option>${itemOptionsHTML()}<option value="__custom__">✏️ 手動輸入…</option></select><input id="new-entry-iname" type="text" placeholder="商品名稱" style="display:none;flex:1;min-width:0"><input id="new-entry-iqty" type="number" value="1" min="1" class="item-qty-input"><button class="item-add-btn" onclick="addNewEntryItem()">加入</button></div></div><div style="display:flex;gap:6px;flex-wrap:wrap;align-items:flex-end;margin-bottom:5px"><div><div style="font-size:11px;color:var(--text2);margin-bottom:2px">實收金額</div><input id="new-entry-amt" type="number" placeholder="0" style="width:78px"></div><div><div style="font-size:11px;color:var(--text2);margin-bottom:2px">付款方式</div><select id="new-entry-pay"><option value="cash">現金</option><option value="linepay">Line Pay</option></select></div><div><div style="font-size:11px;color:var(--text2);margin-bottom:2px">時間（選填）</div><input id="new-entry-time" type="time" style="font-size:13px;padding:5px 7px"></div></div><div class="log-edit-actions"><button class="log-edit-save" onclick="saveNewEntry()">新增</button><button class="log-edit-cancel" onclick="document.getElementById('new-entry-form').remove()">取消</button></div>`;
   el.insertBefore(formDiv,el.children[2]||null);
 }
 function onNewEntrySelChange(){const sel=document.getElementById('new-entry-isel');const ni=document.getElementById('new-entry-iname');ni.style.display=sel.value==='__custom__'?'':'none';if(sel.value==='__custom__')ni.focus();}
@@ -1674,15 +1672,14 @@ function addNewEntryItem(){
 function removeNewEntryItem(ti){_newEntryItems.splice(ti,1);refreshNewEntryTags();}
 function refreshNewEntryTags(){
   const tags=document.getElementById('new-entry-tags');if(!tags)return;
-  tags.innerHTML=_newEntryItems.map((it,ti)=>`<span class="item-tag">${it.name}${it.qty>1?'×'+it.qty:''}<span class="item-tag-del" onclick="removeNewEntryItem(${ti})">×</span></span>`).join('')||'<span style="font-size:12px;color:var(--text3)">尚未加入商品</span>';
+  tags.innerHTML=tagPillsHTML(_newEntryItems,ti=>`removeNewEntryItem(${ti})`);
 }
 function saveNewEntry(){
   if(!_newEntryItems.length){showToast('請至少加入一項商品');return;}
   const amt=parseInt(document.getElementById('new-entry-amt').value)||0;if(amt<1){showToast('請輸入實收金額');return;}
   const pay=document.getElementById('new-entry-pay').value;const timeInput=document.getElementById('new-entry-time').value;
-  const now=new Date();const time=timeInput||now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
-  const itemsStr=_newEntryItems.map(i=>i.qty>1?`${i.name}×${i.qty}`:i.name).join('、');
-  S.daily.log.push({items:itemsStr,time,amt,sub:amt,saved:0,pay});
+  const time=timeInput||nowHM();
+  S.daily.log.push({items:itemsToString(_newEntryItems),time,amt,saved:0,pay});
   S.daily.revenue+=amt;S.daily.count+=1;_newEntryItems=[];
   document.getElementById('new-entry-form')&&document.getElementById('new-entry-form').remove();
   save();pushDateToCloud(TODAY);rStats();renderTodayHist(document.getElementById('histContent'));showToast('已新增 ✓');
@@ -1693,7 +1690,7 @@ function toggleDayDateEdit(){const row=document.getElementById('dayDateEditRow')
 function saveDayDate(){
   const val=document.getElementById('dayDateInput').value;if(!val){showToast('請選擇日期');return;}
   const newDate=formatInputToTW(val);if(newDate===TODAY){showToast('日期相同，無需移動');return;}
-  const itemMap={};S.daily.log.forEach(l=>{l.items.split('、').forEach(s=>{const m=s.match(/^(.+?)×(\d+)$/)||s.match(/^(.+)$/);const name=m[1].trim();const qty=m[2]?parseInt(m[2]):1;itemMap[name]=(itemMap[name]||0)+qty;});});
+  const itemMap={};S.daily.log.forEach(l=>parseItemsString(l.items).forEach(({name,qty})=>{itemMap[name]=(itemMap[name]||0)+qty;}));
   const items=Object.entries(itemMap).map(([name,qty])=>({name,qty,sub:0,price:0}));
   const cashTotal=S.daily.log.filter(l=>l.pay==='cash').reduce((a,l)=>a+l.amt,0);
   const lpTotal=S.daily.log.filter(l=>l.pay==='linepay').reduce((a,l)=>a+l.amt,0);
@@ -1709,14 +1706,13 @@ const _editItems={};
 function openLogEdit(idx){
   const l=S.daily.log[idx];const rowEl=document.getElementById('logrow-'+idx);
   document.querySelectorAll('.log-edit-row').forEach(e=>e.remove());
-  _editItems[idx]=[];l.items.split('、').forEach(s=>{const m=s.match(/^(.+?)×(\d+)$/)||[null,s.trim(),'1'];_editItems[idx].push({name:m[1].trim(),qty:parseInt(m[2])||1});});
+  _editItems[idx]=parseItemsString(l.items);
   const editDiv=document.createElement('div');editDiv.className='log-edit-row';editDiv.id='edit-wrap-'+idx;
   editDiv.innerHTML=buildLogEditHTML(idx,l);rowEl.appendChild(editDiv);
 }
 function buildLogEditHTML(idx,l){
-  const tags=(_editItems[idx]||[]).map((it,ti)=>`<span class="item-tag">${it.name}${it.qty>1?'×'+it.qty:''}<span class="item-tag-del" onclick="removeEditItem(${idx},${ti})">×</span></span>`).join('');
-  const itemOptions=S.items.map(i=>`<option value="${i.name}">${i.emoji||''} ${i.name} (${cur()}${i.price})</option>`).join('');
-  return`<div class="item-picker-wrap"><div class="ip-label">商品項目</div><div id="edit-tags-${idx}">${tags||'<span style="font-size:12px;color:var(--text3)">尚未加入商品</span>'}</div><div class="item-add-row"><select id="edit-isel-${idx}" onchange="onEditItemSelChange(${idx})"><option value="">＋ 選擇商品…</option>${itemOptions}<option value="__custom__">✏️ 手動輸入…</option></select><input id="edit-iname-${idx}" type="text" placeholder="商品名稱" style="display:none;flex:1;min-width:0"><input id="edit-iqty-${idx}" type="number" value="1" min="1" class="item-qty-input"><button class="item-add-btn" onclick="addEditItem(${idx})">加入</button></div></div><div style="display:flex;gap:6px;flex-wrap:wrap;align-items:flex-end;margin-bottom:5px"><div><div style="font-size:11px;color:var(--text2);margin-bottom:2px">實收金額</div><input id="edit-amt-${idx}" type="number" value="${l.amt}" style="width:78px"></div><div><div style="font-size:11px;color:var(--text2);margin-bottom:2px">付款方式</div><select id="edit-pay-${idx}"><option value="cash" ${(l.pay||'cash')==='cash'?'selected':''}>現金</option><option value="linepay" ${l.pay==='linepay'?'selected':''}>Line Pay</option></select></div><div><div style="font-size:11px;color:var(--text2);margin-bottom:2px">移到日期</div><input id="edit-date-${idx}" type="date" value="${formatDateForInput(TODAY)}" style="font-size:13px;padding:5px 7px"></div></div><div class="log-edit-actions"><button class="log-edit-save" onclick="saveLogEdit(${idx})">儲存</button><button class="log-edit-del" onclick="deleteLogEntry(${idx})">刪除</button><button class="log-edit-cancel" onclick="cancelLogEdit()">取消</button></div>`;
+  const tags=tagPillsHTML(_editItems[idx]||[],ti=>`removeEditItem(${idx},${ti})`);
+  return`<div class="item-picker-wrap"><div class="ip-label">商品項目</div><div id="edit-tags-${idx}">${tags}</div><div class="item-add-row"><select id="edit-isel-${idx}" onchange="onEditItemSelChange(${idx})"><option value="">＋ 選擇商品…</option>${itemOptionsHTML()}<option value="__custom__">✏️ 手動輸入…</option></select><input id="edit-iname-${idx}" type="text" placeholder="商品名稱" style="display:none;flex:1;min-width:0"><input id="edit-iqty-${idx}" type="number" value="1" min="1" class="item-qty-input"><button class="item-add-btn" onclick="addEditItem(${idx})">加入</button></div></div><div style="display:flex;gap:6px;flex-wrap:wrap;align-items:flex-end;margin-bottom:5px"><div><div style="font-size:11px;color:var(--text2);margin-bottom:2px">實收金額</div><input id="edit-amt-${idx}" type="number" value="${l.amt}" style="width:78px"></div><div><div style="font-size:11px;color:var(--text2);margin-bottom:2px">付款方式</div><select id="edit-pay-${idx}"><option value="cash" ${(l.pay||'cash')==='cash'?'selected':''}>現金</option><option value="linepay" ${l.pay==='linepay'?'selected':''}>Line Pay</option></select></div><div><div style="font-size:11px;color:var(--text2);margin-bottom:2px">移到日期</div><input id="edit-date-${idx}" type="date" value="${formatDateForInput(TODAY)}" style="font-size:13px;padding:5px 7px"></div></div><div class="log-edit-actions"><button class="log-edit-save" onclick="saveLogEdit(${idx})">儲存</button><button class="log-edit-del" onclick="deleteLogEntry(${idx})">刪除</button><button class="log-edit-cancel" onclick="cancelLogEdit()">取消</button></div>`;
 }
 function onEditItemSelChange(idx){const sel=document.getElementById('edit-isel-'+idx);const ni=document.getElementById('edit-iname-'+idx);ni.style.display=sel.value==='__custom__'?'':'none';if(sel.value==='__custom__')ni.focus();}
 function addEditItem(idx){
@@ -1724,17 +1720,15 @@ function addEditItem(idx){
   if(sel.value==='__custom__'){name=ni.value.trim();if(!name){showToast('請輸入商品名稱');return;}}else{name=sel.value;if(!name){showToast('請選擇商品');return;}}
   if(!_editItems[idx])_editItems[idx]=[];const ex=_editItems[idx].find(i=>i.name===name);if(ex)ex.qty+=qty;else _editItems[idx].push({name,qty});
   sel.value='';ni.value='';ni.style.display='none';document.getElementById('edit-iqty-'+idx).value=1;
-  const tags=_editItems[idx].map((it,ti)=>`<span class="item-tag">${it.name}${it.qty>1?'×'+it.qty:''}<span class="item-tag-del" onclick="removeEditItem(${idx},${ti})">×</span></span>`).join('');
-  document.getElementById('edit-tags-'+idx).innerHTML=tags||'<span style="font-size:12px;color:var(--text3)">尚未加入商品</span>';
+  document.getElementById('edit-tags-'+idx).innerHTML=tagPillsHTML(_editItems[idx],ti=>`removeEditItem(${idx},${ti})`);
 }
 function removeEditItem(idx,ti){
   _editItems[idx].splice(ti,1);
-  const tags=_editItems[idx].map((it,ti2)=>`<span class="item-tag">${it.name}${it.qty>1?'×'+it.qty:''}<span class="item-tag-del" onclick="removeEditItem(${idx},${ti2})">×</span></span>`).join('');
-  document.getElementById('edit-tags-'+idx).innerHTML=tags||'<span style="font-size:12px;color:var(--text3)">尚未加入商品</span>';
+  document.getElementById('edit-tags-'+idx).innerHTML=tagPillsHTML(_editItems[idx],ti2=>`removeEditItem(${idx},${ti2})`);
 }
 function saveLogEdit(idx){
   const editedItems=_editItems[idx]||[];if(!editedItems.length){showToast('請至少加入一項商品');return;}
-  const itemsStr=editedItems.map(i=>i.qty>1?`${i.name}×${i.qty}`:i.name).join('、');
+  const itemsStr=itemsToString(editedItems);
   const amt=parseInt(document.getElementById('edit-amt-'+idx).value)||0;
   const pay=document.getElementById('edit-pay-'+idx).value;const dateVal=document.getElementById('edit-date-'+idx).value;
   const newDate=dateVal?formatInputToTW(dateVal):TODAY;const old=S.daily.log[idx];
@@ -1761,12 +1755,17 @@ function rHist(){rHistDateGrid();}
 // ── SUMMARY ──
 function rSummary(){
   const allDays={...HIST_DATA};
-  if(S.daily.log.length&&S.daily.revenue>0)allDays[TODAY]={total:S.daily.revenue,cash:null,linepay:null,items:[]};
+  if(S.daily.log.length&&S.daily.revenue>0)allDays[TODAY]={total:S.daily.revenue,cash:null,linepay:null,items:[],log:S.daily.log};
   const totalRevAll=Object.values(allDays).reduce((a,d)=>a+d.total,0);
   const totalDays=Object.keys(allDays).length;
   const topMap={};
-  Object.values(HIST_DATA).forEach(d=>d.items.forEach(it=>{topMap[it.name]=(topMap[it.name]||0)+it.qty;}));
-  if(S.daily.log.length){S.daily.log.forEach(l=>l.items.split('、').forEach(s=>{const m=s.match(/^(.+?)(?:×(\d+))?$/);if(!m)return;topMap[m[1]]=(topMap[m[1]]||0)+(m[2]?parseInt(m[2]):1);}));}
+  Object.values(allDays).forEach(d=>{
+    if(d.log&&d.log.length){
+      d.log.forEach(l=>parseItemsString(l.items).forEach(({name,qty})=>{topMap[name]=(topMap[name]||0)+qty;}));
+    }else if(d.items&&d.items.length){
+      d.items.forEach(it=>{topMap[it.name]=(topMap[it.name]||0)+it.qty;});
+    }
+  });
   const topItems=Object.entries(topMap).sort((a,b)=>b[1]-a[1]).slice(0,8);
   document.getElementById('sumTodayRev').textContent=cur()+S.daily.revenue;
   document.getElementById('sumTodayCnt').textContent=S.daily.count+' 筆';
@@ -1975,13 +1974,6 @@ async function delItem(){
   await loadItemsFromCloud();rAll();
 }
 
-// ── CONFIRM ──
-function confirmAction(id,title,msg,cb){
-  document.getElementById('confirmTitle').textContent=title;document.getElementById('confirmMsg').textContent=msg;
-  document.getElementById('confirmOkBtn').onclick=()=>{closeConfirm();cb();};document.getElementById('confirmModal').style.display='flex';
-}
-function closeConfirm(){document.getElementById('confirmModal').style.display='none';}
-
 // ── EXPORT ──
 function exportHTML(){
   // Merge today into HIST_DATA if there are records
@@ -2014,15 +2006,6 @@ function exportHTML(){
 
   let src = document.documentElement.outerHTML;
   src = src.replace(/const HIST_DATA = \{[\s\S]*?\n\};/, histStr);
-
-  // Embed current items, theme, customPresets into DEFAULT_STATE snapshot
-  const snap = {
-    items: S.items,
-    theme: S.theme,
-    customPresets: S.customPresets||[]
-  };
-  src = src.replace(/\/\/ Custom presets are stored in S\.customPresets \[\]/,
-    `// Custom presets are stored in S.customPresets []\n// __SNAPSHOT__: ${JSON.stringify(snap)}`);
 
   const blob = new Blob([src],{type:'text/html;charset=utf-8'});
   const a = document.createElement('a');
