@@ -1230,6 +1230,35 @@ async function hydrateImageUrls(){
   }));
 }
 
+// ── CLOUD DAILY RECORDS（每日交易紀錄，含今日與歷史）──
+async function loadCloudDailyRecords(){
+  const {data,error}=await sb.from('daily_records').select('*');
+  if(error){showToast('讀取雲端交易紀錄失敗');console.error(error);return;}
+  (data||[]).forEach(r=>{
+    if(r.date===TODAY){
+      const log=(r.data&&r.data.log)||[];
+      S.daily={date:TODAY,revenue:(r.data&&r.data.total)||0,count:log.length,log};
+    }else{
+      HIST_DATA[r.date]=r.data;
+    }
+  });
+}
+// 把某一天的完整紀錄（今日或歷史）上傳／更新到雲端
+function pushDateToCloud(date){
+  let payload;
+  if(date===TODAY){
+    const cashTotal=S.daily.log.filter(l=>l.pay==='cash').reduce((a,l)=>a+l.amt,0);
+    const lpTotal=S.daily.log.filter(l=>l.pay==='linepay').reduce((a,l)=>a+l.amt,0);
+    payload={total:S.daily.revenue,cash:cashTotal,linepay:lpTotal,items:[],log:S.daily.log};
+  }else{
+    payload=HIST_DATA[date]||{total:0,cash:0,linepay:0,items:[],log:[]};
+  }
+  sb.from('daily_records').upsert({date,data:payload,updated_at:new Date().toISOString()})
+    .then(({error})=>{if(error)console.error(error);})
+    .catch(e=>console.error(e));
+}
+
+
 const cur=()=>S.currency||'$';
 const cats=()=>['全部',...new Set(S.items.map(i=>i.cat))];
 const filtered=()=>activeTab==='全部'?S.items:S.items.filter(i=>i.cat===activeTab);
@@ -1372,7 +1401,7 @@ function checkout(){
   S.daily.log.push({items:names.join('、'),time,amt:total,saved:totalSaved,pay:activePayMethod});
   S.cart={};
   selectedHistDate=TODAY;
-  save();showToast('結帳完成 +'+cur()+total+(totalSaved>0?' 省'+cur()+totalSaved:''));rAll();updateCartBadge();
+  save();pushDateToCloud(TODAY);showToast('結帳完成 +'+cur()+total+(totalSaved>0?' 省'+cur()+totalSaved:''));rAll();updateCartBadge();
   if(activePanel==='hist'){rHistDateGrid();renderTodayHist(document.getElementById('histContent'));}
 }
 
@@ -1500,6 +1529,7 @@ function saveHistLogEdit(date,idx){
   if(old.pay==='cash')data.cash=Math.max(0,(data.cash||0)-old.amt);else data.linepay=Math.max(0,(data.linepay||0)-old.amt);
   if(pay==='cash')data.cash=(data.cash||0)+amt;else data.linepay=(data.linepay||0)+amt;
   data.log[idx]={...old,items:itemsStr,amt,pay};delete _histEditItems[key];
+  pushDateToCloud(date);
   renderHistDateFull(document.getElementById('histContent'),date,data);showToast('已更新 ✓');
 }
 function deleteHistLogEntry(date,idx){
@@ -1507,6 +1537,7 @@ function deleteHistLogEntry(date,idx){
   data.total=Math.max(0,data.total-old.amt);
   if(old.pay==='cash')data.cash=Math.max(0,(data.cash||0)-old.amt);else data.linepay=Math.max(0,(data.linepay||0)-old.amt);
   data.log.splice(idx,1);delete _histEditItems[key];
+  pushDateToCloud(date);
   renderHistDateFull(document.getElementById('histContent'),date,data);rHistDateGrid();showToast('已刪除');
 }
 function cancelHistLogEdit(key){const el=document.getElementById('hist-edit-wrap-'+key);if(el)el.remove();delete _histEditItems[key];}
@@ -1548,6 +1579,7 @@ function saveHistNewEntry(date){
   else{const data=HIST_DATA[date];if(!data.log)data.log=[];data.log.push(entry);data.total=(data.total||0)+amt;if(pay==='cash')data.cash=(data.cash||0)+amt;else data.linepay=(data.linepay||0)+amt;}
   _histNewEntryItems=[];
   document.getElementById('hist-new-entry-form')&&document.getElementById('hist-new-entry-form').remove();
+  pushDateToCloud(date);
   renderHistDateFull(document.getElementById('histContent'),date,HIST_DATA[date]);rHistDateGrid();showToast('已新增 ✓');
 }
 
@@ -1624,7 +1656,7 @@ function saveNewEntry(){
   S.daily.log.push({items:itemsStr,time,amt,sub:amt,saved:0,pay});
   S.daily.revenue+=amt;S.daily.count+=1;_newEntryItems=[];
   document.getElementById('new-entry-form')&&document.getElementById('new-entry-form').remove();
-  save();rStats();renderTodayHist(document.getElementById('histContent'));showToast('已新增 ✓');
+  save();pushDateToCloud(TODAY);rStats();renderTodayHist(document.getElementById('histContent'));showToast('已新增 ✓');
 }
 
 function toggleDayDateEdit(){const row=document.getElementById('dayDateEditRow');if(row)row.style.display=row.style.display==='none'?'block':'none';}
@@ -1637,10 +1669,10 @@ function saveDayDate(){
   const cashTotal=S.daily.log.filter(l=>l.pay==='cash').reduce((a,l)=>a+l.amt,0);
   const lpTotal=S.daily.log.filter(l=>l.pay==='linepay').reduce((a,l)=>a+l.amt,0);
   const existing=HIST_DATA[newDate];
-  if(existing){HIST_DATA[newDate]={total:(existing.total||0)+S.daily.revenue,cash:(existing.cash||0)+cashTotal,linepay:(existing.linepay||0)+lpTotal,items:[...existing.items,...items],log:[...(existing.log||[]),...S.daily.log]};}
+  if(existing){HIST_DATA[newDate]={total:(existing.total||0)+S.daily.revenue,cash:(existing.cash||0)+cashTotal,linepay:(existing.linepay||0)+lpTotal,items:[...(existing.items||[]),...items],log:[...(existing.log||[]),...S.daily.log]};}
   else{HIST_DATA[newDate]={total:S.daily.revenue,cash:cashTotal,linepay:lpTotal,items,log:S.daily.log.slice()};}
   S.daily={date:TODAY,revenue:0,count:0,log:[]};
-  save();rAll();selectedHistDate=newDate;rHist();selectHistDate(newDate);showToast(`已移動到 ${newDate} ✓`);
+  save();pushDateToCloud(TODAY);pushDateToCloud(newDate);rAll();selectedHistDate=newDate;rHist();selectHistDate(newDate);showToast(`已移動到 ${newDate} ✓`);
 }
 
 // ── LOG EDIT (today) ──
@@ -1682,16 +1714,16 @@ function saveLogEdit(idx){
     const entry={items:itemsStr,time:old.time,amt,pay,saved:old.saved||0};
     if(!HIST_DATA[newDate]){HIST_DATA[newDate]={total:amt,cash:pay==='cash'?amt:0,linepay:pay==='linepay'?amt:0,items:[],log:[entry]};}
     else{HIST_DATA[newDate].total=(HIST_DATA[newDate].total||0)+amt;if(pay==='cash')HIST_DATA[newDate].cash=(HIST_DATA[newDate].cash||0)+amt;else HIST_DATA[newDate].linepay=(HIST_DATA[newDate].linepay||0)+amt;if(!HIST_DATA[newDate].log)HIST_DATA[newDate].log=[];HIST_DATA[newDate].log.push(entry);}
-    save();rStats();renderTodayHist(document.getElementById('histContent'));rHistDateGrid();showToast(`已移到 ${newDate} ✓`);
+    save();pushDateToCloud(TODAY);pushDateToCloud(newDate);rStats();renderTodayHist(document.getElementById('histContent'));rHistDateGrid();showToast(`已移到 ${newDate} ✓`);
   }else{
     S.daily.revenue=S.daily.revenue-old.amt+amt;S.daily.log[idx]={...old,items:itemsStr,amt,pay};
-    save();rStats();renderTodayHist(document.getElementById('histContent'));showToast('已更新 ✓');
+    save();pushDateToCloud(TODAY);rStats();renderTodayHist(document.getElementById('histContent'));showToast('已更新 ✓');
   }
   delete _editItems[idx];
 }
 function deleteLogEntry(idx){
   const old=S.daily.log[idx];S.daily.revenue=Math.max(0,S.daily.revenue-old.amt);S.daily.count=Math.max(0,S.daily.count-1);
-  S.daily.log.splice(idx,1);delete _editItems[idx];save();rStats();renderTodayHist(document.getElementById('histContent'));showToast('已刪除');
+  S.daily.log.splice(idx,1);delete _editItems[idx];save();pushDateToCloud(TODAY);rStats();renderTodayHist(document.getElementById('histContent'));showToast('已刪除');
 }
 function cancelLogEdit(){document.querySelectorAll('.log-edit-row').forEach(e=>{const m=e.id&&e.id.match(/edit-wrap-(\d+)/);if(m)delete _editItems[parseInt(m[1])];e.remove();});}
 
@@ -1959,6 +1991,7 @@ async function initAfterLogin(){
   loadBanner();
   applyTheme(S.theme || DEFAULT_STATE.theme);
   await loadItemsFromCloud();
+  await loadCloudDailyRecords();
   rAll();setPayMethod('cash');
   switchPanel('order');
 }
