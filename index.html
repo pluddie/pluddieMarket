@@ -449,11 +449,12 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:16
 .item-qty-input{width:52px !important}
 .item-add-btn{padding:5px 11px;border-radius:var(--r);border:none;background:var(--text);color:var(--surface);font-size:13px;cursor:pointer;font-family:var(--font);white-space:nowrap;flex-shrink:0}
 
-.day-edit-date-row{display:flex;align-items:center;gap:7px;margin-top:10px;padding:9px 11px;background:var(--s2);border-radius:var(--r);border:1px solid var(--border)}
-.day-edit-date-row label{font-size:13px;color:var(--text2);white-space:nowrap}
-.day-edit-date-row input{padding:5px 8px;border:1px solid var(--border);border-radius:var(--r);font-size:13px;color:var(--text);background:var(--surface);font-family:var(--font);flex:1}
+.day-edit-date-row{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin-top:10px;padding:9px 11px;background:var(--s2);border-radius:var(--r);border:1px solid var(--border)}
+.day-edit-date-row label{font-size:13px;color:var(--text2);white-space:nowrap;width:100%}
+.day-edit-date-row input{padding:5px 8px;border:1px solid var(--border);border-radius:var(--r);font-size:13px;color:var(--text);background:var(--surface);font-family:var(--font);flex:1;min-width:130px}
+.day-edit-date-actions{display:flex;gap:7px;flex-shrink:0}
 .day-edit-date-save{padding:5px 12px;border-radius:var(--r);border:none;background:var(--text);color:var(--surface);font-size:13px;cursor:pointer;font-family:var(--font);font-weight:500;white-space:nowrap}
-.day-edit-date-cancel{padding:5px 11px;border-radius:var(--r);border:1px solid var(--border);background:transparent;color:var(--text2);font-size:13px;cursor:pointer;font-family:var(--font)}
+.day-edit-date-cancel{padding:5px 11px;border-radius:var(--r);border:1px solid var(--border);background:transparent;color:var(--text2);font-size:13px;cursor:pointer;font-family:var(--font);white-space:nowrap}
 
 /* ===== MODAL ===== */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center;z-index:200;backdrop-filter:blur(2px)}
@@ -1408,7 +1409,7 @@ function checkout(){
 function rHistDateGrid(){
   const byYear={};
   Object.keys(HIST_DATA).forEach(d=>{const yr=d.split('/')[0];if(!byYear[yr])byYear[yr]=[];byYear[yr].push(d);});
-  if(S.daily.log.length){const yr=TODAY.split('/')[0];if(!byYear[yr])byYear[yr]=[];if(!byYear[yr].includes(TODAY))byYear[yr].push(TODAY);}
+  const tyr=TODAY.split('/')[0];if(!byYear[tyr])byYear[tyr]=[];if(!byYear[tyr].includes(TODAY))byYear[tyr].push(TODAY);
   const currentYear=TODAY.split('/')[0];
   const el=document.getElementById('histDateGrid');
   el.innerHTML=Object.keys(byYear).sort().reverse().map(yr=>{
@@ -1443,8 +1444,8 @@ function selectHistDate(date){
   const el=document.getElementById('histContent');
   const isToday=(date===TODAY);
   let data=null;
-  if(isToday&&S.daily.log.length)data={total:S.daily.revenue,isToday:true};
-  else if(!isToday)data=HIST_DATA[date];
+  if(isToday)data={total:S.daily.revenue,isToday:true};
+  else data=HIST_DATA[date];
   if(!data){el.innerHTML='<div class="hist-empty">此日無記錄</div>';return;}
   if(isToday)renderTodayHist(el);else renderHistDateFull(el,date,data);
 }
@@ -1584,7 +1585,6 @@ function saveHistNewEntry(date){
 
 // ── TODAY HISTORY ──
 function renderTodayHist(el){
-  if(!S.daily.log.length){el.innerHTML='<div class="hist-empty">今日尚無交易記錄</div>';return;}
   const cashTotal=S.daily.log.filter(l=>l.pay==='cash').reduce((a,l)=>a+l.amt,0);
   const lpTotal=S.daily.log.filter(l=>l.pay==='linepay').reduce((a,l)=>a+l.amt,0);
   let html=`<div class="hist-day-header">
@@ -1599,10 +1599,17 @@ function renderTodayHist(el){
     <div class="day-edit-date-row">
       <label>將今日記錄移到：</label>
       <input type="date" id="dayDateInput" value="${formatDateForInput(TODAY)}">
-      <button class="day-edit-date-save" onclick="saveDayDate()">確認移動</button>
-      <button class="day-edit-date-cancel" onclick="toggleDayDateEdit()">取消</button>
+      <div class="day-edit-date-actions">
+        <button class="day-edit-date-save" onclick="saveDayDate()">確認移動</button>
+        <button class="day-edit-date-cancel" onclick="toggleDayDateEdit()">取消</button>
+      </div>
     </div>
   </div>`;
+  if(!S.daily.log.length){
+    html+=`<div class="hist-empty">今日尚無交易記錄</div>`;
+    el.innerHTML=html;
+    return;
+  }
   html+=`<div class="hist-pay-row" style="margin-bottom:10px">`;
   if(cashTotal>0)html+=`<span class="pay-badge cash">現金 ${cur()}${cashTotal}</span>`;
   if(lpTotal>0)html+=`<span class="pay-badge lp">Line Pay ${cur()}${lpTotal}</span>`;
@@ -1778,9 +1785,9 @@ function switchPanel(p){
   if(pt)pt.classList.add('on');
   activePanel=p;
   if(p==='hist'){
-    if(S.daily.log.length)selectedHistDate=TODAY;
+    selectedHistDate=TODAY;
     rHist();rSummary();
-    if(S.daily.log.length)selectHistDate(TODAY);
+    selectHistDate(TODAY);
   }
   if(p==='settings')rSettings();
   // Mobile panel title
