@@ -851,8 +851,8 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:16
     </div>
     <div class="theme-preset" style="background:#0F1117;border:2px solid #2E3140" title="暗夜" onclick="applyBuiltInPreset(2)">
       <div style="position:absolute;inset:3px;border-radius:50%;background:#7CCFB0"></div>
-    </div><div class="theme-preset-add" onclick="saveCurrentAsPreset()" title="儲存目前配色">＋</div></div>
-          <div id="colorRows">
+    </div><div class="theme-preset-add" onclick="toggleColorRows()" title="自訂顏色細節">✎</div><div class="theme-preset-add" onclick="saveCurrentAsPreset()" title="儲存目前配色">＋</div></div>
+          <div id="colorRows" style="display:none">
             <div class="color-row">
               <div><div class="color-label">主文字色</div><div class="color-sub">標題、商品名稱、主要文字</div></div>
               <div class="color-input-wrap">
@@ -905,18 +905,12 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:16
           </div>
         </div>
 
-        <!-- Data management -->
-        <div class="settings-section">
-          <div class="st-title">💾 資料管理</div>
-          <div class="sr">
-            <div><div class="sr-label">匯出 HTML 備份</div><div class="sr-sub">含今日所有資料，可上傳 GitHub</div></div>
-            <button class="icon-btn" onclick="exportHTML()" title="匯出 HTML">📄</button>
-          </div>
+        <div style="padding:16px;display:flex;gap:8px">
+          <button class="save-settings-btn" style="flex:1;margin-top:0" onclick="saveSettings()">儲存</button>
+          <button class="save-settings-btn" style="flex:1;margin-top:0;background:var(--s2);color:var(--text)" onclick="exportHTML()" title="匯出含今日資料的 HTML 備份，可上傳 GitHub">匯出 HTML</button>
         </div>
-
-        <div style="padding:16px">
-          <button class="save-settings-btn" onclick="saveSettings()">儲存設定</button>
-          <button class="clear-btn" style="margin-top:8px" onclick="switchPanel('order')">← 回到點單</button>
+        <div style="padding:0 16px 16px">
+          <button class="clear-btn" onclick="switchPanel('order')">← 回到點單</button>
         </div>
       </div>
     </div>
@@ -1138,8 +1132,12 @@ function rThemeControls(){
       <div style="position:absolute;inset:3px;border-radius:50%;background:${p.accent}"></div>
       <div class="custom-preset-del" onclick="event.stopPropagation();deleteCustomPreset(${i})">×</div>
     </div>`).join('');
-  const addBtn=`<div class="theme-preset-add" onclick="saveCurrentAsPreset()" title="儲存目前配色">＋</div>`;
+  const addBtn=`<div class="theme-preset-add" onclick="toggleColorRows()" title="自訂顏色細節">✎</div><div class="theme-preset-add" onclick="saveCurrentAsPreset()" title="儲存目前配色">＋</div>`;
   row.innerHTML=builtIn+custom+addBtn;
+}
+function toggleColorRows(){
+  const el=document.getElementById('colorRows');if(!el)return;
+  el.style.display=el.style.display==='none'?'block':'none';
 }
 function applyBuiltInPreset(i){
   S.theme=Object.assign({},BUILT_IN_PRESETS[i]);
