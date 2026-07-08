@@ -54,8 +54,8 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:16
 .banner-header{
   position:relative;
   width:100%;
-  aspect-ratio:16/5;
-  max-height:220px;
+  aspect-ratio:16/6.5;
+  max-height:170px;
   background:var(--s2);
   border-bottom:1px solid var(--border);
   flex-shrink:0;
@@ -1430,7 +1430,7 @@ function checkout(){
 function rHistDateGrid(){
   const byYear={};
   Object.keys(HIST_DATA).forEach(d=>{const yr=d.split('/')[0];if(!byYear[yr])byYear[yr]=[];byYear[yr].push(d);});
-  const tyr=TODAY.split('/')[0];if(!byYear[tyr])byYear[tyr]=[];if(!byYear[tyr].includes(TODAY))byYear[tyr].push(TODAY);
+  if(S.daily.log.length){const tyr=TODAY.split('/')[0];if(!byYear[tyr])byYear[tyr]=[];if(!byYear[tyr].includes(TODAY))byYear[tyr].push(TODAY);}
   const currentYear=TODAY.split('/')[0];
   const el=document.getElementById('histDateGrid');
   el.innerHTML=Object.keys(byYear).sort().reverse().map(yr=>{
@@ -1465,8 +1465,8 @@ function selectHistDate(date){
   const el=document.getElementById('histContent');
   const isToday=(date===TODAY);
   let data=null;
-  if(isToday)data={total:S.daily.revenue,isToday:true};
-  else data=HIST_DATA[date];
+  if(isToday&&S.daily.log.length)data={total:S.daily.revenue,isToday:true};
+  else if(!isToday)data=HIST_DATA[date];
   if(!data){el.innerHTML='<div class="hist-empty">此日無記錄</div>';return;}
   if(isToday)renderTodayHist(el);else renderHistDateFull(el,date,data);
 }
@@ -1615,7 +1615,7 @@ function renderTodayHist(el){
       <span class="hist-day-total">${cur()}${S.daily.revenue}</span>
       <button class="log-edit-btn" onclick="openNewEntry()" style="background:var(--text);color:var(--surface);border-color:var(--text)">新增</button>
       <button class="log-edit-btn" onclick="toggleDayDateEdit()">修改</button>
-      <button class="log-edit-btn" onclick="deleteWholeDay('${TODAY}')" style="color:var(--danger)">刪除</button>
+      ${S.daily.log.length?`<button class="log-edit-btn" onclick="deleteWholeDay('${TODAY}')" style="color:var(--danger)">刪除</button>`:''}
     </div>
   </div>
   <div id="dayDateEditRow" style="display:none">
