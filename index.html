@@ -602,11 +602,29 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:16
 @media(max-width:768px){
   .mobile-panel-header{display:flex}
 }
+.login-screen{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;align-items:center;justify-content:center}
+.login-box{background:var(--surface);padding:32px;border-radius:var(--rl);width:300px;max-width:88vw;box-shadow:0 4px 20px rgba(0,0,0,.08);border:1px solid var(--border)}
+.login-box h2{font-size:19px;margin-bottom:18px;text-align:center}
+.login-err{color:var(--danger);font-size:13px;margin-bottom:8px;display:none}
+.login-btn{width:100%;margin-top:6px;padding:12px;background:var(--text);color:var(--surface);border:none;border-radius:var(--r);font-size:15px;font-weight:700;cursor:pointer;font-family:var(--font)}
+.login-btn:disabled{opacity:.5;cursor:not-allowed}
 </style>
 </head>
 <body>
 
-<div class="app" id="appEl">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<div class="login-screen" id="loginScreen">
+  <div class="login-box">
+    <h2>小女孩和花花獅工作室</h2>
+    <div class="mf"><label>帳號 (email)</label><input id="loginEmail" type="email" placeholder="you@example.com" onkeydown="if(event.key==='Enter')doLogin()"></div>
+    <div class="mf"><label>密碼</label><input id="loginPassword" type="password" placeholder="密碼" onkeydown="if(event.key==='Enter')doLogin()"></div>
+    <div class="login-err" id="loginErr"></div>
+    <button class="login-btn" id="loginBtn" onclick="doLogin()">登入</button>
+  </div>
+</div>
+
+<div class="app" id="appEl" style="display:none">
   <!-- ===== LEFT: Product List ===== -->
   <div class="left" id="leftPanel">
     <!-- Banner Header -->
@@ -635,6 +653,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:16
           <button class="today-btn" onclick="resetToToday()">今天</button>
         </div>
         <button class="icon-btn" id="btn-settings" onclick="openSettingsPanel()" title="設定">⚙️</button>
+        <button class="icon-btn" onclick="logout()" title="登出">🚪</button>
       </div>
     </div>
 
@@ -922,6 +941,11 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:16
       <div class="emoji-row" id="emojiRow"><div class="emoji-opt " onclick="selectEmoji('🐻')">🐻</div><div class="emoji-opt " onclick="selectEmoji('🦁')">🦁</div><div class="emoji-opt " onclick="selectEmoji('📮')">📮</div><div class="emoji-opt " onclick="selectEmoji('👜')">👜</div><div class="emoji-opt " onclick="selectEmoji('💝')">💝</div><div class="emoji-opt " onclick="selectEmoji('👧')">👧</div><div class="emoji-opt sel" onclick="selectEmoji('🎨')">🎨</div><div class="emoji-opt " onclick="selectEmoji('🍪')">🍪</div><div class="emoji-opt " onclick="selectEmoji('⭐')">⭐</div><div class="emoji-opt " onclick="selectEmoji('☕️')">☕️</div><div class="emoji-opt " onclick="selectEmoji('👛')">👛</div><div class="emoji-opt " onclick="selectEmoji('🌸')">🌸</div><div class="emoji-opt " onclick="selectEmoji('🎀')">🎀</div><div class="emoji-opt " onclick="selectEmoji('💎')">💎</div><div class="emoji-opt " onclick="selectEmoji('✨')">✨</div><div class="emoji-opt " onclick="selectEmoji('🌟')">🌟</div><div class="emoji-opt " onclick="selectEmoji('🎁')">🎁</div><div class="emoji-opt " onclick="selectEmoji('🎪')">🎪</div></div>
     </div>
     <div class="mf">
+      <label>商品照片（選填，會取代圖示顯示在畫面上）</label>
+      <input id="iimage" type="file" accept="image/*" onchange="previewImage(this)">
+      <img id="imgPreview" style="display:none;width:64px;height:64px;object-fit:cover;border-radius:8px;margin-top:6px">
+    </div>
+    <div class="mf">
       <div class="bundle-section">
         <div class="bundle-section-title">
           <span>🎁 組合優惠價</span>
@@ -964,6 +988,12 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:16
 <script>
 // ── CONSTANTS ──
 const SK = 'pluddie_pos_v2';
+
+// ── SUPABASE (雲端商品資料庫) ──
+const SUPABASE_URL = 'https://tfbvtogjneyhxlswypet.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRmYnZ0b2dqbmV5aHhsc3d5cGV0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM0NTUyMzgsImV4cCI6MjA5OTAzMTIzOH0.qZWN7rwV4b-f4y2oKvUO9agdH7DJ9aDHd_kjwhJ8MSI';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const PRODUCT_BUCKET = 'product-images';
 const _now = new Date();
 const REAL_TODAY = _now.getFullYear()+'/'+String(_now.getMonth()+1).padStart(2,'0')+'/'+String(_now.getDate()).padStart(2,'0');
 let ACTIVE_DATE = REAL_TODAY;
@@ -1148,25 +1178,57 @@ function saveCurrentAsPreset(){
 }
 
 // ── LOAD / SAVE ──
+// 商品資料（items）現在改由 Supabase 雲端管理，這裡只處理商店名稱、當日交易、主題配色
 function load(){
-  // First try to read snapshot baked into the exported HTML (for GitHub uploads)
-  try{
-    const m=document.documentElement.innerHTML.match(/\/\/ __SNAPSHOT__: ({.+})/);
-    if(m){const snap=JSON.parse(m[1]);if(snap.items)S.items=snap.items;if(snap.theme)S.theme=snap.theme;if(snap.customPresets)S.customPresets=snap.customPresets;}
-  }catch(e){}
-  // Then layer on top any localStorage (current session edits take priority)
   try{
     const raw=localStorage.getItem(SK);if(!raw)return;
     const d=JSON.parse(raw);
     if(d.shopName)S.shopName=d.shopName;
     if(d.currency)S.currency=d.currency;
-    if(d.items)S.items=d.items;
     if(d.daily&&d.daily.date===TODAY)S.daily=d.daily;
     if(d.theme)S.theme=d.theme;
     if(d.customPresets)S.customPresets=d.customPresets;
   }catch(e){}
 }
-function save(){try{localStorage.setItem(SK,JSON.stringify({shopName:S.shopName,currency:S.currency,items:S.items,daily:S.daily,theme:S.theme,customPresets:S.customPresets}));}catch(e){}}
+function save(){try{localStorage.setItem(SK,JSON.stringify({shopName:S.shopName,currency:S.currency,daily:S.daily,theme:S.theme,customPresets:S.customPresets}));}catch(e){}}
+
+// ── CLOUD ITEMS (Supabase) ──
+async function loadItemsFromCloud(){
+  const {data,error}=await sb.from('products').select('*').order('sort_order',{ascending:true});
+  if(error){showToast('讀取商品失敗，請檢查網路連線');console.error(error);return;}
+  if(!data||data.length===0){
+    if(confirm('雲端尚無商品資料，要匯入目前預設的商品清單嗎？（僅需匯入一次）')){
+      await migrateDefaultItems();
+      return loadItemsFromCloud();
+    }
+  }
+  S.items=(data||[]).map(p=>({
+    id:p.id, name:p.name, price:p.price, cat:p.category||'其他',
+    emoji:p.emoji||'💝', image_path:p.image_url||null,
+    bundles:(p.bundles&&p.bundles.length)?p.bundles:undefined,
+    sort_order:p.sort_order||0
+  }));
+  await hydrateImageUrls();
+}
+async function migrateDefaultItems(){
+  const rows=DEFAULT_STATE.items.map((it,idx)=>({
+    name:it.name,price:it.price,category:it.cat,emoji:it.emoji,
+    bundles:it.bundles||null,sort_order:idx
+  }));
+  const {error}=await sb.from('products').insert(rows);
+  if(error){showToast('匯入失敗');console.error(error);}
+  else showToast('已匯入商品 ✓');
+}
+// 圖片空間為不公開，顯示前需要先換取一個有時效的簽名網址
+async function hydrateImageUrls(){
+  const withImg=S.items.filter(i=>i.image_path);
+  await Promise.all(withImg.map(async i=>{
+    try{
+      const {data}=await sb.storage.from(PRODUCT_BUCKET).createSignedUrl(i.image_path,3600);
+      if(data)i.image_url=data.signedUrl;
+    }catch(e){}
+  }));
+}
 
 const cur=()=>S.currency||'$';
 const cats=()=>['全部',...new Set(S.items.map(i=>i.cat))];
@@ -1215,9 +1277,12 @@ function setTab(c){activeTab=c;rTabs();rGrid();}
 function rGrid(){
   const cardHTML = item => {
     const hint = bundleHint(item);
-    return `<div class="item-card" onclick="addCart(${item.id})">
-      <span class="ic-edit-btn" onclick="event.stopPropagation();openEditItem(${item.id})">✏️</span>
-      <span class="ic-emoji">${item.emoji||'🎁'}</span>
+    const visual = item.image_url
+      ? `<img src="${item.image_url}" style="width:40px;height:40px;object-fit:cover;border-radius:8px;display:block;margin:0 auto 5px">`
+      : `<span class="ic-emoji">${item.emoji||'🎁'}</span>`;
+    return `<div class="item-card" onclick="addCart('${item.id}')">
+      <span class="ic-edit-btn" onclick="event.stopPropagation();openEditItem('${item.id}')">✏️</span>
+      ${visual}
       <span class="ic-name">${item.name}</span>
       <span class="ic-price">${cur()}${item.price}</span>
       ${hint?`<span class="ic-bundle">🎁 ${hint}</span>`:''}
@@ -1752,10 +1817,13 @@ function renderBundleRows(){
 function addBundleRow(){_modalBundles.push({qty:2,price:0});renderBundleRows();}
 function removeBundleRow(i){_modalBundles.splice(i,1);renderBundleRows();}
 
+let _currentEditImagePath=null;
 function openAddItem(){
   document.getElementById('itemModalTitle').textContent='新增商品';document.getElementById('eid').value='';
   document.getElementById('iname').value='';document.getElementById('iprice').value='';
   document.getElementById('icat').value=activeTab==='全部'?'':activeTab;document.getElementById('iemoji').value='';
+  document.getElementById('iimage').value='';document.getElementById('imgPreview').style.display='none';
+  _currentEditImagePath=null;
   _modalBundles=[];renderBundleRows();
   document.getElementById('mdelBtn').style.display='none';renderEmojiRow(null);document.getElementById('itemModal').style.display='flex';
 }
@@ -1764,25 +1832,65 @@ function openEditItem(id){
   document.getElementById('itemModalTitle').textContent='編輯商品';document.getElementById('eid').value=id;
   document.getElementById('iname').value=item.name;document.getElementById('iprice').value=item.price;
   document.getElementById('icat').value=item.cat;document.getElementById('iemoji').value=item.emoji||'';
+  document.getElementById('iimage').value='';
+  _currentEditImagePath=item.image_path||null;
+  const prev=document.getElementById('imgPreview');
+  if(item.image_url){prev.src=item.image_url;prev.style.display='block';}else{prev.style.display='none';}
   _modalBundles=item.bundles?JSON.parse(JSON.stringify(item.bundles)):[];renderBundleRows();
   document.getElementById('mdelBtn').style.display='block';renderEmojiRow(item.emoji);document.getElementById('itemModal').style.display='flex';
+}
+function previewImage(input){
+  const file=input.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{const prev=document.getElementById('imgPreview');prev.src=e.target.result;prev.style.display='block';};
+  reader.readAsDataURL(file);
 }
 function renderEmojiRow(sel){
   document.getElementById('emojiRow').innerHTML=EMOJIS.map(e=>`<div class="emoji-opt ${e===sel?'sel':''}" onclick="selectEmoji('${e}')">${e}</div>`).join('');
 }
 function selectEmoji(e){document.getElementById('iemoji').value=e;document.querySelectorAll('.emoji-opt').forEach(el=>el.classList.toggle('sel',el.textContent===e));}
 function closeItemModal(){document.getElementById('itemModal').style.display='none';}
-function saveItem(){
+async function saveItem(){
   const name=document.getElementById('iname').value.trim();const price=parseInt(document.getElementById('iprice').value);
   const cat=document.getElementById('icat').value.trim()||'其他';const emoji=document.getElementById('iemoji').value.trim()||'💝';
   if(!name||!price||price<1){showToast('請填寫名稱與有效價格');return;}
   const bundles=_modalBundles.filter(b=>b.qty>=2&&b.price>0);
   const eid=document.getElementById('eid').value;
-  if(eid){const item=S.items.find(i=>i.id==eid);if(item){item.name=name;item.price=price;item.cat=cat;item.emoji=emoji;item.bundles=bundles.length?bundles:undefined;}}
-  else S.items.push({id:Date.now(),name,price,cat,emoji,bundles:bundles.length?bundles:undefined});
-  save();closeItemModal();rAll();
+  const saveBtn=document.querySelector('.mbtn-save');
+  if(saveBtn){saveBtn.disabled=true;saveBtn.textContent='儲存中…';}
+
+  let imagePath=_currentEditImagePath;
+  const file=document.getElementById('iimage').files[0];
+  if(file){
+    const ext=(file.name.split('.').pop()||'jpg').toLowerCase();
+    const path=`${Date.now()}_${Math.random().toString(36).slice(2,8)}.${ext}`;
+    const {error:upErr}=await sb.storage.from(PRODUCT_BUCKET).upload(path,file);
+    if(upErr){showToast('圖片上傳失敗');console.error(upErr);if(saveBtn){saveBtn.disabled=false;saveBtn.textContent='儲存';}return;}
+    imagePath=path;
+  }
+
+  const payload={name,price,category:cat,emoji,image_url:imagePath||null,bundles:bundles.length?bundles:null};
+
+  if(eid){
+    const {error}=await sb.from('products').update(payload).eq('id',eid);
+    if(error){showToast('更新失敗');console.error(error);if(saveBtn){saveBtn.disabled=false;saveBtn.textContent='儲存';}return;}
+  }else{
+    payload.sort_order=S.items.length;
+    const {error}=await sb.from('products').insert(payload);
+    if(error){showToast('新增失敗');console.error(error);if(saveBtn){saveBtn.disabled=false;saveBtn.textContent='儲存';}return;}
+  }
+  if(saveBtn){saveBtn.disabled=false;saveBtn.textContent='儲存';}
+  closeItemModal();showToast('已儲存 ✓');
+  await loadItemsFromCloud();rAll();
 }
-function delItem(){const eid=document.getElementById('eid').value;if(!eid)return;S.items=S.items.filter(i=>i.id!=eid);delete S.cart[eid];save();closeItemModal();rAll();}
+async function delItem(){
+  const eid=document.getElementById('eid').value;if(!eid)return;
+  const {error}=await sb.from('products').delete().eq('id',eid);
+  if(error){showToast('刪除失敗');console.error(error);return;}
+  delete S.cart[eid];
+  closeItemModal();showToast('已刪除');
+  await loadItemsFromCloud();rAll();
+}
 
 // ── CONFIRM ──
 function confirmAction(id,title,msg,cb){
@@ -1843,13 +1951,37 @@ function exportHTML(){
 
 function showToast(msg){const t=document.getElementById('toastEl');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
 
-// ── INIT ──
-load();
-loadBanner();
-// Always apply theme (default is 奶茶)
-applyTheme(S.theme || DEFAULT_STATE.theme);
-rAll();setPayMethod('cash');
-switchPanel('order');
+// ── AUTH / INIT ──
+async function initAfterLogin(){
+  document.getElementById('loginScreen').style.display='none';
+  document.getElementById('appEl').style.display='';
+  load();
+  loadBanner();
+  applyTheme(S.theme || DEFAULT_STATE.theme);
+  await loadItemsFromCloud();
+  rAll();setPayMethod('cash');
+  switchPanel('order');
+}
+async function checkSession(){
+  const {data:{session}} = await sb.auth.getSession();
+  if(session){await initAfterLogin();}
+  else{document.getElementById('loginScreen').style.display='flex';document.getElementById('appEl').style.display='none';}
+}
+async function doLogin(){
+  const email=document.getElementById('loginEmail').value.trim();
+  const password=document.getElementById('loginPassword').value;
+  const errEl=document.getElementById('loginErr');const btn=document.getElementById('loginBtn');
+  errEl.style.display='none';
+  if(!email||!password){errEl.textContent='請輸入帳號與密碼';errEl.style.display='block';return;}
+  btn.disabled=true;btn.textContent='登入中…';
+  const {error}=await sb.auth.signInWithPassword({email,password});
+  btn.disabled=false;btn.textContent='登入';
+  if(error){errEl.textContent='帳號或密碼錯誤';errEl.style.display='block';return;}
+  await initAfterLogin();
+}
+function logout(){sb.auth.signOut().then(()=>location.reload());}
+
+checkSession();
 </script>
 
 
