@@ -450,7 +450,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:16
 
 /* ===== MODAL ===== */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center;z-index:200;backdrop-filter:blur(2px)}
-.modal{background:var(--surface);border-radius:var(--rl);border:1px solid var(--border);padding:20px;width:300px;max-height:85vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.15);scrollbar-width:none;-ms-overflow-style:none}
+.modal{background:var(--surface);border-radius:var(--rl);border:1px solid var(--border);padding:20px;width:300px;height:540px;max-height:85vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.15);scrollbar-width:none;-ms-overflow-style:none}
 .modal::-webkit-scrollbar{display:none}
 .modal-header-row{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:6px;margin-bottom:16px}
 .modal-header-row h3{margin:0;text-align:center;font-size:16px;font-weight:700}
@@ -473,9 +473,12 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:16
 .icon-circle-img{width:100%;height:100%;object-fit:cover;border-radius:50%}
 .icon-picker-panel{margin-top:8px;padding:10px;background:var(--s2);border-radius:var(--r)}
 .emoji-row{display:flex;flex-wrap:wrap;gap:5px}
-.emoji-opt{width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:var(--surface);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:17px}
+.emoji-opt{width:32px;height:32px;border-radius:8px;border:1px solid var(--border);background:var(--surface);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
 .emoji-opt:hover,.emoji-opt.sel{border-color:var(--text);background:var(--surface)}
-.photo-row{display:flex;align-items:center;gap:8px;margin-top:8px}
+.emoji-opt.custom-emoji-input{width:32px;height:32px;padding:0;text-align:center;font-family:var(--font);color:var(--text);font-size:15px;border-radius:50%}
+.emoji-opt.custom-emoji-input:focus{outline:none;border-color:var(--text)}
+.emoji-opt.danger{color:var(--danger);border-color:var(--danger-bg);background:var(--danger-bg)}
+.emoji-opt.danger:hover{border-color:var(--danger)}
 
 /* bundle editor in modal */
 .bundle-section{margin-top:8px}
@@ -810,8 +813,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:16
           <button class="save-settings-btn" style="flex:1;margin-top:0;background:var(--s2);color:var(--text)" onclick="exportHTML()" title="匯出含今日資料的 HTML 備份，可上傳 GitHub">匯出 HTML</button>
         </div>
         <div style="padding:0 16px 16px">
-          <button class="clear-btn" onclick="switchPanel('order')">← 回到點單</button>
-          <button class="clear-btn" style="color:var(--danger);border-color:var(--danger-bg)" onclick="logout()">🚪 登出</button>
+          <button class="clear-btn" style="color:var(--danger);border-color:var(--danger-bg)" onclick="logout()">登出</button>
         </div>
       </div>
     </div>
@@ -841,12 +843,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:16
       </div>
       <div id="iconPickerPanel" class="icon-picker-panel" style="display:none">
         <div class="emoji-row" id="emojiRow"></div>
-        <div class="photo-row">
-          <input id="iimage" type="file" accept="image/*" onchange="previewImage(this)" style="display:none">
-          <button type="button" class="log-icon-btn" onclick="document.getElementById('iimage').click()" title="上傳照片"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></button>
-          <button type="button" id="removeImageBtn" class="log-icon-btn danger" style="display:none" onclick="removeItemImage()" title="移除照片">×</button>
-          <span style="font-size:12px;color:var(--text3)">選圖示或上傳照片</span>
-        </div>
+        <input id="iimage" type="file" accept="image/*" onchange="previewImage(this)" style="display:none">
       </div>
     </div>
     <div class="mf"><label>價格（元）</label><input id="iprice" type="number" min="1" placeholder="150"></div>
@@ -1277,19 +1274,6 @@ function rGrid(){
       filtered().map(cardHTML).join('')+
       `<div class="add-card" onclick="openAddItem()"><span style="font-size:24px">＋</span><span>新增</span></div>`;
   }
-  requestAnimationFrame(limitEmojiToFirstTwoRows);
-}
-// 只在最前面兩排卡片顯示 emoji 圖示，其餘的省略（有上傳照片的卡片不受影響，一律顯示）
-function limitEmojiToFirstTwoRows(){
-  const cards=Array.from(document.querySelectorAll('.item-card'));
-  if(!cards.length)return;
-  const tops=[...new Set(cards.map(c=>c.offsetTop))].sort((a,b)=>a-b);
-  const secondRowTop=tops[1];
-  cards.forEach(c=>{
-    const emojiEl=c.querySelector('.ic-emoji');
-    if(!emojiEl)return;
-    emojiEl.style.display=(secondRowTop!==undefined&&c.offsetTop>secondRowTop)?'none':'';
-  });
 }
 
 // ── DRAG TO REORDER ──
@@ -1857,7 +1841,6 @@ function openAddItem(){
   document.getElementById('iname').value='';document.getElementById('iprice').value='';
   document.getElementById('icat').value=activeTab==='全部'?'':activeTab;
   document.getElementById('iimage').value='';
-  document.getElementById('removeImageBtn').style.display='none';
   document.getElementById('iconPickerPanel').style.display='none';
   _currentEditImagePath=null;_previewDataUrl=null;
   _modalBundles=[];renderBundleRows();
@@ -1872,7 +1855,6 @@ function openEditItem(id){
   document.getElementById('iconPickerPanel').style.display='none';
   _currentEditImagePath=item.image_path||null;
   _previewDataUrl=item.image_url||null;
-  document.getElementById('removeImageBtn').style.display=_previewDataUrl?'':'none';
   _modalBundles=item.bundles?JSON.parse(JSON.stringify(item.bundles)):[];renderBundleRows();
   document.getElementById('mdelBtn').style.display='block';_selectedEmoji=item.emoji||EMOJIS[0];renderEmojiRow(_selectedEmoji);updateIconCircle();document.getElementById('itemModal').style.display='flex';
 }
@@ -1895,7 +1877,7 @@ function previewImage(input){
   const reader=new FileReader();
   reader.onload=e=>{
     _previewDataUrl=e.target.result;
-    document.getElementById('removeImageBtn').style.display='';
+    document.getElementById('removeImageBtn').style.display='flex';
     updateIconCircle();
   };
   reader.readAsDataURL(file);
@@ -1906,15 +1888,32 @@ function removeItemImage(){
   document.getElementById('removeImageBtn').style.display='none';
   updateIconCircle();
 }
+// 圖示列：預設 emoji ＋ 一格可自行輸入的空白格 ＋ 上傳照片 ＋ 移除照片（都在同一排）
 function renderEmojiRow(sel){
-  document.getElementById('emojiRow').innerHTML=EMOJIS.map(e=>`<div class="emoji-opt ${e===sel?'sel':''}" onclick="selectEmoji('${e}')">${e}</div>`).join('');
+  const isCustom=sel&&!EMOJIS.includes(sel);
+  const customTile=`<input id="customEmojiInput" class="emoji-opt custom-emoji-input ${isCustom?'sel':''}" type="text" maxlength="2" value="${isCustom?sel:''}" placeholder="" title="自行輸入圖示" oninput="onCustomEmojiInput(this.value)">`;
+  const presetTiles=EMOJIS.map(e=>`<div class="emoji-opt ${e===sel?'sel':''}" onclick="selectEmoji('${e}')">${e}</div>`).join('');
+  const photoTile=`<div class="emoji-opt" onclick="document.getElementById('iimage').click()" title="上傳照片"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>`;
+  const removeTile=`<div id="removeImageBtn" class="emoji-opt danger" style="display:${_previewDataUrl?'flex':'none'}" onclick="removeItemImage()" title="移除照片">×</div>`;
+  document.getElementById('emojiRow').innerHTML=customTile+presetTiles+photoTile+removeTile;
 }
-// 選 emoji 表示要用圖示、不用照片，所以順便清掉目前的照片預覽
+// 選 emoji 表示要用圖示、不用照片，所以順便清掉目前的照片預覽跟自訂輸入格
 function selectEmoji(e){
   _selectedEmoji=e;_previewDataUrl=null;_currentEditImagePath=null;
   document.getElementById('iimage').value='';
   document.getElementById('removeImageBtn').style.display='none';
-  document.querySelectorAll('.emoji-opt').forEach(el=>el.classList.toggle('sel',el.textContent===e));
+  const custom=document.getElementById('customEmojiInput');if(custom){custom.value='';custom.classList.remove('sel');}
+  document.querySelectorAll('.emoji-opt').forEach(el=>{if(el.tagName!=='INPUT')el.classList.toggle('sel',el.textContent===e);});
+  updateIconCircle();
+}
+// 自訂輸入格：輸入任何不在預設清單內的圖示/字元
+function onCustomEmojiInput(val){
+  const v=val.trim();
+  _selectedEmoji=v||EMOJIS[0];_previewDataUrl=null;_currentEditImagePath=null;
+  document.getElementById('iimage').value='';
+  document.getElementById('removeImageBtn').style.display='none';
+  document.querySelectorAll('.emoji-opt').forEach(el=>{if(el.tagName!=='INPUT')el.classList.remove('sel');});
+  const custom=document.getElementById('customEmojiInput');if(custom)custom.classList.toggle('sel',!!v);
   updateIconCircle();
 }
 function closeItemModal(){document.getElementById('itemModal').style.display='none';}
