@@ -160,6 +160,8 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:16
 .item-card:hover{border-color:var(--border2);transform:translateY(-2px);box-shadow:0 4px 14px rgba(0,0,0,.07)}
 .item-card:active{transform:scale(.97)}
 .item-card.edit-mode{border-style:dashed;border-color:var(--accent)}
+.card-del-btn{position:absolute;top:6px;right:6px;width:22px;height:22px;border-radius:50%;border:none;background:var(--danger);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:2;padding:0}
+.card-del-btn:hover{opacity:.85}
 .ic-emoji{font-size:26px;display:block;margin-bottom:5px}
 .ic-name{font-size:13px;font-weight:500;color:var(--text);display:block;margin-bottom:4px;line-height:1.3}
 .ic-price{font-size:15px;font-weight:700;color:var(--accent)}
@@ -617,12 +619,12 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:16
 
 /* ===== SIDEBAR SHELL / UNIFIED TOP HEADER ===== */
 .pl-shell{display:flex;height:100vh;width:100%}
-.pl-sidebar{width:76px;flex-shrink:0;background:#DCB7A1;border-right:none;display:flex;flex-direction:column;align-items:center;padding:16px 0;gap:6px}
-.pl-logo{font-size:19px;font-weight:900;color:#5A3B29;margin-bottom:8px;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.45);display:flex;align-items:center;justify-content:center}
-.pl-side-btn{width:60px;padding:10px 4px;border-radius:var(--r);border:none;background:transparent;color:#6B4A38;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11px;font-family:var(--font);font-weight:500;transition:all .12s}
+.pl-sidebar{width:76px;flex-shrink:0;background:#7C4B35;border-right:none;display:flex;flex-direction:column;align-items:center;padding:16px 0;gap:6px}
+.pl-logo{font-size:19px;font-weight:900;color:#F5E9DE;margin-bottom:8px;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center}
+.pl-side-btn{width:60px;padding:10px 4px;border-radius:var(--r);border:none;background:transparent;color:rgba(255,255,255,.75);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11px;font-family:var(--font);font-weight:500;transition:all .12s}
 .pl-side-btn .ic{line-height:1;display:flex}
-.pl-side-btn:hover{background:rgba(255,255,255,.35);color:#3D2818}
-.pl-side-btn.on{background:var(--surface);color:var(--accent);font-weight:700;box-shadow:0 2px 6px rgba(0,0,0,.10)}
+.pl-side-btn:hover{background:rgba(255,255,255,.14);color:#fff}
+.pl-side-btn.on{background:var(--surface);color:var(--accent);font-weight:700;box-shadow:0 2px 6px rgba(0,0,0,.18)}
 .pl-main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
 .pl-topheader{padding:14px 22px;border-bottom:1px solid var(--border);background:var(--surface);flex-shrink:0;display:flex;align-items:center;justify-content:space-between}
 .pl-topheader h1{font-size:19px;font-weight:900;letter-spacing:-.01em}
@@ -1026,7 +1028,6 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:16
       <button class="modal-icon-btn" onclick="closeItemModal()" title="取消"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg></button>
       <h3 id="itemModalTitle">編輯商品</h3>
       <div class="modal-header-actions">
-        <button class="modal-icon-btn danger" id="mdelBtn" onclick="delItem()" title="刪除" style="display:block"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
         <button class="modal-icon-btn primary" onclick="saveItem()" title="儲存"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>
       </div>
     </div>
@@ -1451,7 +1452,9 @@ function rGrid(){
       ? `<img src="${item.image_url}" style="width:40px;height:40px;object-fit:cover;border-radius:8px;display:block;margin:0 auto 5px">`
       : `<span class="ic-emoji">${item.emoji||'🎁'}</span>`;
     const action = editMode ? `openEditItem('${item.id}')` : `addCart('${item.id}')`;
+    const delBtn = editMode ? `<button class="card-del-btn" onclick="deleteItemFromCard('${item.id}',event)" title="刪除"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>` : '';
     return `<div class="item-card ${editMode?'edit-mode':''}" draggable="true" data-id="${item.id}" ondragstart="onCardDragStart(event,'${item.id}')" ondragover="onCardDragOver(event)" ondrop="onCardDrop(event,'${item.id}')" onclick="${action}">
+      ${delBtn}
       ${visual}
       <span class="ic-name">${item.name}</span>
       <span class="ic-price">${cur()}${item.price}</span>
@@ -2043,7 +2046,7 @@ function openAddItem(){
   document.getElementById('iconPickerPanel').style.display='none';
   _currentEditImagePath=null;_previewDataUrl=null;
   _modalBundles=[];renderBundleRows();
-  document.getElementById('mdelBtn').style.display='none';_selectedEmoji=EMOJIS[0];renderEmojiRow(_selectedEmoji);updateIconCircle();document.getElementById('itemModal').style.display='flex';
+  _selectedEmoji=EMOJIS[0];renderEmojiRow(_selectedEmoji);updateIconCircle();document.getElementById('itemModal').style.display='flex';
 }
 function openEditItem(id){
   const item=S.items.find(i=>i.id===id);if(!item)return;
@@ -2055,7 +2058,7 @@ function openEditItem(id){
   _currentEditImagePath=item.image_path||null;
   _previewDataUrl=item.image_url||null;
   _modalBundles=item.bundles?JSON.parse(JSON.stringify(item.bundles)):[];renderBundleRows();
-  document.getElementById('mdelBtn').style.display='block';_selectedEmoji=item.emoji||EMOJIS[0];renderEmojiRow(_selectedEmoji);updateIconCircle();document.getElementById('itemModal').style.display='flex';
+  _selectedEmoji=item.emoji||EMOJIS[0];renderEmojiRow(_selectedEmoji);updateIconCircle();document.getElementById('itemModal').style.display='flex';
 }
 function toggleIconPicker(){
   const p=document.getElementById('iconPickerPanel');
@@ -2149,13 +2152,18 @@ async function saveItem(){
   closeItemModal();showToast('已儲存 ✓');
   await loadItemsFromCloud();rAll();
 }
-async function delItem(){
-  const eid=document.getElementById('eid').value;if(!eid)return;
-  const {error}=await sb.from('products').delete().eq('id',eid);
+async function delItem(id){
+  const targetId=id||document.getElementById('eid').value;if(!targetId)return;
+  if(!confirm('確定要刪除這個商品嗎？此動作無法復原。'))return;
+  const {error}=await sb.from('products').delete().eq('id',targetId);
   if(error){showToast('刪除失敗');console.error(error);return;}
-  delete S.cart[eid];
+  delete S.cart[targetId];
   closeItemModal();showToast('已刪除');
   await loadItemsFromCloud();rAll();
+}
+function deleteItemFromCard(id,ev){
+  ev.stopPropagation();
+  delItem(id);
 }
 
 // ── EXPORT ──
