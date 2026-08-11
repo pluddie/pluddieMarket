@@ -463,8 +463,10 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:16
 .modal-icon-btn.primary:hover{opacity:.85}
 .mf{margin-bottom:12px}
 .mf label{display:block;font-size:13px;color:var(--text2);margin-bottom:4px;font-weight:500}
-.mf input,.mf select{width:100%;padding:9px 11px;border:1px solid var(--border);border-radius:var(--r);font-size:15px;color:var(--text);background:var(--surface);font-family:var(--font)}
-.mf input:focus,.mf select:focus{outline:none;border-color:var(--border2)}
+.mf input,.mf select,.mf textarea{width:100%;padding:9px 11px;border:1px solid var(--border);border-radius:var(--r);font-size:15px;color:var(--text);background:var(--surface);font-family:var(--font)}
+.mf.readonly input{background:var(--s2);color:var(--text2)}
+.mf input:focus,.mf select:focus,.mf textarea:focus{outline:none;border-color:var(--border2)}
+.mf textarea{resize:vertical;min-height:56px;line-height:1.5}
 .name-row{display:flex;align-items:center;gap:10px}
 .name-row input{flex:1}
 .icon-circle{width:44px;height:44px;border-radius:50%;border:1px solid var(--border);background:var(--s2);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;overflow:hidden;position:relative;transition:border-color .12s}
@@ -612,6 +614,77 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:16
 .login-err{color:var(--danger);font-size:13px;margin-bottom:8px;display:none}
 .login-btn{width:100%;margin-top:6px;padding:12px;background:var(--text);color:var(--surface);border:none;border-radius:var(--r);font-size:15px;font-weight:700;cursor:pointer;font-family:var(--font)}
 .login-btn:disabled{opacity:.5;cursor:not-allowed}
+
+/* ===== SIDEBAR SHELL / UNIFIED TOP HEADER ===== */
+.pl-shell{display:flex;height:100vh;width:100%}
+.pl-sidebar{width:76px;flex-shrink:0;background:#DCB7A1;border-right:none;display:flex;flex-direction:column;align-items:center;padding:16px 0;gap:6px}
+.pl-logo{font-size:19px;font-weight:900;color:#5A3B29;margin-bottom:8px;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.45);display:flex;align-items:center;justify-content:center}
+.pl-side-btn{width:60px;padding:10px 4px;border-radius:var(--r);border:none;background:transparent;color:#6B4A38;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11px;font-family:var(--font);font-weight:500;transition:all .12s}
+.pl-side-btn .ic{line-height:1;display:flex}
+.pl-side-btn:hover{background:rgba(255,255,255,.35);color:#3D2818}
+.pl-side-btn.on{background:var(--surface);color:var(--accent);font-weight:700;box-shadow:0 2px 6px rgba(0,0,0,.10)}
+.pl-main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.pl-topheader{padding:14px 22px;border-bottom:1px solid var(--border);background:var(--surface);flex-shrink:0;display:flex;align-items:center;justify-content:space-between}
+.pl-topheader h1{font-size:19px;font-weight:900;letter-spacing:-.01em}
+.pl-view{flex:1;overflow:hidden;display:flex;min-height:0}
+.pl-view .app{height:100%;width:100%}
+.view-merch{width:100%;display:flex;flex-direction:column;overflow:hidden}
+
+/* ===== MERCH (PLUDDIE 周邊) additions, reusing base component classes above ===== */
+.mx-search-wrap{flex:1;min-width:140px;display:flex;align-items:center;gap:6px;background:var(--s2);border:1px solid var(--border);border-radius:var(--rp);padding:7px 13px}
+.mx-search-wrap input{border:none;background:transparent;outline:none;font-family:var(--font);font-size:14px;color:var(--text);width:100%}
+.mx-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+.mx-card{padding:0;overflow:hidden;text-align:left}
+.mx-card-photo{width:100%;aspect-ratio:1/1;background:var(--s2);display:flex;align-items:center;justify-content:center;font-size:32px;overflow:hidden}
+.mx-card-photo img{width:100%;height:100%;object-fit:cover;display:block}
+.mx-card-body{padding:10px 11px}
+.mx-card-meta{font-size:11.5px;color:var(--text2);margin:3px 0 6px;line-height:1.4}
+.mx-card-price-row{display:flex;justify-content:space-between;align-items:baseline;font-size:12.5px}
+.mx-card-price-row .sell{color:var(--accent);font-weight:700;font-size:14px}
+.mx-status-badge{position:absolute;top:8px;left:8px;font-size:10px;font-weight:600;padding:3px 8px;border-radius:var(--rp);z-index:2}
+.section-title{font-size:11px;font-weight:700;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;margin:16px 0 8px;padding-top:10px;border-top:1px solid var(--border)}
+.calc-box{background:var(--accent-bg);border:1px solid var(--border);border-radius:var(--r);padding:12px 13px;margin:4px 0 14px}
+.calc-row{display:flex;justify-content:space-between;font-size:13px;color:var(--text2);padding:3px 0}
+.calc-row.main{font-size:16px;font-weight:700;color:var(--accent);padding-top:6px;margin-top:4px;border-top:1px solid var(--border)}
+.mf-row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mf-row3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.mf-hint{font-size:11px;color:var(--text3);margin-top:3px}
+.mx-currency-toggle{display:inline-flex;border:1px solid var(--border);border-radius:var(--rp);overflow:hidden;margin-bottom:10px}
+.cur-opt{padding:5px 14px;font-size:12.5px;border:none;background:var(--surface);color:var(--text2);cursor:pointer;font-family:var(--font)}
+.cur-opt.on{background:var(--text);color:var(--surface)}
+.ghost-btn{width:100%;padding:10px;background:transparent;color:var(--text2);border:1px solid var(--border);border-radius:var(--r);font-size:13.5px;cursor:pointer;font-family:var(--font)}
+.ghost-btn:hover{background:var(--s2)}
+.danger-btn{width:100%;padding:10px;background:var(--danger-bg);color:var(--danger);border:1px solid var(--danger-bg);border-radius:var(--r);font-size:13.5px;cursor:pointer;font-family:var(--font);margin-top:6px}
+.danger-btn:hover{border-color:var(--danger)}
+@media(max-width:680px){.mf-row3{grid-template-columns:1fr}}
+
+/* ===== MERCH item modal: wide, horizontal, form-style ===== */
+.mx-wide-modal{width:680px;max-width:92vw;height:600px;max-height:88vh;display:flex;flex-direction:column;padding:20px}
+.mx-form-body{display:flex;gap:20px;flex:1;overflow:hidden;margin-top:6px}
+.mx-form-left{width:220px;flex-shrink:0;display:flex;flex-direction:column;gap:10px}
+.mx-photo-main{width:100%;aspect-ratio:1/1;border-radius:var(--rl);background:var(--s2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:40px;color:var(--text3);cursor:pointer;overflow:hidden;flex-shrink:0}
+.mx-photo-main img{width:100%;height:100%;object-fit:cover;display:block}
+.mx-photo-thumbs{display:flex;flex-wrap:wrap;gap:6px}
+.mx-photo-thumb{width:48px;height:48px;border-radius:var(--r);overflow:hidden;position:relative;border:1px solid var(--border);flex-shrink:0}
+.mx-photo-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.rm{border:none;background:rgba(0,0,0,.55);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;line-height:1}
+.mx-photo-thumb .rm{position:absolute;top:1px;right:1px;width:16px;height:16px;font-size:10px}
+.mx-photo-add-btn{padding:8px;border-radius:var(--r);border:1.5px dashed var(--border2);background:transparent;color:var(--text3);font-size:12.5px;cursor:pointer;font-family:var(--font)}
+.mx-photo-add-btn:hover{color:var(--text2);background:var(--s2)}
+.mx-form-right{flex:1;overflow-y:auto;scrollbar-width:none;-ms-overflow-style:none;padding-right:2px;min-width:0}
+.mx-form-right::-webkit-scrollbar{display:none;width:0;height:0}
+@media(max-width:680px){
+  .mx-wide-modal{width:94vw;height:auto;max-height:92vh}
+  .mx-form-body{flex-direction:column;overflow-y:auto;scrollbar-width:none}
+  .mx-form-body::-webkit-scrollbar{display:none}
+  .mx-form-left{width:100%;flex-direction:row;align-items:flex-start}
+  .mx-photo-main{width:96px;height:96px;flex-shrink:0}
+  .mx-form-right{overflow:visible}
+}
+@media(max-width:640px){
+  .pl-sidebar{width:60px}
+  .pl-side-btn{width:48px;font-size:10px}
+}
 </style>
 </head>
 <body>
@@ -628,7 +701,25 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:16
   </div>
 </div>
 
-<div class="app" id="appEl" style="display:none">
+<div class="pl-shell" id="plShell" style="display:none">
+  <nav class="pl-sidebar">
+    <div class="pl-logo">P</div>
+    <button class="pl-side-btn on" id="sideBtnPos" onclick="switchApp('pos')">
+      <span class="ic"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l3 3v15H6z"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg></span>
+      <span>記帳</span>
+    </button>
+    <button class="pl-side-btn" id="sideBtnMerch" onclick="switchApp('merch')">
+      <span class="ic"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="13" rx="1"/><path d="M3 8h18"/><path d="M12 8v13"/><path d="M7.5 8C6 8 5 6.8 5 5.5S6 3 7.5 3 10 4.8 10 6c0 .7-.2 1.4-.6 2"/><path d="M16.5 8C18 8 19 6.8 19 5.5S18 3 16.5 3 14 4.8 14 6c0 .7.2 1.4.6 2"/></svg></span>
+      <span>周邊</span>
+    </button>
+  </nav>
+  <div class="pl-main">
+    <div class="pl-topheader">
+      <h1 id="plPageTitle">PLUDDIE 記帳</h1>
+      <button class="icon-btn" id="mxTopSettingsBtn" style="display:none" onclick="openMxSettings()" title="設定"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
+    </div>
+    <div class="pl-view">
+    <div class="app" id="appEl">
   <!-- ===== LEFT: Product List ===== -->
   <div class="left" id="leftPanel">
     <!-- Banner Header -->
@@ -817,6 +908,114 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:16
         </div>
       </div>
     </div>
+  </div>
+</div><!-- /appEl (pos) -->
+
+<!-- ===== MERCH VIEW (PLUDDIE 周邊) ===== -->
+<div class="view-merch" id="viewMerch" style="display:none">
+  <div class="tabs-row" id="mxTabsRow"></div>
+  <div class="items-scroll">
+    <div class="items-grid mx-grid" id="mxItemsGrid"></div>
+  </div>
+</div>
+
+    </div>
+  </div>
+</div><!-- /plShell -->
+
+<!-- MERCH ITEM MODAL -->
+<div id="mxItemModal" class="modal-overlay" style="display:none">
+  <div class="modal mx-wide-modal">
+    <div class="modal-header-row">
+      <button class="modal-icon-btn" onclick="closeMxModal()" title="返回"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg></button>
+      <h3 id="mxModalTitle">新增紀錄</h3>
+      <div class="modal-header-actions">
+        <button class="modal-icon-btn danger" id="mxDelBtn" onclick="confirmDeleteMxItem()" title="刪除" style="display:none"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+        <button class="modal-icon-btn primary" onclick="saveMxItem()" title="儲存"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>
+      </div>
+    </div>
+
+    <div class="mx-form-body">
+      <div class="mx-form-left">
+        <div class="mx-photo-wrap" style="position:relative">
+          <div class="mx-photo-main" id="mxPhotoMain" onclick="document.getElementById('mxPhotoInput').click()">📦</div>
+          <button type="button" class="rm" id="mxPhotoRemoveBtn" style="display:none;position:absolute;top:6px;right:6px;width:22px;height:22px;font-size:12px" onclick="event.stopPropagation();removeMxPhoto()">×</button>
+        </div>
+        <input type="file" id="mxPhotoInput" accept="image/*" onchange="handleMxPhotoUpload(this)" style="display:none">
+      </div>
+
+      <div class="mx-form-right" id="mxFormRight">
+        <div class="mf"><label>商品／款式名稱 *</label><input id="mxName" placeholder="例：花花獅 壓克力吊飾"></div>
+        <div class="mf-row2">
+          <div class="mf"><label>系列／分類</label><input id="mxCategory" placeholder="例：吊飾" list="mxCatList"><datalist id="mxCatList"></datalist></div>
+          <div class="mf"><label>廠商</label><input id="mxVendor" placeholder="例：OO印刷"></div>
+        </div>
+        <div class="mf"><label>規格</label><textarea id="mxSpec" placeholder="材質／尺寸／顏色等"></textarea></div>
+        <div class="mf-row2">
+          <div class="mf"><label>下單／製作日</label><input id="mxDate" type="date"></div>
+          <div class="mf"><label>狀態</label>
+            <select id="mxStatus">
+              <option value="">未設定</option>
+              <option value="製作中">製作中</option>
+              <option value="已到貨">已到貨</option>
+              <option value="已上架">已上架</option>
+              <option value="已售完">已售完</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="section-title">成本與售價計算</div>
+
+        <div class="mx-currency-toggle" id="mxCurrencyToggle">
+          <button type="button" class="cur-opt on" data-cur="TWD" onclick="setMxCurrency('TWD')">台幣</button>
+          <button type="button" class="cur-opt" data-cur="CNY" onclick="setMxCurrency('CNY')">人民幣 ×5</button>
+        </div>
+        <div class="mf"><label>打樣費</label><input id="mxSample" type="number" min="0" step="1" value="0" oninput="recalcMx()"></div>
+        <div class="mf-row3">
+          <div class="mf"><label>單價</label><input id="mxUnitPrice" type="number" min="0" step="1" oninput="recalcMx()"></div>
+          <div class="mf"><label>數量 *</label><input id="mxQty" type="number" min="1" step="1" oninput="recalcMx()"></div>
+          <div class="mf"><label>運費</label><input id="mxShip" type="number" min="0" step="1" value="0" oninput="recalcMx()"></div>
+        </div>
+        <div class="mf readonly"><label>總金額（自動＝打樣費＋單價×數量＋運費）</label><input id="mxTotal" readonly></div>
+
+        <div class="calc-box" id="mxCalcBox"></div>
+
+        <div class="mf"><label>實際定價（可微調，預設帶入建議售價）</label><input id="mxActualPrice" type="number" min="0" step="1" oninput="onMxActualPriceEdit()"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MERCH DELETE CONFIRM -->
+<div id="mxConfirmModal" class="modal-overlay" style="display:none">
+  <div class="modal" style="width:300px;height:auto">
+    <div style="text-align:center;padding:8px 4px 4px">
+      <div style="font-size:32px;margin-bottom:8px">⚠️</div>
+      <h3 style="margin-bottom:8px">刪除這筆紀錄？</h3>
+      <p style="font-size:13.5px;color:var(--text2);line-height:1.6;margin-bottom:18px">刪除後無法復原，確定要繼續嗎？</p>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="clear-btn" style="flex:1;margin-top:0" onclick="closeMxConfirm()">取消</button>
+      <button class="checkout-btn" style="flex:1;margin-top:0;background:var(--danger)" onclick="doDeleteMxItem()">刪除</button>
+    </div>
+  </div>
+</div>
+
+<!-- MERCH SETTINGS -->
+<div id="mxSettingsModal" class="modal-overlay" style="display:none">
+  <div class="modal" style="height:auto;max-height:85vh">
+    <div class="modal-header-row">
+      <div></div><h3>周邊紀錄設定</h3>
+      <div class="modal-header-actions"><button class="modal-icon-btn" onclick="closeMxSettingsModal()">✕</button></div>
+    </div>
+    <div class="mf"><label>預設加成倍率（新增紀錄時的預設值）</label><input id="mxSettingMarkup" type="number" min="1" step="0.1" oninput="saveMxSettings()"></div>
+    <div class="section-title">資料備份</div>
+    <button class="ghost-btn" onclick="cacheMxLocal()">本機暫存</button>
+    <button class="ghost-btn" style="margin-top:8px" onclick="clearMxLocalCache()">清除暫存</button>
+    <button class="ghost-btn" style="margin-top:8px" onclick="exportMxHTML()">匯出 HTML</button>
+    <div class="section-title">危險區域</div>
+    <div class="mf-hint" style="margin-bottom:8px">資料已同步到雲端資料庫，「本機暫存」可額外在這台裝置存一份快取備份。</div>
+    <button class="danger-btn" onclick="clearMxAllData()">清空所有紀錄</button>
   </div>
 </div>
 
@@ -2005,7 +2204,7 @@ function showToast(msg){const t=document.getElementById('toastEl');t.textContent
 // ── AUTH / INIT ──
 async function initAfterLogin(){
   document.getElementById('loginScreen').style.display='none';
-  document.getElementById('appEl').style.display='';
+  document.getElementById('plShell').style.display='';
   load();
   loadBanner();
   applyTheme(S.theme || DEFAULT_STATE.theme);
@@ -2017,7 +2216,7 @@ async function initAfterLogin(){
 async function checkSession(){
   const {data:{session}} = await sb.auth.getSession();
   if(session){await initAfterLogin();}
-  else{document.getElementById('loginScreen').style.display='flex';document.getElementById('appEl').style.display='none';}
+  else{document.getElementById('loginScreen').style.display='flex';document.getElementById('plShell').style.display='none';}
 }
 async function doLogin(){
   const email=document.getElementById('loginEmail').value.trim();
@@ -2034,6 +2233,368 @@ async function doLogin(){
 function logout(){sb.auth.signOut().then(()=>location.reload());}
 
 checkSession();
+</script>
+
+<script>
+// ══════════════════════════════════════════════════════════════
+//  SIDEBAR SWITCHING (PLUDDIE 記帳 ⇄ PLUDDIE 周邊)
+// ══════════════════════════════════════════════════════════════
+let _mxInited=false;
+function switchApp(name){
+  document.getElementById('appEl').style.display = name==='pos' ? '' : 'none';
+  document.getElementById('viewMerch').style.display = name==='merch' ? '' : 'none';
+  document.getElementById('sideBtnPos').classList.toggle('on', name==='pos');
+  document.getElementById('sideBtnMerch').classList.toggle('on', name==='merch');
+  document.getElementById('mxTopSettingsBtn').style.display = name==='merch' ? 'flex' : 'none';
+  document.getElementById('plPageTitle').textContent = name==='pos' ? 'PLUDDIE 記帳' : 'PLUDDIE 周邊';
+  if(name==='merch' && !_mxInited){_mxInited=true; initMx();}
+}
+
+// ══════════════════════════════════════════════════════════════
+//  PLUDDIE 周邊 (merch tracker) — synced to the same Supabase project
+//  Cloud table: merch_items · Cloud bucket: merch-images (public)
+//  A small local IndexedDB cache is kept only for the manual
+//  "本機暫存 / 清除暫存" backup buttons in Settings.
+// ══════════════════════════════════════════════════════════════
+const MX_BUCKET='merch-images';
+const MX_DB_NAME='pluddie_merch_cache_db', MX_DB_VERSION=1;
+let _mxDbp=null;
+function mxOpenDB(){
+  if(_mxDbp) return _mxDbp;
+  _mxDbp=new Promise((resolve,reject)=>{
+    const req=indexedDB.open(MX_DB_NAME,MX_DB_VERSION);
+    req.onupgradeneeded=e=>{
+      const db=e.target.result;
+      if(!db.objectStoreNames.contains('cache')) db.createObjectStore('cache',{keyPath:'key'});
+      if(!db.objectStoreNames.contains('settings')) db.createObjectStore('settings',{keyPath:'key'});
+    };
+    req.onsuccess=e=>resolve(e.target.result);
+    req.onerror=e=>reject(e.target.error);
+  });
+  return _mxDbp;
+}
+async function mxIdbGet(store,key){
+  const db=await mxOpenDB();
+  return new Promise((res,rej)=>{
+    const tx=db.transaction(store,'readonly');
+    const req=tx.objectStore(store).get(key);
+    req.onsuccess=()=>res(req.result);req.onerror=()=>rej(req.error);
+  });
+}
+async function mxIdbGetAll(store){
+  const db=await mxOpenDB();
+  return new Promise((res,rej)=>{
+    const tx=db.transaction(store,'readonly');
+    const req=tx.objectStore(store).getAll();
+    req.onsuccess=()=>res(req.result);req.onerror=()=>rej(req.error);
+  });
+}
+async function mxIdbPut(store,val){
+  const db=await mxOpenDB();
+  return new Promise((res,rej)=>{
+    const tx=db.transaction(store,'readwrite');
+    tx.objectStore(store).put(val);
+    tx.oncomplete=()=>res();tx.onerror=()=>rej(tx.error);
+  });
+}
+async function mxIdbDelete(store,key){
+  const db=await mxOpenDB();
+  return new Promise((res,rej)=>{
+    const tx=db.transaction(store,'readwrite');
+    tx.objectStore(store).delete(key);
+    tx.oncomplete=()=>res();tx.onerror=()=>rej(tx.error);
+  });
+}
+
+let MX_ITEMS=[];
+let MX_SETTINGS={defaultMarkup:1.5};
+let mxCurrentTab='all';
+let mxEditingId=null;
+let mxPhotoPath=null;      // storage path of the saved photo (existing item)
+let mxPhotoFile=null;      // newly-picked File waiting to be uploaded on save
+let mxPhotoPreview=null;   // dataURL preview for the newly-picked file
+let mxPhotoRemoved=false;  // user explicitly removed the photo
+let mxCurrentCurrency='TWD';
+let mxActualPriceTouched=false;
+const MX_STATUS_OPTS=['製作中','已到貨','已上架','已售完'];
+const MX_STATUS_COLOR={'製作中':['var(--warn)','var(--warn-bg)'],'已到貨':['var(--accent2)','var(--accent2-bg)'],'已上架':['var(--accent)','var(--accent-bg)'],'已售完':['var(--text3)','var(--s2)']};
+
+function mxEsc(s){return (s==null?'':String(s)).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function mxMoney(n){n=Math.round(n||0);return 'NT$'+n.toLocaleString('zh-TW');}
+function mxUid(){return 'it_'+Date.now()+'_'+Math.random().toString(36).slice(2,8);}
+function mxPublicUrl(path){return path ? sb.storage.from(MX_BUCKET).getPublicUrl(path).data.publicUrl : null;}
+
+async function initMx(){
+  const s=await mxIdbGet('settings','defaultMarkup');
+  if(s) MX_SETTINGS.defaultMarkup=s.value;
+  await mxLoadFromCloud();
+}
+async function mxLoadFromCloud(){
+  const {data,error}=await sb.from('merch_items').select('*').order('created_at',{ascending:false});
+  if(error){showToast('讀取周邊紀錄失敗，請確認雲端資料表已建立');console.error(error);MX_ITEMS=[];renderMxAll();return;}
+  MX_ITEMS=(data||[]).map(r=>({
+    id:r.id,name:r.name,category:r.category,vendor:r.vendor,spec:r.spec,
+    orderDate:r.order_date,qty:r.qty,sampleFee:r.sample_fee,unitPrice:r.unit_price,shipping:r.shipping,
+    totalAmount:r.total_amount,markup:r.markup,actualPrice:r.actual_price,
+    status:r.status,photoPath:r.photo_path,createdAt:r.created_at
+  }));
+  renderMxAll();
+}
+function renderMxAll(){renderMxTabs();renderMxGrid();}
+
+function renderMxTabs(){
+  const cats=Array.from(new Set(MX_ITEMS.map(i=>i.category).filter(Boolean))).sort();
+  const wrap=document.getElementById('mxTabsRow');
+  let html=`<div class="tab ${mxCurrentTab==='all'?'on':''}" onclick="setMxTab('all')">全部</div>`;
+  html+=cats.map(c=>`<div class="tab ${mxCurrentTab===c?'on':''}" onclick="setMxTab('${mxEsc(c)}')">${mxEsc(c)}</div>`).join('');
+  wrap.innerHTML=html;
+  document.getElementById('mxCatList').innerHTML=cats.map(c=>`<option value="${mxEsc(c)}">`).join('');
+}
+function setMxTab(t){mxCurrentTab=t;renderMxTabs();renderMxGrid();}
+
+function getMxFiltered(){
+  return MX_ITEMS.filter(it=> mxCurrentTab==='all' || it.category===mxCurrentTab);
+}
+
+function renderMxGrid(){
+  const list=getMxFiltered();
+  const grid=document.getElementById('mxItemsGrid');
+  let html=`<div class="add-card" onclick="openMxAdd()"><span class="plus" style="font-size:28px;line-height:1">＋</span><span>新增紀錄</span></div>`;
+  list.forEach(it=>{
+    const unitCost=(it.qty?(it.totalAmount||0)/it.qty:0);
+    const url=mxPublicUrl(it.photoPath);
+    const photo=url?`<img src="${url}">`:'📦';
+    const sc=MX_STATUS_COLOR[it.status]||['var(--text3)','var(--s2)'];
+    html+=`
+    <div class="item-card mx-card" onclick="openMxEdit('${it.id}')">
+      ${it.status?`<div class="mx-status-badge" style="color:${sc[0]};background:${sc[1]}">${mxEsc(it.status)}</div>`:''}
+      <div class="mx-card-photo">${photo}</div>
+      <div class="mx-card-body">
+        <div class="ic-name" style="text-align:left">${mxEsc(it.name)}</div>
+        <div class="mx-card-meta">${mxEsc(it.vendor||'—')} · ${it.qty||0}件${it.category?(' · '+mxEsc(it.category)):''}</div>
+        <div class="mx-card-price-row"><span style="color:var(--text3)">成本 ${mxMoney(unitCost)}</span><span class="sell">${mxMoney(it.actualPrice)}</span></div>
+      </div>
+    </div>`;
+  });
+  grid.innerHTML=html;
+}
+
+function renderMxPhotoBox(){
+  const box=document.getElementById('mxPhotoMain');
+  const rmBtn=document.getElementById('mxPhotoRemoveBtn');
+  let hasPhoto=false;
+  if(mxPhotoPreview){ box.innerHTML=`<img src="${mxPhotoPreview}">`; hasPhoto=true; }
+  else if(mxPhotoPath && !mxPhotoRemoved){ box.innerHTML=`<img src="${mxPublicUrl(mxPhotoPath)}">`; hasPhoto=true; }
+  else{ box.innerHTML='📦'; }
+  rmBtn.style.display = hasPhoto ? 'flex' : 'none';
+}
+function handleMxPhotoUpload(input){
+  const file=input.files[0];if(!file)return;
+  mxPhotoFile=file;mxPhotoRemoved=false;
+  const reader=new FileReader();
+  reader.onload=e=>{mxPhotoPreview=e.target.result;renderMxPhotoBox();};
+  reader.readAsDataURL(file);
+  input.value='';
+}
+function removeMxPhoto(){
+  mxPhotoFile=null;mxPhotoPreview=null;mxPhotoRemoved=true;
+  document.getElementById('mxPhotoInput').value='';
+  renderMxPhotoBox();
+}
+
+function setMxCurrency(cur){
+  if(cur===mxCurrentCurrency) return;
+  const factor = cur==='CNY' ? (1/5) : 5;
+  ['mxSample','mxUnitPrice','mxShip'].forEach(id=>{
+    const el=document.getElementById(id);
+    const v=parseFloat(el.value);
+    if(!isNaN(v)) el.value=Math.round(v*factor*100)/100;
+  });
+  mxCurrentCurrency=cur;
+  document.querySelectorAll('#mxCurrencyToggle .cur-opt').forEach(b=>b.classList.toggle('on', b.dataset.cur===cur));
+  recalcMx();
+}
+function mxCurMul(){return mxCurrentCurrency==='CNY'?5:1;}
+
+function openMxAdd(){
+  mxEditingId=null;mxPhotoPath=null;mxPhotoFile=null;mxPhotoPreview=null;mxPhotoRemoved=false;
+  mxActualPriceTouched=false;mxCurrentCurrency='TWD';
+  document.getElementById('mxModalTitle').textContent='新增紀錄';
+  document.getElementById('mxDelBtn').style.display='none';
+  document.getElementById('mxName').value='';
+  document.getElementById('mxCategory').value='';
+  document.getElementById('mxVendor').value='';
+  document.getElementById('mxSpec').value='';
+  document.getElementById('mxDate').value=new Date().toISOString().slice(0,10);
+  document.getElementById('mxUnitPrice').value='';
+  document.getElementById('mxQty').value='';
+  document.getElementById('mxSample').value=0;
+  document.getElementById('mxShip').value=0;
+  document.getElementById('mxActualPrice').value='';
+  document.getElementById('mxStatus').value='';
+  document.querySelectorAll('#mxCurrencyToggle .cur-opt').forEach(b=>b.classList.toggle('on', b.dataset.cur==='TWD'));
+  renderMxPhotoBox();
+  recalcMx();
+  document.getElementById('mxItemModal').style.display='flex';
+}
+function openMxEdit(id){
+  const it=MX_ITEMS.find(i=>i.id===id);if(!it)return;
+  mxEditingId=id;mxPhotoPath=it.photoPath||null;mxPhotoFile=null;mxPhotoPreview=null;mxPhotoRemoved=false;
+  mxActualPriceTouched=true;mxCurrentCurrency='TWD';
+  document.getElementById('mxModalTitle').textContent='編輯紀錄';
+  document.getElementById('mxDelBtn').style.display='flex';
+  document.getElementById('mxName').value=it.name||'';
+  document.getElementById('mxCategory').value=it.category||'';
+  document.getElementById('mxVendor').value=it.vendor||'';
+  document.getElementById('mxSpec').value=it.spec||'';
+  document.getElementById('mxDate').value=it.orderDate||'';
+  document.getElementById('mxQty').value=it.qty||'';
+  document.getElementById('mxSample').value=it.sampleFee||0;
+  document.getElementById('mxUnitPrice').value=it.unitPrice||0;
+  document.getElementById('mxShip').value=it.shipping||0;
+  document.getElementById('mxActualPrice').value=it.actualPrice||'';
+  document.getElementById('mxStatus').value=it.status||'';
+  document.querySelectorAll('#mxCurrencyToggle .cur-opt').forEach(b=>b.classList.toggle('on', b.dataset.cur==='TWD'));
+  renderMxPhotoBox();
+  recalcMx();
+  document.getElementById('mxItemModal').style.display='flex';
+}
+function closeMxModal(){document.getElementById('mxItemModal').style.display='none';}
+function onMxActualPriceEdit(){mxActualPriceTouched=true;}
+
+function recalcMx(){
+  const mul=mxCurMul();
+  const qty=parseFloat(document.getElementById('mxQty').value)||0;
+  const sample=(parseFloat(document.getElementById('mxSample').value)||0)*mul;
+  const unitPrice=(parseFloat(document.getElementById('mxUnitPrice').value)||0)*mul;
+  const ship=(parseFloat(document.getElementById('mxShip').value)||0)*mul;
+  const markup=MX_SETTINGS.defaultMarkup||1;
+  const total=sample+(unitPrice*qty)+ship;
+  const unitCostWithShip=qty>0?total/qty:0;
+  const suggested=Math.ceil(unitCostWithShip*markup);
+  document.getElementById('mxTotal').value=mxMoney(total);
+  document.getElementById('mxCalcBox').innerHTML=`
+    <div class="calc-row"><span>單件成本（含運費／打樣分攤）</span><b>${mxMoney(unitCostWithShip)}</b></div>
+    <div class="calc-row"><span>加成倍率（設定中的預設值）</span><b>× ${markup}</b></div>
+    <div class="calc-row main"><span>建議售價／件</span><span>${mxMoney(suggested)}</span></div>
+  `;
+  if(!mxActualPriceTouched || document.getElementById('mxActualPrice').value===''){
+    document.getElementById('mxActualPrice').value=suggested||'';
+  }
+}
+
+async function saveMxItem(){
+  const name=document.getElementById('mxName').value.trim();
+  const qty=parseFloat(document.getElementById('mxQty').value);
+  const mul=mxCurMul();
+  if(!name){showToast('請輸入商品名稱');return;}
+  if(!qty||qty<1){showToast('請輸入有效數量');return;}
+  const sample=(parseFloat(document.getElementById('mxSample').value)||0)*mul;
+  const unitPrice=(parseFloat(document.getElementById('mxUnitPrice').value)||0)*mul;
+  const ship=(parseFloat(document.getElementById('mxShip').value)||0)*mul;
+  const total=sample+(unitPrice*qty)+ship;
+  const markup=MX_SETTINGS.defaultMarkup;
+  const actualPrice=parseFloat(document.getElementById('mxActualPrice').value)||0;
+
+  let photoPath=mxPhotoPath;
+  if(mxPhotoRemoved) photoPath=null;
+  if(mxPhotoFile){
+    const ext=(mxPhotoFile.name.split('.').pop()||'jpg').toLowerCase();
+    const path=`${Date.now()}_${Math.random().toString(36).slice(2,8)}.${ext}`;
+    const {error:upErr}=await sb.storage.from(MX_BUCKET).upload(path,mxPhotoFile);
+    if(upErr){showToast('照片上傳失敗，請確認雲端 Storage 已設定');console.error(upErr);return;}
+    photoPath=path;
+  }
+
+  const row={
+    id:mxEditingId||mxUid(),
+    name,
+    category:document.getElementById('mxCategory').value.trim()||null,
+    vendor:document.getElementById('mxVendor').value.trim()||null,
+    spec:document.getElementById('mxSpec').value.trim()||null,
+    order_date:document.getElementById('mxDate').value||null,
+    qty,sample_fee:sample,unit_price:unitPrice,shipping:ship,total_amount:total,markup,actual_price:actualPrice,
+    status:document.getElementById('mxStatus').value||null,
+    photo_path:photoPath
+  };
+  const {error}=await sb.from('merch_items').upsert(row);
+  if(error){showToast('儲存失敗，請確認雲端資料表已建立');console.error(error);return;}
+  closeMxModal();showToast('已儲存 ✓');
+  await mxLoadFromCloud();
+}
+function confirmDeleteMxItem(){
+  if(!mxEditingId)return;
+  document.getElementById('mxConfirmModal').style.display='flex';
+}
+function closeMxConfirm(){document.getElementById('mxConfirmModal').style.display='none';}
+async function doDeleteMxItem(){
+  if(!mxEditingId)return;
+  const it=MX_ITEMS.find(i=>i.id===mxEditingId);
+  const {error}=await sb.from('merch_items').delete().eq('id',mxEditingId);
+  if(error){showToast('刪除失敗');console.error(error);return;}
+  if(it&&it.photoPath){sb.storage.from(MX_BUCKET).remove([it.photoPath]).catch(()=>{});}
+  closeMxConfirm();closeMxModal();showToast('已刪除');
+  await mxLoadFromCloud();
+}
+
+function openMxSettings(){
+  document.getElementById('mxSettingMarkup').value=MX_SETTINGS.defaultMarkup;
+  document.getElementById('mxSettingsModal').style.display='flex';
+}
+function closeMxSettingsModal(){document.getElementById('mxSettingsModal').style.display='none';}
+async function saveMxSettings(){
+  const v=parseFloat(document.getElementById('mxSettingMarkup').value)||1.5;
+  MX_SETTINGS.defaultMarkup=v;
+  await mxIdbPut('settings',{key:'defaultMarkup',value:v});
+}
+
+// ── 本機暫存：把目前雲端讀到的紀錄快取一份到這台裝置的瀏覽器 ──
+async function cacheMxLocal(){
+  await mxIdbPut('cache',{key:'snapshot',items:MX_ITEMS,settings:MX_SETTINGS,cachedAt:new Date().toISOString()});
+  showToast('已暫存到本機');
+}
+async function clearMxLocalCache(){
+  if(!confirm('確定要清除本機暫存的備份嗎？（雲端資料不受影響）'))return;
+  await mxIdbDelete('cache','snapshot');
+  showToast('已清除本機暫存');
+}
+
+// ── 匯出 HTML：把目前紀錄輸出成一份獨立的靜態報表，可離線開啟保存 ──
+function exportMxHTML(){
+  const rows=MX_ITEMS.map(it=>{
+    const unitCost=(it.qty?(it.totalAmount||0)/it.qty:0);
+    const url=mxPublicUrl(it.photoPath);
+    return `<tr>
+      <td>${url?`<img src="${url}" style="width:48px;height:48px;object-fit:cover;border-radius:8px">`:''}</td>
+      <td>${mxEsc(it.name)}</td><td>${mxEsc(it.category||'')}</td><td>${mxEsc(it.vendor||'')}</td>
+      <td>${mxEsc(it.orderDate||'')}</td><td>${it.qty||0}</td>
+      <td>${mxMoney(unitCost)}</td><td>${mxMoney(it.actualPrice)}</td><td>${mxEsc(it.status||'')}</td>
+    </tr>`;
+  }).join('');
+  const html=`<!DOCTYPE html><html lang="zh-TW"><head><meta charset="UTF-8"><title>PLUDDIE 周邊紀錄匯出</title>
+  <style>body{font-family:'Noto Sans TC',sans-serif;background:#FAF5EF;color:#2C1D0E;padding:24px}
+  table{width:100%;border-collapse:collapse;background:#fff;border-radius:12px;overflow:hidden}
+  th,td{padding:10px 12px;border-bottom:1px solid #DDD0C0;font-size:13px;text-align:left}
+  th{background:#F3E8DE;color:#7A6553;font-weight:700}
+  h1{font-size:20px;margin-bottom:14px}</style></head><body>
+  <h1>PLUDDIE 周邊紀錄（匯出時間：${new Date().toLocaleString('zh-TW')}）</h1>
+  <table><thead><tr><th>照片</th><th>名稱</th><th>分類</th><th>廠商</th><th>製作日</th><th>數量</th><th>單件成本</th><th>售價</th><th>狀態</th></tr></thead>
+  <tbody>${rows}</tbody></table></body></html>`;
+  const blob=new Blob([html],{type:'text/html;charset=utf-8'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=`pluddie_merch_${new Date().toISOString().slice(0,10)}.html`;
+  a.click();
+  showToast('HTML 已匯出');
+}
+
+async function clearMxAllData(){
+  if(!confirm('這會刪除雲端上所有周邊紀錄，且無法復原，確定要清空嗎？'))return;
+  const {error}=await sb.from('merch_items').delete().neq('id','');
+  if(error){showToast('清空失敗');console.error(error);return;}
+  closeMxSettingsModal();showToast('已清空所有紀錄');
+  await mxLoadFromCloud();
+}
 </script>
 
 
