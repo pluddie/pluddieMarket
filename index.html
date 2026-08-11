@@ -68,7 +68,6 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:16
   width:100%;height:100%;
   background:linear-gradient(135deg,var(--accent-bg) 0%,var(--surface) 60%,var(--accent2-bg) 100%);
 }
-.banner-default-title{font-size:28px;font-weight:900;color:var(--text);letter-spacing:-.02em}
 .banner-default-sub{font-size:13px;color:var(--text2);opacity:.7}
 .banner-img-wrap{position:absolute;inset:0;display:none}
 .banner-img-wrap img{width:100%;height:100%;object-fit:cover;display:block}
@@ -90,16 +89,6 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:16
   align-items:center;justify-content:center;
 }
 
-/* ===== TOPBAR with date ===== */
-.topbar{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:10px 18px;
-  border-bottom:1px solid var(--border);
-  background:var(--surface);
-  flex-shrink:0;
-}
-.shop-name{font-size:18px;font-weight:700;letter-spacing:-.01em}
-.topbar-right{display:flex;align-items:center;gap:8px}
 .date-input-wrap{display:flex;align-items:center;gap:6px}
 .date-picker-input{
   padding:6px 10px;border:1px solid var(--border);
@@ -175,13 +164,6 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:16
   gap:5px;min-height:90px;
 }
 .add-card:hover{color:var(--text2);background:var(--surface)}
-.cat-subtitle{
-  font-size:11px;font-weight:700;color:var(--text3);
-  letter-spacing:.08em;text-transform:uppercase;
-  padding:10px 2px 5px;grid-column:1/-1;
-  border-bottom:1px solid var(--border);margin-bottom:2px;
-}
-.cat-subtitle:first-child{padding-top:2px}
 
 /* ===== RIGHT PANEL TABS ===== */
 .panel-tabs{display:flex;border-bottom:1px solid var(--border);flex-shrink:0}
@@ -547,11 +529,8 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:16
     height:120px;
     max-height:120px;
   }
-  .banner-default-title{font-size:20px}
   .banner-default-sub{font-size:11px}
 
-  .topbar{padding:8px 14px}
-  .shop-name{font-size:16px}
   .date-picker-input{font-size:13px;padding:5px 8px}
   .today-btn{font-size:12px;padding:5px 10px}
   .icon-btn{width:34px;height:34px;font-size:16px}
@@ -634,8 +613,6 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:16
 .view-merch{width:100%;display:flex;flex-direction:column;overflow:hidden}
 
 /* ===== MERCH (PLUDDIE 周邊) additions, reusing base component classes above ===== */
-.mx-search-wrap{flex:1;min-width:140px;display:flex;align-items:center;gap:6px;background:var(--s2);border:1px solid var(--border);border-radius:var(--rp);padding:7px 13px}
-.mx-search-wrap input{border:none;background:transparent;outline:none;font-family:var(--font);font-size:14px;color:var(--text);width:100%}
 .mx-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
 .mx-card{padding:0;overflow:hidden;text-align:left}
 .mx-card-photo{width:100%;aspect-ratio:1/1;background:var(--s2);display:flex;align-items:center;justify-content:center;font-size:32px;overflow:hidden}
@@ -667,13 +644,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:16
 .mx-form-left{width:220px;flex-shrink:0;display:flex;flex-direction:column;gap:10px}
 .mx-photo-main{width:100%;aspect-ratio:1/1;border-radius:var(--rl);background:var(--s2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:40px;color:var(--text3);cursor:pointer;overflow:hidden;flex-shrink:0}
 .mx-photo-main img{width:100%;height:100%;object-fit:cover;display:block}
-.mx-photo-thumbs{display:flex;flex-wrap:wrap;gap:6px}
-.mx-photo-thumb{width:48px;height:48px;border-radius:var(--r);overflow:hidden;position:relative;border:1px solid var(--border);flex-shrink:0}
-.mx-photo-thumb img{width:100%;height:100%;object-fit:cover;display:block}
 .rm{border:none;background:rgba(0,0,0,.55);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;line-height:1}
-.mx-photo-thumb .rm{position:absolute;top:1px;right:1px;width:16px;height:16px;font-size:10px}
-.mx-photo-add-btn{padding:8px;border-radius:var(--r);border:1.5px dashed var(--border2);background:transparent;color:var(--text3);font-size:12.5px;cursor:pointer;font-family:var(--font)}
-.mx-photo-add-btn:hover{color:var(--text2);background:var(--s2)}
 .mx-form-right{flex:1;overflow-y:auto;scrollbar-width:none;-ms-overflow-style:none;padding-right:2px;min-width:0}
 .mx-form-right::-webkit-scrollbar{display:none;width:0;height:0}
 @media(max-width:680px){
@@ -936,14 +907,14 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:16
       </div>
 
       <div class="mx-form-right" id="mxFormRight">
-        <div class="mf"><label>商品／款式名稱 *</label><input id="mxName" placeholder="例：花花獅 壓克力吊飾"></div>
+        <div class="mf"><label>商品名稱 *</label><input id="mxName" placeholder="例：花花獅 壓克力吊飾"></div>
         <div class="mf-row2">
-          <div class="mf"><label>系列／分類</label><input id="mxCategory" placeholder="例：吊飾" list="mxCatList"><datalist id="mxCatList"></datalist></div>
+          <div class="mf"><label>類別</label><input id="mxCategory" placeholder="例：吊飾" list="mxCatList"><datalist id="mxCatList"></datalist></div>
           <div class="mf"><label>廠商</label><input id="mxVendor" placeholder="例：OO印刷"></div>
         </div>
         <div class="mf"><label>規格</label><textarea id="mxSpec" placeholder="材質／尺寸／顏色等"></textarea></div>
         <div class="mf-row2">
-          <div class="mf"><label>下單／製作日</label><input id="mxDate" type="date"></div>
+          <div class="mf"><label>下單日</label><input id="mxDate" type="date"></div>
           <div class="mf"><label>狀態</label>
             <select id="mxStatus">
               <option value="">未設定</option>
@@ -967,11 +938,11 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:16
           <div class="mf"><label>數量 *</label><input id="mxQty" type="number" min="1" step="1" oninput="recalcMx()"></div>
           <div class="mf"><label>運費</label><input id="mxShip" type="number" min="0" step="1" value="0" oninput="recalcMx()"></div>
         </div>
-        <div class="mf readonly"><label>總金額（自動＝打樣費＋單價×數量＋運費）</label><input id="mxTotal" readonly></div>
+        <div class="mf readonly"><label>總金額</label><input id="mxTotal" readonly></div>
 
         <div class="calc-box" id="mxCalcBox"></div>
 
-        <div class="mf"><label>實際定價（可微調，預設帶入建議售價）</label><input id="mxActualPrice" type="number" min="0" step="1" oninput="onMxActualPriceEdit()"></div>
+        <div class="mf"><label>實際定價</label><input id="mxActualPrice" type="number" min="0" step="1" oninput="onMxActualPriceEdit()"></div>
       </div>
     </div>
   </div>
@@ -2268,14 +2239,6 @@ async function mxIdbGet(store,key){
     req.onsuccess=()=>res(req.result);req.onerror=()=>rej(req.error);
   });
 }
-async function mxIdbGetAll(store){
-  const db=await mxOpenDB();
-  return new Promise((res,rej)=>{
-    const tx=db.transaction(store,'readonly');
-    const req=tx.objectStore(store).getAll();
-    req.onsuccess=()=>res(req.result);req.onerror=()=>rej(req.error);
-  });
-}
 async function mxIdbPut(store,val){
   const db=await mxOpenDB();
   return new Promise((res,rej)=>{
@@ -2322,6 +2285,7 @@ async function mxLoadFromCloud(){
   MX_ITEMS=(data||[]).map(r=>({
     id:r.id,name:r.name,category:r.category,vendor:r.vendor,spec:r.spec,
     orderDate:r.order_date,qty:r.qty,sampleFee:r.sample_fee,unitPrice:r.unit_price,shipping:r.shipping,
+    currency:r.currency||'TWD',
     totalAmount:r.total_amount,markup:r.markup,actualPrice:r.actual_price,
     status:r.status,photoPath:r.photo_path,sortOrder:r.sort_order||0,createdAt:r.created_at
   }));
@@ -2358,8 +2322,8 @@ function renderMxGrid(){
       <div class="mx-card-photo">${photo}</div>
       <div class="mx-card-body">
         <div class="ic-name" style="text-align:left">${mxEsc(it.name)}</div>
-        <div class="mx-card-meta">${mxEsc(it.vendor||'—')} · ${it.qty||0}件${it.category?(' · '+mxEsc(it.category)):''}</div>
-        <div class="mx-card-price-row"><span style="color:var(--text3)">成本 ${mxMoney(unitCost)}</span><span class="sell">${mxMoney(it.actualPrice)}</span></div>
+        <div class="mx-card-meta">成本 ${mxMoney(unitCost)}</div>
+        <div class="mx-card-price-row"><span class="sell">${mxMoney(it.actualPrice)}</span></div>
       </div>
     </div>`;
   });
@@ -2446,11 +2410,13 @@ function openMxAdd(){
   renderMxPhotoBox();
   recalcMx();
   document.getElementById('mxItemModal').style.display='flex';
+  document.getElementById('mxFormRight').scrollTop=0;
 }
 function openMxEdit(id){
   const it=MX_ITEMS.find(i=>i.id===id);if(!it)return;
   mxEditingId=id;mxPhotoPath=it.photoPath||null;mxPhotoFile=null;mxPhotoPreview=null;mxPhotoRemoved=false;
-  mxActualPriceTouched=true;mxCurrentCurrency='TWD';
+  mxActualPriceTouched=true;mxCurrentCurrency=it.currency||'TWD';
+  const divisor=mxCurMul(); // stored values are canonical TWD; divide to show in the saved currency
   document.getElementById('mxModalTitle').textContent='編輯紀錄';
   document.getElementById('mxDelBtn').style.display='flex';
   document.getElementById('mxName').value=it.name||'';
@@ -2459,15 +2425,16 @@ function openMxEdit(id){
   document.getElementById('mxSpec').value=it.spec||'';
   document.getElementById('mxDate').value=it.orderDate||'';
   document.getElementById('mxQty').value=it.qty||'';
-  document.getElementById('mxSample').value=it.sampleFee||0;
-  document.getElementById('mxUnitPrice').value=it.unitPrice||0;
-  document.getElementById('mxShip').value=it.shipping||0;
+  document.getElementById('mxSample').value=(it.sampleFee||0)/divisor;
+  document.getElementById('mxUnitPrice').value=(it.unitPrice||0)/divisor;
+  document.getElementById('mxShip').value=(it.shipping||0)/divisor;
   document.getElementById('mxActualPrice').value=it.actualPrice||'';
   document.getElementById('mxStatus').value=it.status||'';
-  document.querySelectorAll('#mxCurrencyToggle .cur-opt').forEach(b=>b.classList.toggle('on', b.dataset.cur==='TWD'));
+  document.querySelectorAll('#mxCurrencyToggle .cur-opt').forEach(b=>b.classList.toggle('on', b.dataset.cur===mxCurrentCurrency));
   renderMxPhotoBox();
   recalcMx();
   document.getElementById('mxItemModal').style.display='flex';
+  document.getElementById('mxFormRight').scrollTop=0;
 }
 function closeMxModal(){document.getElementById('mxItemModal').style.display='none';}
 function onMxActualPriceEdit(){mxActualPriceTouched=true;}
@@ -2525,6 +2492,7 @@ async function saveMxItem(){
     order_date:document.getElementById('mxDate').value||null,
     qty,sample_fee:sample,unit_price:unitPrice,shipping:ship,total_amount:total,markup,actual_price:actualPrice,
     status:document.getElementById('mxStatus').value||null,
+    currency:mxCurrentCurrency,
     photo_path:photoPath
   };
   if(!mxEditingId) row.sort_order=MX_ITEMS.length;
