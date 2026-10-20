@@ -909,7 +909,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:16
       <div class="mx-form-right" id="mxFormRight">
         <div class="mf"><label>商品名稱 *</label><input id="mxName" placeholder="例：花花獅 壓克力吊飾"></div>
         <div class="mf-row2">
-          <div class="mf"><label>類別</label><input id="mxCategory" placeholder="例：吊飾" list="mxCatList"><datalist id="mxCatList"></datalist></div>
+          <div class="mf"><label>分類</label><input id="mxCategory" placeholder="例：吊飾" list="mxCatList"><datalist id="mxCatList"></datalist></div>
           <div class="mf"><label>廠商</label><input id="mxVendor" placeholder="例：OO印刷"></div>
         </div>
         <div class="mf"><label>規格</label><textarea id="mxSpec" placeholder="材質／尺寸／顏色等"></textarea></div>
@@ -2089,16 +2089,23 @@ async function saveItem(){
 
   const payload={name,price,category:cat,emoji,image_url:imagePath||null,bundles:bundles.length?bundles:null};
 
+  let productId=eid;
   if(eid){
     const {error}=await sb.from('products').update(payload).eq('id',eid);
     if(error){showToast('更新失敗');console.error(error);if(saveBtn){saveBtn.disabled=false;saveBtn.style.opacity='';}return;}
   }else{
     payload.sort_order=S.items.length;
-    const {error}=await sb.from('products').insert(payload);
+    const {data,error}=await sb.from('products').insert(payload).select('id').single();
     if(error){showToast('新增失敗');console.error(error);if(saveBtn){saveBtn.disabled=false;saveBtn.style.opacity='';}return;}
+    productId=data.id;
   }
   if(saveBtn){saveBtn.disabled=false;saveBtn.style.opacity='';}
   closeItemModal();showToast('已儲存 ✓');
+  try{
+    await syncProductToMerch({id:productId,name,price,category:cat});
+  }catch(e){
+    console.error(e);showToast('已儲存，但同步到周邊失敗（請確認已執行 setup_sync.sql）');
+  }
   await loadItemsFromCloud();rAll();
 }
 async function delItem(id){
@@ -2205,7 +2212,11 @@ function switchApp(name){
   document.getElementById('posDateWrap').style.display = name==='pos' ? 'flex' : 'none';
   document.getElementById('mxTopSettingsBtn').style.display = name==='merch' ? 'flex' : 'none';
   document.getElementById('plPageTitle').textContent = name==='pos' ? 'PLUDDIE 記帳' : 'PLUDDIE 周邊';
-  if(name==='merch' && !_mxInited){_mxInited=true; initMx();}
+  if(name==='merch'){
+    if(!_mxInited){_mxInited=true;_mxStale=false;initMx();}
+    else if(_mxStale){_mxStale=false;mxLoadFromCloud();}
+  }
+  if(name==='pos' && _posStale){_posStale=false;loadItemsFromCloud().then(rAll);}
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -2287,7 +2298,8 @@ async function mxLoadFromCloud(){
     orderDate:r.order_date,qty:r.qty,sampleFee:r.sample_fee,unitPrice:r.unit_price,shipping:r.shipping,
     currency:r.currency||'TWD',
     totalAmount:r.total_amount,markup:r.markup,actualPrice:r.actual_price,
-    status:r.status,photoPath:r.photo_path,sortOrder:r.sort_order||0,createdAt:r.created_at
+    status:r.status,photoPath:r.photo_path,sortOrder:r.sort_order||0,createdAt:r.created_at,
+    productId:r.product_id||null
   }));
   renderMxAll();
 }
@@ -2496,9 +2508,15 @@ async function saveMxItem(){
     photo_path:photoPath
   };
   if(!mxEditingId) row.sort_order=MX_ITEMS.length;
+  const existing=MX_ITEMS.find(i=>i.id===row.id);
   const {error}=await sb.from('merch_items').upsert(row);
   if(error){showToast('儲存失敗，請確認雲端資料表已建立');console.error(error);return;}
   closeMxModal();showToast('已儲存 ✓');
+  try{
+    await syncMerchToProduct({id:row.id,name,category:row.category,actualPrice,productId:existing?existing.productId:null});
+  }catch(e){
+    console.error(e);showToast('已儲存，但同步到記帳失敗（請確認已執行 setup_sync.sql）');
+  }
   await mxLoadFromCloud();
 }
 function confirmDeleteMxItem(){
@@ -2573,6 +2591,93 @@ async function clearMxAllData(){
   if(error){showToast('清空失敗');console.error(error);return;}
   closeMxSettingsModal();showToast('已清空所有紀錄');
   await mxLoadFromCloud();
+}
+
+// ══════════════════════════════════════════════════════════════
+//  SYNC：記帳商品 (products) ⇄ 周邊紀錄 (merch_items)
+//  連結：merch_items.product_id → products.id（需先執行 setup_sync.sql）
+//  同步欄位只有兩個：記帳「價格」⇄ 周邊「實際定價」、兩邊的「分類」。
+//  周邊的成本欄位（打樣費／單價／數量／運費／總金額／加成倍率）完全不會被改到，
+//  只有在「替記帳商品新建一筆周邊紀錄」時才會以 0 當預設值。
+//  任一邊沒有對應商品時：先找同名的接上，找不到才新增，避免重複。
+// ══════════════════════════════════════════════════════════════
+let _posStale=false;   // 周邊端改了記帳商品 → 切回記帳時要重新讀取
+let _mxStale=false;    // 記帳端改了周邊紀錄 → 切到周邊時要重新讀取
+
+async function syncNextSortOrder(table){
+  const {data,error}=await sb.from(table).select('sort_order').order('sort_order',{ascending:false}).limit(1);
+  if(error) throw error;
+  return data&&data.length?(data[0].sort_order||0)+1:0;
+}
+
+// 周邊 → 記帳：m = {id, name, category, actualPrice, productId}
+async function syncMerchToProduct(m){
+  const price=Math.round(m.actualPrice)||0;
+  const category=m.category||'其他';
+  const patch={category};
+  if(price>0) patch.price=price;       // 實際定價沒填(0)時，不要把記帳原本的價格洗掉
+
+  const updateProduct=async id=>{
+    const {data,error}=await sb.from('products').update(patch).eq('id',id).select('id');
+    if(error) throw error;
+    return !!(data&&data.length);
+  };
+
+  let productId=m.productId||null;
+  let linked=false;
+  if(productId) linked=await updateProduct(productId);          // 已連結（商品可能已被刪掉 → 回傳 false）
+  if(!linked){                                                  // 沒連結：找同名商品接上
+    const {data,error}=await sb.from('products').select('id').eq('name',m.name).limit(1);
+    if(error) throw error;
+    if(data&&data.length){productId=data[0].id;linked=await updateProduct(productId);}
+  }
+  if(!linked){                                                  // 還是沒有：在記帳新增商品
+    const sort_order=await syncNextSortOrder('products');
+    const {data,error}=await sb.from('products')
+      .insert({name:m.name,price,category,emoji:EMOJIS[0],image_url:null,bundles:null,sort_order})
+      .select('id').single();
+    if(error) throw error;
+    productId=data.id;
+  }
+  if(productId!==m.productId){
+    const {error}=await sb.from('merch_items').update({product_id:productId}).eq('id',m.id);
+    if(error) throw error;
+  }
+  _posStale=true;
+}
+
+// 記帳 → 周邊：p = {id, name, price, category}
+async function syncProductToMerch(p){
+  const patch={actual_price:p.price,category:p.category};
+
+  const {data:linked,error:e1}=await sb.from('merch_items').select('id').eq('product_id',p.id);
+  if(e1) throw e1;
+  let ids=(linked||[]).map(r=>r.id);
+
+  if(ids.length){
+    const {error}=await sb.from('merch_items').update(patch).in('id',ids);
+    if(error) throw error;
+  }else{
+    // 沒連結：把同名、還沒連結的周邊紀錄接上
+    const {data:sameName,error:e2}=await sb.from('merch_items').select('id').eq('name',p.name).is('product_id',null);
+    if(e2) throw e2;
+    ids=(sameName||[]).map(r=>r.id);
+    if(ids.length){
+      const {error}=await sb.from('merch_items').update({...patch,product_id:p.id}).in('id',ids);
+      if(error) throw error;
+    }else{
+      // 還是沒有：在周邊新增一筆（成本欄位先放 0，之後到周邊補）
+      const sort_order=await syncNextSortOrder('merch_items');
+      const {error}=await sb.from('merch_items').insert({
+        id:mxUid(),name:p.name,category:p.category,qty:0,
+        sample_fee:0,unit_price:0,shipping:0,total_amount:0,
+        markup:MX_SETTINGS.defaultMarkup,actual_price:p.price,
+        currency:'TWD',sort_order,product_id:p.id
+      });
+      if(error) throw error;
+    }
+  }
+  _mxStale=true;
 }
 </script>
 
