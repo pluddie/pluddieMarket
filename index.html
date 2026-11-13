@@ -476,8 +476,11 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:16
 .bundle-in{padding:5px 8px;border:1px solid var(--border);border-radius:var(--r);font-size:13px;color:var(--text);background:var(--surface);font-family:var(--font)}
 .bundle-in.qty{width:52px}
 .bundle-in.price{width:72px}
-.bundle-del{width:22px;height:22px;border-radius:50%;border:1px solid var(--border);background:transparent;color:var(--text3);cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.bundle-del:hover{background:var(--danger-bg);color:var(--danger)}
+.toggle-switch{position:relative;width:34px;height:20px;border-radius:999px;border:none;background:var(--border2);cursor:pointer;flex-shrink:0;padding:0;margin-left:auto;transition:background .15s}
+.toggle-switch .knob{position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:var(--surface);box-shadow:0 1px 2px rgba(0,0,0,.25);transition:transform .15s}
+.toggle-switch.on{background:var(--accent)}
+.toggle-switch.on .knob{transform:translateX(14px)}
+.bundle-row.off .bundle-in,.bundle-row.off .bundle-qty-label{opacity:.45}
 .add-bundle-btn{font-size:12px;color:var(--accent);border:1px solid var(--accent);background:transparent;border-radius:var(--r);padding:4px 10px;cursor:pointer;font-family:var(--font);margin-top:5px}
 .add-bundle-btn:hover{background:var(--accent-bg)}
 /* cart bundle savings badge */
@@ -627,10 +630,24 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:16
 .calc-row{display:flex;justify-content:space-between;font-size:13px;color:var(--text2);padding:3px 0}
 .calc-row.main{font-size:16px;font-weight:700;color:var(--accent);padding-top:6px;margin-top:4px;border-top:1px solid var(--border)}
 .mf-row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.stock-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stock-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
 .stock-hint{font-size:12px;color:var(--text2);margin-top:5px;min-height:0}
 .stock-hint:empty{display:none}
 .stock-hint.warn{color:var(--danger);font-weight:500}
+
+/* 記帳「編輯商品」視窗：行距較緊湊、視窗較大，容納更多資訊 */
+#itemModal .modal{width:340px;max-width:94vw;height:640px;max-height:92vh;padding:16px 18px}
+#itemModal .modal-header-row{margin-bottom:10px}
+#itemModal .mf{margin-bottom:8px}
+#itemModal .mf label{font-size:12px;margin-bottom:2px}
+#itemModal .mf>input,#itemModal .mf select,#itemModal .name-row input,#itemModal .stock-row input{padding:6px 10px;font-size:14px}
+#itemModal .icon-circle{width:38px;height:38px}
+#itemModal .name-row{gap:8px}
+#itemModal .icon-picker-panel{margin-top:6px;padding:8px}
+#itemModal .bundle-section{margin-top:0}
+#itemModal .bundle-section-title{margin-bottom:2px}
+#itemModal .bundle-row{padding:3px 0;gap:6px}
+#itemModal .bundle-in{padding:4px 8px;font-size:14px}
 .mf-row3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .mf-hint{font-size:11px;color:var(--text3);margin-top:3px}
 .mx-currency-toggle{display:inline-flex;border:1px solid var(--border);border-radius:var(--rp);overflow:hidden;margin-bottom:10px}
@@ -1012,13 +1029,6 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:16
       </div>
     </div>
     <div class="mf"><label>價格（元）</label><input id="iprice" type="number" min="1" placeholder="150"></div>
-    <div class="mf">
-      <div class="stock-row">
-        <div><label>現場庫存</label><input id="istockOnsite" type="number" min="0" step="1" value="0" oninput="updateStockHint()"></div>
-        <div><label>雲端庫存</label><input id="istockCloud" type="number" min="0" step="1" value="0" oninput="updateStockHint()"></div>
-      </div>
-      <div class="stock-hint" id="stockHint"></div>
-    </div>
     <div class="mf"><label>分類</label><input id="icat" type="text" maxlength="8" placeholder="例：耳環"></div>
     <div class="mf">
       <div class="bundle-section">
@@ -1028,6 +1038,14 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:16
         </div>
         <div id="bundleRows"></div>
       </div>
+    </div>
+    <div class="mf">
+      <div class="stock-row">
+        <div><label>現場庫存</label><input id="istockOnsite" type="number" min="0" step="1" value="0" oninput="onStockInput('onsite')"></div>
+        <div><label>雲端庫存</label><input id="istockCloud" type="number" min="0" step="1" value="0" oninput="onStockInput('cloud')"></div>
+        <div><label>已售出</label><input id="istockSold" type="number" min="0" step="1" value="0" oninput="onStockInput('sold')"></div>
+      </div>
+      <div class="stock-hint" id="stockHint"></div>
     </div>
   </div>
 </div>
@@ -1266,7 +1284,7 @@ async function loadItemsFromCloud(){
     emoji:p.emoji||'💝', image_path:p.image_url||null,
     bundles:(p.bundles&&p.bundles.length)?p.bundles:undefined,
     sort_order:p.sort_order||0,
-    stockOnsite:p.stock_onsite||0, stockCloud:p.stock_cloud||0
+    stockOnsite:p.stock_onsite||0, stockCloud:p.stock_cloud||0, stockSold:p.stock_sold||0
   }));
   await hydrateImageUrls();
 }
@@ -1374,10 +1392,11 @@ function tagPillsHTML(items,onRemove){
 
 // ── BUNDLE PRICE CALC ──
 // Returns {total, saved, detail} for a single item with given qty
+// 套用中的組合優惠價：開關關閉的、沒填好的都不算（沒有 enabled 欄位的舊資料視為套用中）
+const activeBundles=item=>(item.bundles||[]).filter(b=>b.enabled!==false&&b.qty>=2&&b.price>0);
 function calcItemPrice(item, qty){
-  if(!item.bundles||!item.bundles.length) return {total:item.price*qty,saved:0,detail:null};
   // Sort bundles descending by qty threshold
-  const sorted=[...item.bundles].filter(b=>b.qty>=2&&b.price>0).sort((a,b)=>b.qty-a.qty);
+  const sorted=activeBundles(item).sort((a,b)=>b.qty-a.qty);
   let remaining=qty, total=0, detail=[];
   for(const b of sorted){
     const sets=Math.floor(remaining/b.qty);
@@ -1391,8 +1410,7 @@ function calcItemPrice(item, qty){
 
 // Build a short bundle hint string for item card (e.g. "2個$500")
 function bundleHint(item){
-  if(!item.bundles||!item.bundles.length)return'';
-  return item.bundles.filter(b=>b.qty>=2&&b.price>0).sort((a,b)=>a.qty-b.qty)
+  return activeBundles(item).sort((a,b)=>a.qty-b.qty)
     .map(b=>`${b.qty}個$${b.price}`).join('・');
 }
 
@@ -1984,18 +2002,21 @@ let _modalBundles = [];
 
 function renderBundleRows(){
   const el=document.getElementById('bundleRows');if(!el)return;
-  el.innerHTML=_modalBundles.map((b,i)=>`
-    <div class="bundle-row">
+  el.innerHTML=_modalBundles.map((b,i)=>{
+    const on=b.enabled!==false;
+    return `
+    <div class="bundle-row ${on?'':'off'}">
       <span class="bundle-qty-label">買</span>
       <input class="bundle-in qty" type="number" min="2" value="${b.qty}" placeholder="2" oninput="_modalBundles[${i}].qty=parseInt(this.value)||0">
       <span class="bundle-qty-label">個</span>
       <input class="bundle-in price" type="number" min="1" value="${b.price}" placeholder="500" oninput="_modalBundles[${i}].price=parseInt(this.value)||0">
       <span class="bundle-qty-label">元</span>
-      <button class="bundle-del" onclick="removeBundleRow(${i})">×</button>
-    </div>`).join('');
+      <button type="button" class="toggle-switch ${on?'on':''}" role="switch" aria-checked="${on}" title="${on?'套用中（點擊關閉）':'未套用（點擊開啟）'}" onclick="toggleBundle(${i})"><span class="knob"></span></button>
+    </div>`;}).join('');
 }
-function addBundleRow(){_modalBundles.push({qty:2,price:0});renderBundleRows();}
-function removeBundleRow(i){_modalBundles.splice(i,1);renderBundleRows();}
+function addBundleRow(){_modalBundles.push({qty:2,price:0,enabled:true});renderBundleRows();}
+// 開關：開啟 = 套用，關閉 = 不套用（資料保留，之後可再開啟）
+function toggleBundle(i){_modalBundles[i].enabled=_modalBundles[i].enabled===false;renderBundleRows();}
 
 let _currentEditImagePath=null;
 let _selectedEmoji=EMOJIS[0];
@@ -2008,8 +2029,8 @@ function openAddItem(){
   document.getElementById('iconPickerPanel').style.display='none';
   _currentEditImagePath=null;_previewDataUrl=null;
   _modalBundles=[];renderBundleRows();
-  document.getElementById('istockOnsite').value=0;document.getElementById('istockCloud').value=0;
-  _modalLinkedQty=null;updateStockHint();
+  document.getElementById('istockOnsite').value=0;document.getElementById('istockCloud').value=0;document.getElementById('istockSold').value=0;
+  _stockEdited=[];_modalLinkedQty=null;updateStockHint();
   _selectedEmoji=EMOJIS[0];renderEmojiRow(_selectedEmoji);updateIconCircle();document.getElementById('itemModal').style.display='flex';
 }
 function openEditItem(id){
@@ -2022,26 +2043,55 @@ function openEditItem(id){
   _currentEditImagePath=item.image_path||null;
   _previewDataUrl=item.image_url||null;
   _modalBundles=item.bundles?JSON.parse(JSON.stringify(item.bundles)):[];renderBundleRows();
-  document.getElementById('istockOnsite').value=item.stockOnsite||0;document.getElementById('istockCloud').value=item.stockCloud||0;
-  _modalLinkedQty=null;updateStockHint();
+  document.getElementById('istockOnsite').value=item.stockOnsite||0;document.getElementById('istockCloud').value=item.stockCloud||0;document.getElementById('istockSold').value=item.stockSold||0;
+  _stockEdited=[];_modalLinkedQty=null;updateStockHint();
   fetchLinkedQty(id).catch(()=>null).then(q=>{       // 有連結周邊 → 顯示周邊數量並檢查
     if(document.getElementById('eid').value!==id)return;   // 視窗已經換成別的商品了
     _modalLinkedQty=q;updateStockHint();
   });
   _selectedEmoji=item.emoji||EMOJIS[0];renderEmojiRow(_selectedEmoji);updateIconCircle();document.getElementById('itemModal').style.display='flex';
 }
-// ── 庫存：現場 + 雲端 必須等於周邊「數量」（沒連結周邊的商品不受限制）──
+// ── 庫存：現場 + 雲端 + 已售出 必須等於周邊「數量」（沒連結周邊的商品不受限制）──
 let _modalLinkedQty=null;   // 這個商品連結的周邊數量；null = 沒連結
+let _stockEdited=[];        // 使用者動過的欄位（最近動的在最後），用來決定哪一欄自動補
+const STOCK_INPUT_ID={onsite:'istockOnsite',cloud:'istockCloud',sold:'istockSold'};
 function readStockInput(id){
   const s=document.getElementById(id).value.trim();
   return s===''?0:Number(s);
 }
+function readStock(){
+  return {onsite:readStockInput('istockOnsite'),cloud:readStockInput('istockCloud'),sold:readStockInput('istockSold')};
+}
+// 決定哪一欄由系統自動補：填好兩項時，另一項自動算；第一次只動一欄時，現場／已售出由雲端補（雲端是預設的庫存）
+function stockRemainderField(order){
+  if(order.length>=2){
+    const lastTwo=order.slice(-2);
+    return ['onsite','cloud','sold'].find(f=>!lastTwo.includes(f));
+  }
+  return order[0]==='cloud'?null:'cloud';
+}
+// 算出自動補的欄位與數值（剩餘 = 周邊數量 − 另外兩欄）；不需要補時回傳 null
+function autoStockRemainder(order,vals,qty){
+  const f=stockRemainderField(order);
+  if(!f) return null;
+  const others=['onsite','cloud','sold'].filter(k=>k!==f);
+  return {field:f,value:qty-others.reduce((a,k)=>a+(vals[k]||0),0)};
+}
+function onStockInput(field){
+  _stockEdited=_stockEdited.filter(f=>f!==field);_stockEdited.push(field);
+  if(_modalLinkedQty!=null){
+    const r=autoStockRemainder(_stockEdited,readStock(),_modalLinkedQty);
+    if(r) document.getElementById(STOCK_INPUT_ID[r.field]).value=r.value;
+  }
+  updateStockHint();
+}
 function updateStockHint(){
   const hint=document.getElementById('stockHint');
   if(_modalLinkedQty==null){hint.textContent='';hint.classList.remove('warn');return;}
-  const sum=readStockInput('istockOnsite')+readStockInput('istockCloud');
-  if(sum===_modalLinkedQty){hint.textContent=`數量 ${_modalLinkedQty}（來自周邊）`;hint.classList.remove('warn');}
-  else{hint.textContent=`現場＋雲端 = ${sum}，必須等於周邊數量 ${_modalLinkedQty}`;hint.classList.add('warn');}
+  const v=readStock(),sum=v.onsite+v.cloud+v.sold;
+  if(v.onsite<0||v.cloud<0||v.sold<0){hint.textContent=`已分配超過周邊數量 ${_modalLinkedQty}，請調整`;hint.classList.add('warn');}
+  else if(sum===_modalLinkedQty){hint.textContent=`數量 ${_modalLinkedQty}（來自周邊）`;hint.classList.remove('warn');}
+  else{hint.textContent=`現場＋雲端＋已售出 = ${sum}，必須等於周邊數量 ${_modalLinkedQty}`;hint.classList.add('warn');}
 }
 function toggleIconPicker(){
   const p=document.getElementById('iconPickerPanel');
@@ -2112,13 +2162,13 @@ async function saveItem(){
   if(saveBtn){saveBtn.disabled=true;saveBtn.style.opacity=.5;}
 
   // 庫存檢查：現場＋雲端要等於周邊數量（有連結周邊才檢查；用最新資料再確認一次）
-  const stockOnsite=readStockInput('istockOnsite'),stockCloud=readStockInput('istockCloud');
+  const {onsite:stockOnsite,cloud:stockCloud,sold:stockSold}=readStock();
   let linkedQty=null;
   if(eid){
     try{linkedQty=await fetchLinkedQty(eid);}
     catch(e){console.error(e);showToast('讀取周邊數量失敗，請稍後再試');if(saveBtn){saveBtn.disabled=false;saveBtn.style.opacity='';}return;}
   }
-  const stockErr=validateStock(stockOnsite,stockCloud,linkedQty);
+  const stockErr=validateStock(stockOnsite,stockCloud,stockSold,linkedQty);
   if(stockErr){showToast(stockErr);if(saveBtn){saveBtn.disabled=false;saveBtn.style.opacity='';}return;}
 
   let imagePath=_currentEditImagePath;
@@ -2131,7 +2181,7 @@ async function saveItem(){
     imagePath=path;
   }
 
-  const payload={name,price,category:cat,emoji,image_url:imagePath||null,bundles:bundles.length?bundles:null,stock_onsite:stockOnsite,stock_cloud:stockCloud};
+  const payload={name,price,category:cat,emoji,image_url:imagePath||null,bundles:bundles.length?bundles:null,stock_onsite:stockOnsite,stock_cloud:stockCloud,stock_sold:stockSold};
 
   let productId=eid;
   if(eid){
@@ -2146,7 +2196,7 @@ async function saveItem(){
   if(saveBtn){saveBtn.disabled=false;saveBtn.style.opacity='';}
   closeItemModal();showToast('已儲存 ✓');
   try{
-    await syncProductToMerch({id:productId,name,price,category:cat,stockTotal:stockOnsite+stockCloud},!eid);
+    await syncProductToMerch({id:productId,name,price,category:cat,stockTotal:stockOnsite+stockCloud+stockSold},!eid);
   }catch(e){
     console.error(e);showToast('已儲存，但同步到周邊失敗');
   }
@@ -2559,7 +2609,7 @@ async function saveMxItem(){
   if(syncTo&&syncTo!=='__new__'){
     try{
       const plan=await planStockSync(syncTo,row.id,qty);
-      if(plan.cloud<0){showToast(`數量（${plan.total}）不能小於記帳的現場庫存（${plan.onsite}），請先到記帳調整`);return;}
+      if(plan.cloud<0){showToast(`數量（${plan.total}）不能小於記帳的現場庫存＋已售出（${plan.onsite+plan.sold}），請先到記帳調整`);return;}
     }catch(e){console.error(e);showToast('讀取記帳庫存失敗，請確認已執行 setup_stock.sql');return;}
   }
   const {error}=await sb.from('merch_items').upsert(row);
@@ -2573,7 +2623,7 @@ async function saveMxItem(){
   }
   await mxLoadFromCloud();
   if(synced){
-    showToast(`已儲存 ✓ 記帳庫存：現場 ${synced.onsite}／雲端 ${synced.cloud}`);
+    showToast(`已儲存 ✓ 記帳庫存：現場 ${synced.onsite}／雲端 ${synced.cloud}／已售出 ${synced.sold}`);
     await loadItemsFromCloud();rAll();
   }
 }
@@ -2656,7 +2706,7 @@ async function clearMxAllData(){
 //  連結：merch_items.product_id → products.id
 //  連結由使用者在周邊編輯視窗的「同步到記帳」下拉選單決定，不會用名稱自動配對。
 //  同步欄位：記帳「價格」⇄ 周邊「實際定價」、兩邊的「分類」、
-//            周邊「數量」→ 記帳「庫存」（現場庫存 + 雲端庫存 = 周邊數量）。
+//            周邊「數量」→ 記帳「庫存」（現場庫存 + 雲端庫存 + 已售出 = 周邊數量）。
 //  周邊的成本欄位（打樣費／單價／運費／總金額／加成倍率）完全不會被改到，
 //  只有在「記帳新增商品 → 自動在周邊建一筆」時才會以 0 當預設值。
 // ══════════════════════════════════════════════════════════════
@@ -2677,24 +2727,25 @@ async function fetchLinkedQty(productId){
   return Math.round(data.reduce((a,r)=>a+(Number(r.qty)||0),0));
 }
 // 回傳錯誤訊息；沒問題回傳 null。linkedQty 為 null（沒連結周邊）時不要求相加＝數量
-function validateStock(onsite,cloud,linkedQty){
-  if(!Number.isInteger(onsite)||!Number.isInteger(cloud)||onsite<0||cloud<0) return '庫存必須是 0 以上的整數';
-  if(linkedQty!=null&&onsite+cloud!==linkedQty) return `現場＋雲端庫存（${onsite+cloud}）必須等於周邊數量（${linkedQty}）`;
+function validateStock(onsite,cloud,sold,linkedQty){
+  if(![onsite,cloud,sold].every(n=>Number.isInteger(n)&&n>=0)) return '庫存必須是 0 以上的整數';
+  const sum=onsite+cloud+sold;
+  if(linkedQty!=null&&sum!==linkedQty) return `現場＋雲端＋已售出（${sum}）必須等於周邊數量（${linkedQty}）`;
   return null;
 }
-// 周邊要同步到某個既有記帳商品時，算出新的庫存：現場庫存維持不變，雲端庫存 = 總數量 − 現場庫存
+// 周邊要同步到某個既有記帳商品時，算出新的庫存：現場庫存、已售出維持不變，雲端庫存 = 總數量 − 現場 − 已售出
 // 總數量 = 這筆周邊的新數量 + 其他同樣連到這個商品的周邊數量
 async function planStockSync(productId,merchId,qty){
   const [pr,others]=await Promise.all([
-    sb.from('products').select('stock_onsite').eq('id',productId).maybeSingle(),
+    sb.from('products').select('stock_onsite,stock_sold').eq('id',productId).maybeSingle(),
     sb.from('merch_items').select('qty').eq('product_id',productId).neq('id',merchId)
   ]);
   if(pr.error) throw pr.error;
   if(others.error) throw others.error;
   if(!pr.data) throw new Error('找不到所選的記帳商品');
   const total=Math.round((Number(qty)||0)+(others.data||[]).reduce((a,r)=>a+(Number(r.qty)||0),0));
-  const onsite=pr.data.stock_onsite||0;
-  return {total,onsite,cloud:total-onsite};
+  const onsite=pr.data.stock_onsite||0,sold=pr.data.stock_sold||0;
+  return {total,onsite,sold,cloud:total-onsite-sold};
 }
 
 // 周邊編輯視窗的「同步到記帳」選項：不同步／新增為記帳商品／記帳現有商品（依分類分組）
@@ -2712,7 +2763,7 @@ function renderMxSyncOptions(selected){
 }
 
 // 周邊 → 記帳：m = {id, name, category, actualPrice, qty, syncTo, currentProductId}
-// 有動到記帳商品時回傳 {onsite, cloud}（呼叫端需要重新讀取記帳清單），否則回傳 null
+// 有動到記帳商品時回傳 {onsite, cloud, sold}（呼叫端需要重新讀取記帳清單），否則回傳 null
 async function syncMerchToProduct(m){
   if(!m.syncTo){                                   // 不同步：如果原本有連結就解除，不動記帳商品
     if(m.currentProductId){
@@ -2723,21 +2774,21 @@ async function syncMerchToProduct(m){
   }
   const price=Math.round(m.actualPrice)||0;
   const category=m.category||'其他';
-  let productId,onsite,cloud;
+  let productId,onsite,cloud,sold;
   if(m.syncTo==='__new__'){                        // 新增為記帳商品：數量全部先放雲端
     const qty=Math.round(Number(m.qty))||0;
-    onsite=0;cloud=qty;
+    onsite=0;cloud=qty;sold=0;
     const sort_order=await syncNextSortOrder('products');
     const {data,error}=await sb.from('products')
-      .insert({name:m.name,price,category,emoji:EMOJIS[0],image_url:null,bundles:null,sort_order,stock_onsite:onsite,stock_cloud:cloud})
+      .insert({name:m.name,price,category,emoji:EMOJIS[0],image_url:null,bundles:null,sort_order,stock_onsite:onsite,stock_cloud:cloud,stock_sold:sold})
       .select('id').single();
     if(error) throw error;
     productId=data.id;
   }else{                                           // 同步到選定的記帳商品
     productId=m.syncTo;
     const plan=await planStockSync(productId,m.id,m.qty);
-    if(plan.cloud<0) throw new Error('數量不能小於記帳的現場庫存');
-    onsite=plan.onsite;cloud=plan.cloud;
+    if(plan.cloud<0) throw new Error('數量不能小於記帳的現場庫存＋已售出');
+    onsite=plan.onsite;cloud=plan.cloud;sold=plan.sold;
     const patch={category,stock_cloud:cloud};
     if(price>0) patch.price=price;                 // 實際定價沒填(0)時，不要把記帳原本的價格洗掉
     const {data,error}=await sb.from('products').update(patch).eq('id',productId).select('id');
@@ -2748,11 +2799,11 @@ async function syncMerchToProduct(m){
     const {error}=await sb.from('merch_items').update({product_id:productId}).eq('id',m.id);
     if(error) throw error;
   }
-  return {onsite,cloud};
+  return {onsite,cloud,sold};
 }
 
 // 記帳 → 周邊：p = {id, name, price, category, stockTotal}
-// 新增商品(isNew)：自動在周邊建一筆（數量 = 現場＋雲端庫存）；編輯舊商品：只更新已經連結的周邊紀錄
+// 新增商品(isNew)：自動在周邊建一筆（數量 = 現場＋雲端＋已售出）；編輯舊商品：只更新已經連結的周邊紀錄
 async function syncProductToMerch(p,isNew){
   if(isNew){
     const sort_order=await syncNextSortOrder('merch_items');
